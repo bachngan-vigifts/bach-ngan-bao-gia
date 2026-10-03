@@ -1,20 +1,22 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import * as fflate from 'fflate';import {DOMParser,XMLSerializer} from '@xmldom/xmldom';
-import {validateContractWordEdits} from '../lib/quotation-store.mjs';
+import {validateContractWordEdits,validateContractDocumentEdits} from '../lib/quotation-store.mjs';
 Object.assign(globalThis,{fflate,DOMParser,XMLSerializer});
 (0,eval)(readFileSync('public/contract-word-edit.js','utf8'));
 (0,eval)(readFileSync('public/hrc-pdf.js','utf8'));
 (0,eval)(readFileSync('public/contract-document.js','utf8'));
 const xml=bytes=>fflate.strFromU8(fflate.unzipSync(bytes)['word/document.xml']);
 const q={quote_type:'B2B',quote_number:'BG',quote_date:'2026-10-03',customer:{name:'Khách hàng'},subtotal:100,vat_amount:8,total:108,notes:'Thanh toán trước 30%',items:[{name:'Ly',quantity:1,unit:'Cái',unit_price:100,line_total:100,tax_percent:8}]};
-for(const type of ['B2B','HRC','VIGIFTS'])test('edit '+type+' DOCX paragraphs and retain package tables',async()=>{
- const templateBytes=readFileSync('public/mau-hop-dong-'+type.toLowerCase()+'-hdkt.docx'),quote={...q,quote_type:type},details={depositRate:30,paymentDays:15};
- const original=await ContractDocument.build({quote,contractNumber:'HD-1',details,templateBytes});const prepared=await ContractWordEdit.prepare(original);assert.ok(prepared.paragraphs.length>5);
+for(const type of ['B2B','HRC','VIGIFTS'])for(const documentType of ['HDKT','TAM_UNG','BBNT'])test('edit '+type+' '+documentType+' DOCX paragraphs and retain package tables',async()=>{
+ const templateBytes=readFileSync('public'+ContractDocument.templatesFor({quote_type:type}).find(t=>t.file===documentType).path.split('?')[0]),quote={...q,quote_type:type},details={depositRate:30,paymentDays:15};
+ const original=await ContractDocument.build({quote,contractNumber:'HD-1',details,templateBytes,documentType});const prepared=await ContractWordEdit.prepare(original);assert.ok(prepared.paragraphs.length>5);
  const edit={...prepared.paragraphs[3],text:'Điều khoản đã sửa & <giữ an toàn>\nDòng tiếp theo',bold:true,align:'center'};
  const output=await ContractWordEdit.apply(original,[edit]);assert.ok(xml(output).includes('&amp;'));assert.ok(xml(output).includes('&lt;giữ an toàn&gt;'));assert.ok(xml(output).includes('w:val="center"'));
  const allBefore=fflate.unzipSync(original),allAfter=fflate.unzipSync(output);for(const key of Object.keys(allBefore))if(key!=='word/document.xml')assert.deepEqual(allAfter[key],allBefore[key]);
  assert.equal((xml(output).match(/<w:tbl[ >]/g)||[]).length,(xml(original).match(/<w:tbl[ >]/g)||[]).length);
- const exported=await ContractDocument.build({quote:{...quote,contract_word_edits:[edit]},contractNumber:'HD-1',details,templateBytes});assert.equal(xml(exported),xml(output));
+ const exported=await ContractDocument.build({quote:{...quote,contract_word_edits:documentType==='HDKT'?[edit]:[],contract_document_edits:{[documentType]:[edit]}},contractNumber:'HD-1',details,templateBytes,documentType});assert.equal(xml(exported),xml(output));
  const reloaded=await ContractWordEdit.prepare(original,[edit]);assert.equal(xml(reloaded.bytes),xml(output));assert.ok(xml(reloaded.preview).includes('bnword_'));
  await assert.rejects(ContractWordEdit.apply(original,[{...edit,hash:'0'.repeat(64)}]),/thay đổi/);
 });
 test('invalid patch formats and duplicate targets rejected',()=>{const e={index:1,hash:'a'.repeat(64),text:'Hợp đồng',bold:true};assert.deepEqual(validateContractWordEdits([e]),[e]);assert.throws(()=>validateContractWordEdits([e,e]));assert.throws(()=>validateContractWordEdits([{...e,align:'script'}]));});
+
+test("document patches only accept supported types",()=>{assert.throws(()=>validateContractDocumentEdits({HDKT:[]}));assert.throws(()=>validateContractDocumentEdits([]));assert.deepEqual(validateContractDocumentEdits({TAM_UNG:[],BBNT:[]}),{TAM_UNG:[],BBNT:[]});});

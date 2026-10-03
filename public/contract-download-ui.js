@@ -75,6 +75,7 @@
     const { subtotal: sub, tax } = QuoteMath.totals(source), total = sub + tax;
     const after = row => QuoteMath.after(row, source), rate = row => QuoteMath.rate(row, source);
     return {
+      contract_document_edits: source.contractDocument?.documentEdits || {},
       contract_word_edits: source.contractDocument?.wordEdits || [],
       quote_number: source.quoteNo,
       quote_type: source.type,

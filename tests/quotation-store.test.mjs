@@ -349,3 +349,19 @@ test('contract-only edit retains immutable R2 payload fields and approval metada
  await assert.rejects(store.updateContractDetails('m',saved.id,{revision:after.revision,details:{depositRate:101,paymentDays:1}}),e=>e.status===400);
  }finally{sql.close();}
 });
+
+test('paperwork edits persist independently and survive legacy and quotation saves',async()=>{
+ const {sql,store}=fixture();try{
+ const details={depositRate:30,paymentDays:15},patch=text=>[{index:1,hash:'a'.repeat(64),text}];
+ const saved=await store.save('a',{...quote,contractDocument:{contractNumber:'HD-DOCS',details,wordEdits:patch('HĐKT')}});
+ let loaded=await store.get('a',saved.id);
+ await store.updateContractDetails('a',saved.id,{revision:loaded.revision,details,documentEdits:{TAM_UNG:patch('Tạm ứng'),BBNT:patch('Nghiệm thu')}});
+ loaded=await store.get('a',saved.id);assert.deepEqual(loaded.data.contractDocument.wordEdits,patch('HĐKT'));assert.deepEqual(loaded.data.contractDocument.documentEdits,{TAM_UNG:patch('Tạm ứng'),BBNT:patch('Nghiệm thu')});
+ await store.updateContractDetails('a',saved.id,{revision:loaded.revision,details});
+ loaded=await store.get('a',saved.id);const before=loaded.data.contractDocument;
+ await store.save('a',loaded.data,saved.id,loaded.revision);
+ loaded=await store.get('a',saved.id);assert.deepEqual(loaded.data.contractDocument.documentEdits,before.documentEdits);
+ await store.updateContractDetails('a',saved.id,{revision:loaded.revision,details,documentEdits:{...before.documentEdits,TAM_UNG:[]}});
+ loaded=await store.get('a',saved.id);assert.deepEqual(loaded.data.contractDocument.documentEdits.TAM_UNG,[]);assert.deepEqual(loaded.data.contractDocument.documentEdits.BBNT,patch('Nghiệm thu'));assert.deepEqual(loaded.data.contractDocument.wordEdits,patch('HĐKT'));
+ }finally{sql.close();}
+});
