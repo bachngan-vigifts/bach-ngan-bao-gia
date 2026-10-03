@@ -295,7 +295,7 @@ async function deliverPdf(blob,fileName,target){const url=URL.createObjectURL(bl
 async function reloadCurrentQuote(){
  if(!state._record?.id)return null;
  const record=await BN.api('/quotes/'+state._record.id);
- state={...record.data,_record:{id:record.id,revision:record.revision,canEdit:record.canEdit,hasPdf:false,approvalStatus:record.approvalStatus||state._record.approvalStatus||'pending'}};
+ state={...record.data,_record:{id:record.id,revision:record.revision,canEdit:record.canEdit,contractApproval:record.contractApproval,canExportContract:record.canExportContract,hasPdf:false,approvalStatus:record.approvalStatus||state._record.approvalStatus||'pending'}};
  state.rows=(state.rows||[]).map(normalizeRow);
  hydrate();saveDraft();markQuoteSaved();BN.setPdfAction?.(state._record);
  return record;
