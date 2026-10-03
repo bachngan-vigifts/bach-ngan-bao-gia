@@ -1,6 +1,6 @@
 window.BN={user:null};
 BN.api=async(path,method='GET',body)=>{const r=await fetch('/api/staff'+path,{method,cache:'no-store',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});const data=await r.json();if(r.status===401){if(BN.user)sessionStorage.removeItem('bn-draft:'+BN.user.id);location.replace('/login.html?returnTo='+encodeURIComponent(location.pathname+location.search+location.hash));throw Error('Vui lòng đăng nhập lại.');}if(!r.ok)throw Error(data.error||'Không thể kết nối.');return data;};
-(async()=>{try{const data=await BN.api('/me');BN.user=data.user;if(BN.user.role==='supplier'){location.replace('/supplier');return;}BN.configureOwnerSelect();const script=document.createElement('script');script.src='/app.js?v=contract-approval-20261003';script.onload=()=>{BN.install();document.body.hidden=false;window.dispatchEvent(new Event('bn-staff-ready'));};script.onerror=()=>{document.body.hidden=false;document.body.textContent='Không tải được ứng dụng. Vui lòng tải lại trang.';};document.body.appendChild(script);}catch(e){if(!BN.user){document.body.hidden=false;document.body.textContent=e.message;}}})();
+(async()=>{try{const data=await BN.api('/me');BN.user=data.user;if(BN.user.role==='supplier'){location.replace('/supplier');return;}BN.configureOwnerSelect();const script=document.createElement('script');script.src='/app.js?v=contract-quote-generate-20261003';script.onload=()=>{BN.install();document.body.hidden=false;window.dispatchEvent(new Event('bn-staff-ready'));};script.onerror=()=>{document.body.hidden=false;document.body.textContent='Không tải được ứng dụng. Vui lòng tải lại trang.';};document.body.appendChild(script);}catch(e){if(!BN.user){document.body.hidden=false;document.body.textContent=e.message;}}})();
 
 BN.configureOwnerSelect=()=>{
  if(BN.user.role!=='manager')return;
@@ -26,7 +26,7 @@ BN.install=()=>{
    if(new URL(link.href).searchParams.get('dashboardAction')==='new'){document.getElementById('newQuote')?.click();return;}
    if(await BN.confirmQuoteLeave())location.assign(link.href);
  }));
- const contractScript=document.createElement('script');contractScript.src='/contract-ui.js?v=contract-unit-price-2';contractScript.onload=()=>{const script=document.createElement('script');script.src='/contract-download-ui.js?v=approval-20261003';document.body.append(script);};document.body.append(contractScript);
+ const contractScript=document.createElement('script');contractScript.src='/contract-ui.js?v=contract-unit-price-2';contractScript.onload=()=>{const script=document.createElement('script');script.src='/contract-download-ui.js?v=quote-generate-20261003';document.body.append(script);};document.body.append(contractScript);
  const stockScript=document.createElement('script');stockScript.src='/stock-ui.js?v=duplicate-sku-max-1';document.body.append(stockScript);
 const incomingStockScript=document.createElement('script');incomingStockScript.src='/incoming-stock-ui.js?v=notification-target-20261002';document.body.append(incomingStockScript);
  const packingScript=document.createElement('script');packingScript.src='/packing-ui.js?v=minh-long-family-packaging-1';document.body.append(packingScript);
