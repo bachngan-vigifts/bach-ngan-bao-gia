@@ -52,15 +52,15 @@
     return Boolean(state?.contractDocument?.contractNumber);
   }
   function refreshButtons() {
-    const generated = hasDocument();
+    const generated = hasDocument(),approved=generated&&state._record?.contractApproval?.status==='approved';
     [$("#downloadContractFile"), $("#mobileDownloadContract")].filter(Boolean).forEach(button => {
-      button.hidden = !generated;
-      button.disabled = !generated;
+      button.hidden = !approved;
+      button.disabled = !approved;
       button.title = generated ? `Tải HĐKT ${state.contractDocument.contractNumber}` : "Cần bấm Sinh HĐKT trước.";
     });
     [$("#printDeliveryNote"), $("#mobilePrintDeliveryNote")].filter(Boolean).forEach(button => {
-      button.hidden = !generated;
-      button.disabled = !generated;
+      button.hidden = !approved;
+      button.disabled = !approved;
       button.title = generated ? `In phiếu giao hàng ${state.contractDocument.contractNumber}` : "Cần bấm Sinh HĐKT trước.";
     });
     [$("#createContractCrm"), $("#mobileContract")].filter(Boolean).forEach(button => {
@@ -168,7 +168,7 @@
   }
   async function loadQuoteRecord(id) {
     const record = await BN.api("/quotes/" + encodeURIComponent(id));
-    setQuoteSelection({ id: record.id, revision: record.revision, canEdit: record.canEdit, approvalStatus: record.approvalStatus }, record.data);
+    setQuoteSelection({ id: record.id, revision: record.revision, canEdit: record.canEdit, contractApproval:record.contractApproval,canExportContract:record.canExportContract, approvalStatus: record.approvalStatus }, record.data);
     return record;
   }
   function optionLabel(item) {
@@ -246,6 +246,7 @@
       }
       setQuoteSelection(state._record ? { ...state._record, quoteNo: state.quoteNo, customer: state.customer } : null, state);
     }
+    if(selectedQuoteData?.contractDocument?.contractNumber&&selectedRecord?.id){location.assign('/contracts/detail?quoteId='+encodeURIComponent(selectedRecord.id));return false;}
     if (mode === "download" && !selectedQuoteData?.contractDocument?.contractNumber) { toast("Vui lòng bấm Sinh HĐKT trước."); return false; }
     if (!(await fillFromSelected())) return false;
     openModal();
@@ -328,6 +329,7 @@
     selectedRecord = { ...selectedRecord, ...result, revision: result.revision };
   }
   async function downloadNow(details) {
+    const approved=await BN.api('/quotes/'+encodeURIComponent(selectedRecord.id)+'/contract-approval','POST',{action:'export',revision:selectedRecord.revision});selectedQuoteData=approved.data;details=approved.data.contractDocument.details;
     const q = applyDetailsToQuote(quotePayloadFromData(selectedQuoteData), details);
     await ContractDocument.download({ quote: q, contractNumber: selectedQuoteData.contractDocument.contractNumber, details });
     BN.notifyEvent?.("contract_download", { quoteNo: q.quote_number, customer: q.customer?.name || details.name, contractNumber: selectedQuoteData.contractDocument.contractNumber });
@@ -424,12 +426,12 @@
     popup.document.write('<!doctype html><title>Đang chuẩn bị phiếu giao hàng</title><p style="font:16px Arial;padding:24px">Đang chuẩn bị phiếu giao hàng...</p>');
     try {
       if (quoteId) {
-        const record = await BN.api("/quotes/" + encodeURIComponent(quoteId));
+        const current=await BN.api("/quotes/"+encodeURIComponent(quoteId));const record=await BN.api("/quotes/"+encodeURIComponent(quoteId)+"/contract-approval","POST",{action:"export",revision:current.revision});
         openDeliveryPrint(record.data, popup);
         return;
       }
       if (BN.reloadCurrentQuote) await BN.reloadCurrentQuote();
-      openDeliveryPrint(state, popup);
+      const approved=await BN.api("/quotes/"+encodeURIComponent(state._record?.id)+"/contract-approval","POST",{action:"export",revision:state._record?.revision});openDeliveryPrint(approved.data, popup);
     } catch (error) {
       popup.close();
       toast(error.message || "Chưa in được phiếu giao hàng.");
@@ -468,7 +470,7 @@
       await persist(details, contractNumber);
       if (mode === "download") await downloadNow(details);
       close();
-      toast(mode === "download" ? "Đã tải file HĐKT." : "Đã sinh HĐKT. Nút Tải HĐKT đã hiện.");
+      toast(mode === "download" ? "Đã tải file HĐKT." : "Đã sinh HĐKT. Mở chi tiết hợp đồng để yêu cầu Manager phê duyệt trước khi tải/in.");
       if (mode !== "download" && !hadContract) await askCopyToSapo(details);
     } catch (error) {
       alertBox.textContent = error.message || "Chưa xử lý được HĐKT.";

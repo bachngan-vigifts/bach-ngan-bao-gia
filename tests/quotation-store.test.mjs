@@ -365,3 +365,28 @@ test('paperwork edits persist independently and survive legacy and quotation sav
  loaded=await store.get('a',saved.id);assert.deepEqual(loaded.data.contractDocument.documentEdits.TAM_UNG,[]);assert.deepEqual(loaded.data.contractDocument.documentEdits.BBNT,patch('Nghiệm thu'));assert.deepEqual(loaded.data.contractDocument.wordEdits,patch('HĐKT'));
  }finally{sql.close();}
 });
+
+for(const useR2 of [false,true])test('contract approval is independent, server-owned and locks staff edits '+(useR2?'R2':'D1'),async()=>{
+ const {sql,db}=fixture(),objects=new Map(),bucket={put:async(k,v)=>objects.set(k,String(v)),get:async k=>objects.has(k)?{json:async()=>JSON.parse(objects.get(k))}:null};const store=createQuotationStore(db,useR2?bucket:null);
+ try{
+ const details={depositRate:30,paymentDays:10};const saved=await store.save('a',{...quote,contractApproval:{status:'approved'},contractDocument:{contractNumber:'HD-APPROVAL',details}});
+ let record=await store.get('a',saved.id);assert.equal(record.contractApproval.status,'draft');assert.equal(record.canExportContract,false);
+ await store.approve('m',saved.id);record=await store.get('a',saved.id);assert.equal(record.approvalStatus,'approved');assert.equal(record.canExportContract,false);
+ await assert.rejects(store.contractApprovalAction('a',saved.id,{action:'export',revision:record.revision}),e=>e.status===403);
+ await assert.rejects(store.contractApprovalAction('a',saved.id,{action:'approve',revision:record.revision}),e=>e.status===403);
+ await assert.rejects(store.contractApprovalAction('c',saved.id,{action:'request',revision:record.revision}),e=>e.status===404);
+ const pending=await store.contractApprovalAction('a',saved.id,{action:'request',revision:record.revision});assert.equal(pending.contractApproval.status,'pending');assert.equal(pending.canEdit,true);
+ await assert.rejects(store.contractApprovalAction('m',saved.id,{action:'approve',revision:record.revision}),e=>e.status===409);
+ record=await store.contractApprovalAction('m',saved.id,{action:'approve',revision:pending.revision});assert.equal(record.contractApproval.status,'approved');assert.equal(record.canEdit,true);
+ const employee=await store.get('a',saved.id);assert.equal(employee.canEdit,false);assert.equal(employee.canExportContract,true);
+ assert.equal((await store.contractApprovalAction('a',saved.id,{action:'export',revision:employee.revision})).contractApproval.status,'approved');
+ await assert.rejects(store.save('a',{...employee.data,contractDocument:undefined},saved.id,employee.revision),e=>e.status===403);
+ await assert.rejects(store.updateContractDetails('a',saved.id,{details,revision:employee.revision}),e=>e.status===403);
+ await assert.rejects(store.updateCare('a',saved.id,{careStatus:'closed'}),e=>e.status===403);
+ await assert.rejects(store.remove('a',saved.id,employee.revision),e=>e.status===403);
+ await store.updateContractDetails('m',saved.id,{details:{...details,name:'Manager sửa'},revision:record.revision});record=await store.get('m',saved.id);assert.equal(record.data.contractDocument.details.name,'Manager sửa');assert.equal(record.canExportContract,true);
+ await assert.rejects(store.contractApprovalAction('a',saved.id,{action:'export',revision:employee.revision}),e=>e.status===409);
+ assert.equal((await store.list('a',null,{hasContract:'1'})).records[0].contractApprovalStatus,'approved');
+ const copy=await store.save('a',record.data);assert.equal((await store.get('a',copy.id)).contractApproval.status,'draft');
+ }finally{sql.close();}
+});
