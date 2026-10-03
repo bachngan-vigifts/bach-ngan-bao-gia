@@ -404,3 +404,14 @@ for(const useR2 of [false,true])test('only explicit approval changes existing qu
  const created=await store.save('m',quote);assert.equal(created.approvalStatus,'approved');
  }finally{sql.close();}
 });
+
+test('delivery fields survive saving and entity details stay within quotation permissions',async()=>{
+ const {entityDetail}=await import('../lib/entity-detail.mjs');const {sql,db,store}=fixture();try{
+ sql.prepare("INSERT INTO sapo_customers(id,name,contact,phone,email,address,search,source_version,synced_at) VALUES('local_detail','Khách hồ sơ','','','','','local_detail khach',1,'2026-10-03')").run();
+ const data={...quote,customerId:'local_detail',deliveryDate:'2026-10-05',rows:[{...quote.rows[0],deliveryDate:'2026-10-06',status:'Đã giao hàng'}],contractDocument:{contractNumber:'HD-DATE',details:{depositRate:30,paymentDays:15,deliveryDate:'2026-10-05',signedDate:'2026-10-01',depositReceivedDate:'2026-10-02'}}};
+ const saved=await store.save('a',data);await store.save('c',{...data,quoteNo:'OTHER'});const full=await store.get('a',saved.id);assert.equal(full.data.rows[0].deliveryDate,'2026-10-06');assert.equal(full.data.rows[0].status,'Đã giao hàng');assert.equal(full.data.contractDocument.details.signedDate,'2026-10-01');
+ const scoped=await entityDetail(db,null,{id:'b',role:'employee',position_id:'sales',active:1},{},{kind:'customer',id:'local_detail'});assert.equal(scoped.summary.quoteCount,1);assert.equal(scoped.quotes[0].id,saved.id);assert.equal(scoped.debt.available,false);
+ const manager=await entityDetail(db,null,{id:'m',role:'manager',active:1},{},{kind:'customer',id:'local_detail'});assert.equal(manager.summary.quoteCount,2);
+ await assert.rejects(entityDetail(db,null,{id:'x',role:'employee',active:0},{},{kind:'customer',id:'local_detail'}),e=>e.status===403);
+ }finally{sql.close();}
+});
