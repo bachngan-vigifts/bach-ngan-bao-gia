@@ -134,10 +134,10 @@ globalThis.ContractDocument = (() => {
     result = result.replace('Phương thức thanh toán: Chuyển khoản.', xml(`Phương thức thanh toán: ${paymentMethod}`));
     return removeLeftoverTokens(result);
   };
-  const templateMark = (quote, documentType = 'HDKT') => `WEB-${quote.quote_type === 'VIGIFTS' ? 'VG' : 'BN'}-${documentType}-20261002`;
+  const templateMark = (quote, documentType = 'HDKT') => `${quote.quote_type === 'VIGIFTS' ? 'VG' : 'BN'}-${documentType}-20261002`;
   function addWebSourceFooter(files, quote, documentType) {
     const mark = templateMark(quote, documentType);
-    const paragraph = `<w:p><w:pPr><w:jc w:val="right"/><w:spacing w:before="0" w:after="0"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/><w:color w:val="666666"/><w:sz w:val="16"/></w:rPr><w:t>${xml(`Xuất từ web báo giá · Mẫu ${mark}`)}</w:t></w:r></w:p>`;
+    const paragraph = `<w:p><w:pPr><w:jc w:val="right"/><w:spacing w:before="0" w:after="0"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/><w:color w:val="B8B8B8"/><w:sz w:val="16"/></w:rPr><w:t>${xml(mark)}</w:t></w:r></w:p>`;
     const existingFooters = Object.keys(files).filter(path => /^word\/footer[^/]*\.xml$/.test(path));
     for (const path of existingFooters) files[path] = strToU8(strFromU8(files[path]).replace('</w:ftr>', `${paragraph}</w:ftr>`));
     const path = 'word/footerWebSource.xml';
