@@ -223,3 +223,8 @@
  .v0-editor .workspace > .cloud-note { margin-top: 16px; padding: 12px 16px; border-radius: 9px; line-height: 1.5; }
 }
 @media print { .cloud-note { display: none !important; } }
+
+@media screen and (min-width:1024px){
+  .bn-left-navigation .bn-left-actions #openSupplierOrder{background:transparent;color:#becbed}
+  .bn-left-navigation .bn-left-actions #openSupplierOrder:hover{background:#ffffff24;color:#fff}
+}
