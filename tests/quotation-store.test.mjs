@@ -344,8 +344,8 @@ test('editing saved contract details preserves quotation and rejects stale revis
 test('contract-only edit retains immutable R2 payload fields and approval metadata',async()=>{
  const {sql,db}=fixture(),objects=new Map(),bucket={put:async(k,v)=>objects.set(k,String(v)),get:async k=>objects.has(k)?{json:async()=>JSON.parse(objects.get(k))}:null};const store=createQuotationStore(db,bucket);
  try{const saved=await store.save('m',{...quote,rows:[{...quote.rows[0],costPrice:12345}],contractDocument:{contractNumber:'HD-R2',generatedAt:'2026-10-03',details:{depositRate:0,paymentDays:10}}});
- const before=await store.get('m',saved.id);await store.updateContractDetails('m',saved.id,{revision:before.revision,details:{...before.data.contractDocument.details,representativeName:'Đại diện mới'}});const after=await store.get('m',saved.id);
- assert.deepEqual(after.data.rows,before.data.rows);assert.equal(after.approvalStatus,before.approvalStatus);assert.equal(after.approvedAt,before.approvedAt);assert.equal(after.data.contractDocument.generatedAt,before.data.contractDocument.generatedAt);assert.equal(after.data.contractDocument.details.representativeName,'Đại diện mới');
+ const before=await store.get('m',saved.id);await store.updateContractDetails('m',saved.id,{revision:before.revision,details:{...before.data.contractDocument.details,representativeName:'Đại diện mới'},wordEdits:[{index:2,hash:'a'.repeat(64),text:'Điều khoản riêng',bold:true}]});const after=await store.get('m',saved.id);
+ assert.deepEqual(after.data.rows,before.data.rows);assert.equal(after.approvalStatus,before.approvalStatus);assert.equal(after.approvedAt,before.approvedAt);assert.equal(after.data.contractDocument.generatedAt,before.data.contractDocument.generatedAt);assert.equal(after.data.contractDocument.details.representativeName,'Đại diện mới');assert.equal(after.data.contractDocument.wordEdits[0].text,'Điều khoản riêng');
  await assert.rejects(store.updateContractDetails('m',saved.id,{revision:after.revision,details:{depositRate:101,paymentDays:1}}),e=>e.status===400);
  }finally{sql.close();}
 });

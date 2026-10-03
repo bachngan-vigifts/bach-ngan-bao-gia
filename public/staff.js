@@ -26,7 +26,7 @@ BN.install=()=>{
    if(new URL(link.href).searchParams.get('dashboardAction')==='new'){document.getElementById('newQuote')?.click();return;}
    if(await BN.confirmQuoteLeave())location.assign(link.href);
  }));
- const contractScript=document.createElement('script');contractScript.src='/contract-ui.js?v=contract-unit-price-2';contractScript.onload=()=>{const script=document.createElement('script');script.src='/contract-download-ui.js?v=contract-unit-price-2';document.body.append(script);};document.body.append(contractScript);
+ const contractScript=document.createElement('script');contractScript.src='/contract-ui.js?v=contract-unit-price-2';contractScript.onload=()=>{const script=document.createElement('script');script.src='/contract-download-ui.js?v=word-edit-20261003';document.body.append(script);};document.body.append(contractScript);
  const stockScript=document.createElement('script');stockScript.src='/stock-ui.js?v=duplicate-sku-max-1';document.body.append(stockScript);
 const incomingStockScript=document.createElement('script');incomingStockScript.src='/incoming-stock-ui.js?v=notification-target-20261002';document.body.append(incomingStockScript);
  const packingScript=document.createElement('script');packingScript.src='/packing-ui.js?v=minh-long-family-packaging-1';document.body.append(packingScript);
