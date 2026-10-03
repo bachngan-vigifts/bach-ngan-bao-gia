@@ -310,3 +310,21 @@ test('full quotation number searches legacy R2 records without opening payloads'
  const result=await fast.list('a',null,{customer:'bghrc-20261002-1234'});assert.equal(result.records[0].id,saved.id);assert.equal(reads,0);
  assert.equal((await fast.list('c',null,{customer:'BGHRC-20261002-1234'})).records.length,0);sql.close();
 });
+
+test('list cache reuses unchanged summaries, recomputes changed payloads and honors live permissions',async()=>{
+ const {sql,db}=fixture(),objects=new Map();let reads=0;
+ const bucket={put:async(k,v)=>objects.set(k,String(v)),get:async k=>{if(k.startsWith('quotations/'))reads++;const v=objects.get(k);return v===undefined?null:{json:async()=>JSON.parse(v)};}};
+ const store=createQuotationStore(db,bucket);
+ try{
+  const saved=await store.save('a',quote);
+  await store.list('b',null,{summary:'1'});reads=0;
+  assert.equal((await store.list('b',null,{summary:'1'})).records[0].total,108000);assert.equal(reads,0);
+  await store.save('a',{...quote,rows:[{...quote.rows[0],qty:2}]},saved.id,saved.revision);reads=0;
+  assert.equal((await store.list('b',null,{summary:'1'})).records[0].total,216000);assert.equal(reads,1);
+  reads=0;await store.list('b',null,{summary:'1',refresh:'1'});assert.equal(reads,1);
+  sql.prepare("UPDATE staff_members SET position_id='admin' WHERE id='b'").run();
+  assert.equal((await store.list('b',null,{summary:'1'})).records.length,0);
+  sql.prepare('DELETE FROM staff_quotations WHERE id=?').run(saved.id);
+  assert.equal((await store.list('a',null,{summary:'1'})).records.length,0);
+ }finally{sql.close();}
+});
