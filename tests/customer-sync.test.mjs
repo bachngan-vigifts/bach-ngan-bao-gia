@@ -8,7 +8,7 @@ import {searchCustomersWithSapoFallback,syncCustomers,searchCustomers} from '../
 test('customer receiver requires dedicated token; idempotent updates and staff-only search',async()=>{
  const modules=[{type:'ESModule',path:resolve('customer-test.mjs'),contents:"import {staffApi} from './lib/staff-api.mjs';export default {fetch:staffApi};"}];
  for(const file of ['quote-math.js','shipping.js','supplier-progress.js'])modules.push({type:'ESModule',path:resolve('public/'+file),contents:readFileSync('public/'+file,'utf8')});
- for(const name of readdirSync('lib').filter(file=>file.endsWith('.mjs')).map(file=>file.slice(0,-4)))modules.push({type:'ESModule',path:resolve('lib/'+name+'.mjs'),contents:readFileSync('lib/'+name+'.mjs','utf8').replaceAll("'@noble/hashes/","'../node_modules/@noble/hashes/").replaceAll("'@neondatabase/serverless'", "'../node_modules/@neondatabase/serverless/index.mjs'")});
+ for(const name of readdirSync('lib').filter(file=>file.endsWith('.mjs')).map(file=>file.slice(0,-4)))modules.push({type:'ESModule',path:resolve('lib/'+name+'.mjs'),contents:readFileSync('lib/'+name+'.mjs','utf8').replaceAll("'@noble/hashes/","'../node_modules/@noble/hashes/").replaceAll('"@neondatabase/serverless"', '"../node_modules/@neondatabase/serverless/index.mjs"').replaceAll("'@neondatabase/serverless'", "'../node_modules/@neondatabase/serverless/index.mjs'")});
  modules.push({type:'ESModule',path:resolve('node_modules/@neondatabase/serverless/index.mjs'),contents:readFileSync('node_modules/@neondatabase/serverless/index.mjs','utf8')});
  for(const file of readdirSync('node_modules/@noble/hashes').filter(f=>f.endsWith('.js')))modules.push({type:'ESModule',path:resolve('node_modules/@noble/hashes/'+file),contents:readFileSync('node_modules/@noble/hashes/'+file,'utf8')});
  const mf=new Miniflare({modules,modulesRoot:process.cwd(),compatibilityDate:'2026-05-01',compatibilityFlags:['nodejs_compat'],d1Databases:['DB'],r2Buckets:['FILES'],bindings:{SAPO_SYNC_TOKEN:'test-sync'}});
@@ -121,6 +121,10 @@ test('customer search ranks name matches ahead of incidental code matches',async
   ]});
   const result=await searchCustomers(db,'THC');
   assert.equal(result.customers[0].customerCode,'CUZN08188');
+  await syncCustomers(db,{observedAt,customers:Array.from({length:35},(_,i)=>({id:'bulk'+i,name:'Bulk '+i,taxCode:'123456789',createdAt:'2026-10-01T00:00:00Z'}))});
+  assert.equal((await searchCustomers(db,'',true)).customers.length,25);
+  assert.equal((await searchCustomers(db,'',true,true)).customers.length,37);
+  assert.equal((await searchCustomers(db,'Bulk',true,true)).customers.length,35);
  }finally{await mf.dispose();}
 });
 
