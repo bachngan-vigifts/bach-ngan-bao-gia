@@ -74,7 +74,7 @@ export default function QuoteWorkspace({view='home'}:{view?:View}){
  const stock=(p:Row)=>(catalog.warehouses||[]).reduce((sum:number,w:string,i:number)=>['NCC','Hàng chờ về'].includes(w)?sum:sum+(Number(p.stock?.[i])||0),0);
  return <div className="qw-app" data-ui-version="v0-20261001">
   <aside className="bn-left-navigation" aria-label="Menu chính">
-   <a className="bn-left-brand" href="/"><strong>BÁCH NGÂN . VIGIFTS</strong><small>Quản lý báo giá</small></a>
+   <a className="bn-left-brand" href="/"><strong>BÁCH NGÂN · VIGIFTS</strong><small>Quản lý báo giá</small></a>
    <nav aria-label="Điều hướng chính bên trái">{[nav[0],nav[1],{href:'/contracts',title:'HĐKT đã sinh',view:'contracts',Icon:FileText},nav[4],nav[3]].map(n=><a key={n.view} href={n.href} aria-current={view===n.view?'page':undefined}><n.Icon size={16} aria-hidden="true"/><span>{n.title}</span></a>)}
     <details className="bn-left-group" open><summary>Báo giá</summary><div className="bn-left-actions"><a href="/quote?dashboardAction=new"><Plus size={16}/>Tạo báo giá mới</a><a href="/quotes?status=pending">Báo giá chờ duyệt</a><button type="button" onClick={()=>setRevision(r=>r+1)} disabled={busy}><RefreshCw size={16}/>Làm mới dữ liệu</button></div></details>
     <details className="bn-left-group"><summary>Sản phẩm &amp; NCC</summary><div className="bn-left-actions"><a href="/quote?dashboardAction=incoming">Hàng sắp về</a><a href="/supplier.html">Đơn nhà cung cấp</a></div></details>

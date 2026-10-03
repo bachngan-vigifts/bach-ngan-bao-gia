@@ -4,7 +4,7 @@ import {selectContracts} from '@/lib/crm-contract-overview.mjs';
 import {revalidatedList} from '@/lib/list-session-cache.mjs';
 import './contract-overview.css';
 type Row=Record<string,any>;
-const states=[['all','Tất cả'],['approved','Đã duyệt'],['pending','Chưa duyệt'],['settled','Đã thanh lý'],['other','Trạng thái khác']];
+const states=[['all','Tất cả'],['approved','Đã duyệt'],['pending','Đợi duyệt'],['settled','Đã thanh lý'],['other','Trạng thái khác']];
 export default function ContractOverview({user,revision}:{user:Row,revision:number}){
  const [data,setData]=useState<Row|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(true),[limit,setLimit]=useState(8);
  const [filters,setFilters]=useState({status:'all',employee:'',customer:'',product:'',sort:'status'});
