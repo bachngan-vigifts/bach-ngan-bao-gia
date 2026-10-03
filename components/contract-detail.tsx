@@ -3,14 +3,15 @@ import {useEffect,useState} from 'react';
 import {ArrowLeft,Download,Printer,Copy,ExternalLink,Building2,Truck,CreditCard,Package,FileText,Phone,Mail,Check,CalendarDays} from 'lucide-react';
 import {quotePayloadFromData,applyDetailsToQuote} from '@/lib/contract-detail.mjs';
 import './contract-detail.css';
+import {loadExport} from '@/lib/contract-export-client';
+import ContractDocumentEditor from './contract-document-editor';
 type Row=Record<string,any>;
 const money=(n:number)=>Number(n||0).toLocaleString('vi-VN',{maximumFractionDigits:0})+' ₫';
 const date=(s:string)=>s&&!Number.isNaN(Date.parse(s))?new Date(s).toLocaleDateString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'}):'Chưa ghi nhận';
 const value=(v:any)=>v===null||v===undefined||v===''?'Chưa ghi nhận':String(v);
-let exportReady:Promise<void>|null=null;
-function loadExport(){return exportReady||(exportReady=(async()=>{for(const src of ['/fflate.min.js','/hrc-pdf.js','/contract-document.js'])await new Promise<void>((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=()=>resolve();s.onerror=()=>{s.remove();reject(Error('Chưa tải được công cụ xuất hồ sơ. Vui lòng thử lại.'));};document.head.appendChild(s);});})().catch(e=>{exportReady=null;throw e;}));}
 function Field({label,children}:{label:string,children:any}){return <div className="cd-field"><dt>{label}</dt><dd>{value(children)}</dd></div>;}
 export default function ContractDetail({revision}:{revision:number}){
+ const [editor,setEditor]=useState(false);
  const [record,setRecord]=useState<Row|null>(null),[busy,setBusy]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState(''),[downloading,setDownloading]=useState(false),[query,setQuery]=useState(''),[id,setId]=useState('');
  useEffect(()=>{const controller=new AbortController();let active=true;const selected=new URLSearchParams(location.search).get('quoteId')||'';setId(selected);setBusy(true);setError('');setRecord(null);
  (async()=>{if(!selected)throw Error('Thiếu mã hợp đồng. Vui lòng chọn lại từ danh sách.');const r=await fetch('/api/staff/quotes/'+encodeURIComponent(selected),{signal:controller.signal,cache:'no-store'});const d=await r.json();if(!r.ok)throw Error(d.error||'Không tải được hợp đồng.');if(!d.data?.contractDocument?.contractNumber)throw Error('Báo giá này chưa có HĐKT đã sinh.');if(active)setRecord(d);})().catch(e=>{if(active&&e.name!=='AbortError')setError(e.message);}).finally(()=>{if(active)setBusy(false);});return()=>{active=false;controller.abort();};},[revision]);
@@ -22,9 +23,9 @@ export default function ContractDetail({revision}:{revision:number}){
  const rate=Number(details.depositRate),validRate=details.depositRate!==undefined&&details.depositRate!==null&&Number.isFinite(rate)&&rate>=0&&rate<=100,deposit=validRate?Math.round(total*rate/100):null;
  const norm=(s:any)=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[đĐ]/g,'d').toLowerCase();
  const products=payload.items.filter((p:Row)=>norm(p.name+' '+p.sku).includes(norm(query)));
- return <div className="cd-page"><a className="cd-back" href="/contracts"><ArrowLeft size={16}/> HĐKT đã sinh</a>
+ return <div className="cd-page">{editor&&<ContractDocumentEditor record={record} onSaved={setRecord} onClose={()=>setEditor(false)}/>}<a className="cd-back" href="/contracts"><ArrowLeft size={16}/> HĐKT đã sinh</a>
  <section className="cd-hero"><div className="cd-hero-top"><span className="cd-eyebrow"><FileText size={16}/> HỒ SƠ HỢP ĐỒNG KINH TẾ</span><span className="cd-saved"><Check size={14}/> Đã sinh HĐKT</span></div><h2>{doc.contractNumber}</h2><p className="cd-customer">{details.name||d.customer||'Chưa ghi nhận khách hàng'}</p><div className="cd-meta"><span><CalendarDays size={14}/> Ngày sinh: {date(doc.generatedAt)}</span><span>Phụ trách: {d.owner||record.creatorName||'Chưa ghi nhận'}</span><span>Báo giá {record.approvalStatus==='approved'?'đã duyệt':'đợi duyệt'}</span></div>
- <div className="cd-actions"><button className="cd-primary" onClick={download} disabled={downloading}><Download size={17}/>{downloading?'Đang tạo hồ sơ…':'Tải bộ hồ sơ'}</button><button onClick={()=>window.print()}><Printer size={17}/> In thông tin</button><button onClick={copy}><Copy size={17}/> Sao chép số HĐ</button><a href={'/quote?quoteId='+encodeURIComponent(id)}><ExternalLink size={17}/> {record.canEdit?'Mở / chỉnh báo giá gốc':'Xem báo giá gốc'}</a></div></section>
+ <div className="cd-actions"><button className="cd-primary" onClick={download} disabled={downloading}><Download size={17}/>{downloading?'Đang tạo hồ sơ…':'Tải bộ hồ sơ'}</button><button onClick={()=>setEditor(true)}><Printer size={17}/> In HĐKT</button><button onClick={()=>setEditor(true)}><FileText size={17}/> Xem & chỉnh HĐKT</button><button onClick={copy}><Copy size={17}/> Sao chép số HĐ</button><a href={'/quote?quoteId='+encodeURIComponent(id)}><ExternalLink size={17}/> {record.canEdit?'Mở / chỉnh báo giá gốc':'Xem báo giá gốc'}</a></div></section>
  {notice&&<p className="cd-notice" role="status">{notice}</p>}
  <div className="cd-metrics"><div><span>Giá trị hợp đồng</span><strong>{money(total)}</strong><small>Đã bao gồm VAT</small></div><div><span>Tạm ứng theo điều khoản</span><strong>{deposit===null?'Chưa ghi nhận':money(deposit)}</strong><small>{validRate?rate+'% giá trị hợp đồng':'Chưa có tỷ lệ tạm ứng'}</small></div><div><span>Phần còn lại theo điều khoản</span><strong>{deposit===null?'Chưa ghi nhận':money(total-deposit)}</strong><small>Không phải số dư công nợ thực tế</small></div></div>
  <nav className="cd-jump" aria-label="Các phần của hợp đồng"><a href="#cd-customer">Khách hàng</a><a href="#cd-products">Sản phẩm ({payload.items.length})</a><a href="#cd-terms">Điều khoản</a><a href="#cd-files">Hồ sơ</a></nav>

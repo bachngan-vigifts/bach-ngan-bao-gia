@@ -328,3 +328,24 @@ test('list cache reuses unchanged summaries, recomputes changed payloads and hon
   assert.equal((await store.list('a',null,{summary:'1'})).records.length,0);
  }finally{sql.close();}
 });
+
+test('editing saved contract details preserves quotation and rejects stale revisions',async()=>{
+ const {sql,store}=fixture();try{
+ const details={name:'Bên mua',taxCode:'1800',representativeName:'A',depositRate:30,paymentDays:15};
+ const saved=await store.save('a',{...quote,contractDocument:{contractNumber:'HD-TEST',quoteNo:quote.quoteNo,generatedAt:'2026-10-03',details}});
+ const loaded=await store.get('a',saved.id);const next=structuredClone(loaded.data);next.contractDocument.details.deliveryAddress='Kho mới';next.contractDocument.details.depositRate=50;
+ const result=await store.updateContractDetails('a',saved.id,{details:next.contractDocument.details,revision:loaded.revision});
+ const actual=await store.get('a',saved.id);assert.equal(actual.data.contractDocument.details.deliveryAddress,'Kho mới');assert.equal(actual.data.contractDocument.details.depositRate,50);assert.equal(actual.data.contractDocument.contractNumber,'HD-TEST');assert.deepEqual(actual.data.rows,loaded.data.rows);
+ await assert.rejects(store.updateContractDetails('a',saved.id,{details:next.contractDocument.details,revision:loaded.revision}),e=>e.status===409);assert.equal(actual.revision,result.revision);
+ await assert.rejects(store.updateContractDetails('c',saved.id,{details:next.contractDocument.details,revision:actual.revision}),e=>e.status===403);
+ }finally{sql.close();}
+});
+
+test('contract-only edit retains immutable R2 payload fields and approval metadata',async()=>{
+ const {sql,db}=fixture(),objects=new Map(),bucket={put:async(k,v)=>objects.set(k,String(v)),get:async k=>objects.has(k)?{json:async()=>JSON.parse(objects.get(k))}:null};const store=createQuotationStore(db,bucket);
+ try{const saved=await store.save('m',{...quote,rows:[{...quote.rows[0],costPrice:12345}],contractDocument:{contractNumber:'HD-R2',generatedAt:'2026-10-03',details:{depositRate:0,paymentDays:10}}});
+ const before=await store.get('m',saved.id);await store.updateContractDetails('m',saved.id,{revision:before.revision,details:{...before.data.contractDocument.details,representativeName:'Đại diện mới'}});const after=await store.get('m',saved.id);
+ assert.deepEqual(after.data.rows,before.data.rows);assert.equal(after.approvalStatus,before.approvalStatus);assert.equal(after.approvedAt,before.approvedAt);assert.equal(after.data.contractDocument.generatedAt,before.data.contractDocument.generatedAt);assert.equal(after.data.contractDocument.details.representativeName,'Đại diện mới');
+ await assert.rejects(store.updateContractDetails('m',saved.id,{revision:after.revision,details:{depositRate:101,paymentDays:1}}),e=>e.status===400);
+ }finally{sql.close();}
+});
