@@ -2,6 +2,7 @@
 import {useEffect,useState,type ReactNode} from 'react';
 import {LayoutDashboard,FileText,Plus,Users,Package,Search,ChevronRight,Building2,Phone,Mail,MoreHorizontal,RefreshCw,LogOut} from 'lucide-react';
 import './quote-workspace.css';
+import {dashboardCached,clearDashboardCache} from '@/lib/dashboard-session-cache.mjs';
 type Row=Record<string,any>;
 type View='home'|'quotes'|'contracts'|'customers'|'products';
 const nav=[{href:'/',title:'Tổng quan',view:'home',Icon:LayoutDashboard},{href:'/quotes',title:'Báo giá',view:'quotes',Icon:FileText},{href:'/quote?dashboardAction=new',title:'Tạo mới',view:'new',Icon:Plus},{href:'/customers',title:'Khách hàng',view:'customers',Icon:Users},{href:'/products',title:'Sản phẩm',view:'products',Icon:Package}];
@@ -11,7 +12,7 @@ const normalize=(s:any)=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]
 const date=(s:string)=>s?new Date(s).toLocaleDateString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'}):'';
 const status=(q:Row)=>q.careStatus==='lost'?'lost':q.careStatus==='closed'?'won':q.approvalStatus==='approved'?'approved':'pending';
 const labels:Record<string,string>={pending:'Chờ duyệt',approved:'Đã duyệt',won:'Đã chốt',lost:'Không chốt'};
-async function api(path:string,signal?:AbortSignal){const r=await fetch('/api/staff'+path,{cache:'no-store',signal});const d=await r.json();if(r.status===401)throw Error('Vui lòng đăng nhập để xem dữ liệu.');if(!r.ok)throw Error(d.error||'Chưa tải được dữ liệu. Vui lòng thử lại.');return d;}
+async function api(path:string,signal?:AbortSignal){const r=await fetch('/api/staff'+path,{cache:'no-store',signal});const d=await r.json();if(r.status===401){clearDashboardCache(window.sessionStorage);throw Error('Vui lòng đăng nhập để xem dữ liệu.');}if(!r.ok)throw Error(d.error||'Chưa tải được dữ liệu. Vui lòng thử lại.');return d;}
 function QuoteList({rows,empty='Chưa có báo giá nào',contracts=false}:{rows:Row[],empty?:string,contracts?:boolean}){
  if(!rows.length)return <p className="qw-empty">{empty}</p>;
  return <ul className="qw-list">{rows.map(q=><li key={q.id}><a href={'/quote?quoteId='+encodeURIComponent(q.id)} className="qw-row"><div className="qw-row-main"><strong>{contracts?q.contractNumber:(q.customer||'Chưa nhập khách hàng')}</strong>{contracts&&<span>{q.customer||'Chưa nhập khách hàng'}</span>}<small><span className="qw-code">{q.quoteNo}</span><span>·</span><span>{date(q.updatedAt)}</span>{q.itemCount!=null&&<><span>·</span><span>{q.itemCount} SP</span></>}</small></div><div className="qw-row-value">{q.total!=null&&<strong>{money(q.total)}</strong>}<span className={'qw-badge '+status(q)}>{labels[status(q)]}</span></div><ChevronRight size={16} aria-hidden="true"/></a></li>)}</ul>;
@@ -31,22 +32,36 @@ export default function QuoteWorkspace({view='home'}:{view?:View}){
   (async()=>{const me=await api('/me',controller.signal);if(!active)return;if(me.user?.role==='supplier'){location.replace('/supplier.html');return;}setUser(me.user);
    if(view==='customers'){const d=await api('/customers?sort=created_desc&q='+encodeURIComponent(submittedQuery),controller.signal);if(active)setCustomers(d.customers||[]);}
    else if(view==='products'){const d=await api('/catalog',controller.signal);if(active)setCatalog(d);}
-   else{const d=await api(quotePath(),controller.signal);if(!active)return;setRows(d.records||[]);setCursor(d.nextCursor||'');
-    if(view==='home'){
-     setProfit(null);setProfitError('');setDelivery(null);setDeliveryError('');
-     api('/quotes/delivery-summary',controller.signal).then(d=>{if(active)setDelivery(d);}).catch(e=>{if(active&&e.name!=='AbortError')setDeliveryError(e.message);});
-     if(me.user?.role==='manager'){api('/quotes/profit-summary',controller.signal).then(d=>{if(active)setProfit(d);}).catch(e=>{if(active&&e.name!=='AbortError')setProfitError(e.message);});}
-
-     const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Ho_Chi_Minh',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const part=(key:string)=>parts.find(p=>p.type===key)?.value||'';const today=part('year')+'-'+part('month')+'-'+part('day');
+   else if(view==='home'){
+    const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Ho_Chi_Minh',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+    const scope=JSON.stringify([me.user.id,me.user.role,me.user.position,today]);
+    const storage=(()=>{try{return window.sessionStorage;}catch{return null;}})();
+    if(revision>0)clearDashboardCache(storage);
+    const homeApi=(path:string)=>dashboardCached(storage,scope,path,()=>api(path,controller.signal),{force:revision>0});
+    setProfitError('');setDeliveryError('');
+    const recent=homeApi(quotePath()).then(d=>{if(active){setRows(d.records||[]);setCursor(d.nextCursor||'');}});
+    const deliveryTask=homeApi('/quotes/delivery-summary').then(d=>{if(active)setDelivery(d);}).catch(e=>{if(active&&e.name!=='AbortError')setDeliveryError(e.message);});
+    const profitTask=me.user.role==='manager'?homeApi('/quotes/profit-summary').then(d=>{if(active)setProfit(d);}).catch(e=>{if(active&&e.name!=='AbortError')setProfitError(e.message);}):Promise.resolve();
+    // The monthly pagination and independent counters start together. Reports
+    // render separately instead of waiting for every monthly page to finish.
+    const monthlyTask=dashboardCached(storage,scope,'monthly:'+today,async()=>{
      let next='',monthly:Row[]=[];do{const m=await api('/quotes?summary=1&from='+today.slice(0,7)+'-01&to='+today+(next?'&before='+encodeURIComponent(next):''),controller.signal);monthly.push(...m.records);next=m.nextCursor||'';}while(next&&active);
-     const results=await Promise.allSettled([api('/quotes/pending-count',controller.signal),api('/closed-customers',controller.signal),api('/incoming-stock',controller.signal)]);
-     if(active)setStats({monthCount:monthly.length,monthTotal:monthly.reduce((s,q)=>s+(q.total||0),0),partialTotal:monthly.some(q=>q.total==null),pending:results[0].status==='fulfilled'?results[0].value.count:null,closed:results[1].status==='fulfilled'?results[1].value.count:null,incoming:results[2].status==='fulfilled'?results[2].value.shipments?.length:null});
-    }
-   }
+     if(!active)throw new DOMException('Aborted','AbortError');
+     return {monthCount:monthly.length,monthTotal:monthly.reduce((s,q)=>s+(q.total||0),0),partialTotal:monthly.some(q=>q.total==null)};
+    },{force:revision>0});
+    const statsTask=Promise.allSettled([monthlyTask,homeApi('/quotes/pending-count'),homeApi('/closed-customers'),homeApi('/incoming-stock')]).then(results=>{
+     if(!active)return;
+     const [month,pending,closed,incoming]=results;
+     setStats({... (month.status==='fulfilled'?month.value:{monthCount:null,monthTotal:null}),pending:pending.status==='fulfilled'?pending.value.count:null,closed:closed.status==='fulfilled'?closed.value.count:null,incoming:incoming.status==='fulfilled'?incoming.value.shipments?.length:null});
+     if(results.some(r=>r.status==='rejected'))setError('Một số số liệu chưa tải được. Vui lòng làm mới dữ liệu.');
+    });
+    await Promise.all([recent,deliveryTask,profitTask,statsTask]);
+   }else{const d=await api(quotePath(),controller.signal);if(!active)return;setRows(d.records||[]);setCursor(d.nextCursor||'');}
+
   })().catch(e=>{if(active&&e.name!=='AbortError')setError(e.message);}).finally(()=>{if(active)setBusy(false);});return()=>{active=false;controller.abort();};
  },[view,submittedQuery,revision]);
  async function loadMore(){setLoadingMore(true);try{const d=await api(quotePath(cursor));setRows(r=>[...r,...d.records]);setCursor(d.nextCursor||'');}catch(e:any){setError(e.message);}finally{setLoadingMore(false);}}
- async function logout(){setBusy(true);try{const r=await fetch('/api/staff/logout',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});if(!r.ok&&r.status!==401)throw Error('Chưa đăng xuất được. Vui lòng thử lại.');if(user)sessionStorage.removeItem('bn-draft:'+user.id);location.replace('/login.html');}catch(e:any){setError(e.message);setBusy(false);}}
+ async function logout(){setBusy(true);try{const r=await fetch('/api/staff/logout',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});if(!r.ok&&r.status!==401)throw Error('Chưa đăng xuất được. Vui lòng thử lại.');clearDashboardCache(window.sessionStorage);if(user)sessionStorage.removeItem('bn-draft:'+user.id);location.replace('/login.html');}catch(e:any){setError(e.message);setBusy(false);}}
  const filteredQuotes=rows.filter(q=>filter==='all'||status(q)===filter);
  const products=(catalog.products||[]).filter((p:Row)=>normalize([p.name,p.sku,p.brand].join(' ')).includes(normalize(query)));
  const stock=(p:Row)=>(catalog.warehouses||[]).reduce((sum:number,w:string,i:number)=>['NCC','Hàng chờ về'].includes(w)?sum:sum+(Number(p.stock?.[i])||0),0);
@@ -65,7 +80,7 @@ export default function QuoteWorkspace({view='home'}:{view?:View}){
   <main className="qw-main"><div className="qw-page-heading"><div>{view==='home'&&<p>Xin chào,</p>}<h1>{view==='home'?(user?.name||'Bách Ngân – VIGIFTS'):view==='quotes'?'Báo giá':view==='contracts'?'HĐKT đã sinh':view==='customers'?'Khách hàng':'Sản phẩm'}</h1></div><button className="qw-icon" onClick={()=>setRevision(r=>r+1)} disabled={busy} aria-label="Làm mới dữ liệu"><RefreshCw size={18} className={busy?'qw-spin':''}/></button></div>
   {error&&<div className="qw-error" role="alert">{error}{!user&&<a href="/login.html">Đăng nhập</a>}</div>}
   {busy&&!user?<div className="qw-empty" role="status">Đang kiểm tra phiên đăng nhập…</div>:<>
-   {view==='home'&&<>{user?.role==='manager'&&<section className="qw-profit-card" aria-label="Báo cáo lợi nhuận"><div className="qw-section-title"><h2>Lợi nhuận tạm tính · HĐKT đã sinh</h2></div><p className="qw-muted">Theo ngày sinh HĐKT · Giờ Việt Nam · Tuần bắt đầu thứ Hai</p>{profitError?<p className="qw-error" role="alert">{profitError}</p>:<div className="qw-kpis">{[['day','Lợi nhuận hôm nay'],['week','Lợi nhuận tuần này'],['month','Lợi nhuận tháng này'],['year','Lợi nhuận năm này']].map(([key,label])=>{const p=profit?.periods?.[key];return <div className="qw-kpi qw-profit-kpi" key={key}><p>{label}</p><strong title={p?money(p.profit):undefined}>{p?money(p.profit):'—'}</strong><small>{p?p.count+' báo giá đã sinh HĐKT':'Đang tải…'}</small>{p?.incompleteCount>0&&<small className="qw-profit-note">{p.incompleteCount} báo giá cần kiểm tra chi phí</small>}{p?.legacyDateCount>0&&<small className="qw-profit-note">{p.legacyDateCount} HĐKT cũ dùng ngày báo giá</small>}</div>;})}</div>}<p className="qw-profit-footnote">Doanh thu trước VAT − giá nhập − phí in gia công − cước người gửi trả.</p></section>}<div className="qw-kpis">{[
+   {view==='home'&&<><p className="qw-muted">Số liệu được lưu tạm tối đa 2 phút. Chọn Làm mới dữ liệu để lấy số mới nhất.</p>{user?.role==='manager'&&<section className="qw-profit-card" aria-label="Báo cáo lợi nhuận"><div className="qw-section-title"><h2>Lợi nhuận tạm tính · HĐKT đã sinh</h2></div><p className="qw-muted">Theo ngày sinh HĐKT · Giờ Việt Nam · Tuần bắt đầu thứ Hai</p>{profitError?<p className="qw-error" role="alert">{profitError}</p>:<div className="qw-kpis">{[['day','Lợi nhuận hôm nay'],['week','Lợi nhuận tuần này'],['month','Lợi nhuận tháng này'],['year','Lợi nhuận năm này']].map(([key,label])=>{const p=profit?.periods?.[key];return <div className="qw-kpi qw-profit-kpi" key={key}><p>{label}</p><strong title={p?money(p.profit):undefined}>{p?money(p.profit):'—'}</strong><small>{p?p.count+' báo giá đã sinh HĐKT':'Đang tải…'}</small>{p?.incompleteCount>0&&<small className="qw-profit-note">{p.incompleteCount} báo giá cần kiểm tra chi phí</small>}{p?.legacyDateCount>0&&<small className="qw-profit-note">{p.legacyDateCount} HĐKT cũ dùng ngày báo giá</small>}</div>;})}</div>}<p className="qw-profit-footnote">Doanh thu trước VAT − giá nhập − phí in gia công − cước người gửi trả.</p></section>}<div className="qw-kpis">{[
     {label:'Báo giá tháng này',value:stats.monthCount,hint:stats.partialTotal?'Một số báo giá chưa tải được số tiền':stats.monthTotal!=null?compact(stats.monthTotal):busy?'Đang tải…':'Chưa tải được dữ liệu',href:'/quotes'},
     {label:'Chờ duyệt',value:stats.pending,hint:'Báo giá cần phê duyệt',href:'/quotes?status=pending'},
     {label:'Khách đã chốt HĐKT',value:stats.closed,hint:'Đã ghi nhận qua Sapo / CRM',href:'/crm'},
