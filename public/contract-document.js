@@ -169,7 +169,8 @@ globalThis.ContractDocument = (() => {
     files[path] = strToU8(buildXml(strFromU8(files[path]), filledQuote, contractNumber));
     addWebSourceFooter(files, quote, documentType);
     const output=zipSync(files, {level: 6});
-    if(documentType==='HDKT'&&quote.contract_word_edits?.length){if(!globalThis.ContractWordEdit)throw new Error('Chưa tải công cụ chỉnh Word.');return globalThis.ContractWordEdit.apply(output,quote.contract_word_edits);}
+    const edits=documentType==='HDKT'?quote.contract_word_edits:quote.contract_document_edits?.[documentType];
+    if(edits?.length){if(!globalThis.ContractWordEdit)throw new Error('Chưa tải công cụ chỉnh Word.');return globalThis.ContractWordEdit.apply(output,edits);}
     return output;
   }
   async function buildPack({quote, contractNumber, details, templateFiles}) {
@@ -189,5 +190,5 @@ globalThis.ContractDocument = (() => {
     link.href = URL.createObjectURL(blob); link.download = `${archive.folder}.zip`; link.click();
     setTimeout(() => URL.revokeObjectURL(link.href), 1000);
   }
-  return {build, buildPack, download, paymentDetails, contractUnitPrice};
+  return {build, buildPack, download, paymentDetails, contractUnitPrice, templatesFor};
 })();
