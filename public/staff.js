@@ -30,7 +30,7 @@ BN.install=()=>{
  const stockScript=document.createElement('script');stockScript.src='/stock-ui.js?v=duplicate-sku-max-1';document.body.append(stockScript);
 const incomingStockScript=document.createElement('script');incomingStockScript.src='/incoming-stock-ui.js?v=notification-target-20261002';document.body.append(incomingStockScript);
  const packingScript=document.createElement('script');packingScript.src='/packing-ui.js?v=minh-long-family-packaging-1';document.body.append(packingScript);
- const customerScript=document.createElement('script');customerScript.src='/customers.js?v=customer-autocomplete-2';document.body.append(customerScript);
+ const customerScript=document.createElement('script');customerScript.src='/customers.js?v=newest-first-20261003';document.body.append(customerScript);
  const customerDashboardScript=document.createElement('script');customerDashboardScript.src='/customer-dashboard.js?v=customer-dashboard-appsheet-group-1';customerDashboardScript.onload=()=>{if(new URLSearchParams(location.search).get('dashboardAction')==='customers')BN.openCustomerDashboard?.();};document.body.append(customerDashboardScript);
  const productDashboardScript=document.createElement('script');productDashboardScript.src='/product-dashboard.js?v=customer-care-2';productDashboardScript.onload=()=>{if(new URLSearchParams(location.search).get('dashboardAction')==='products')BN.openProductDashboard?.();};document.body.append(productDashboardScript);
  const lalamoveScript=document.createElement('script');lalamoveScript.src='/lalamove-ui.js?v=lalamove-history-20-3';document.body.append(lalamoveScript);
