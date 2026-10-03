@@ -240,3 +240,5 @@ body.v0-editor{--navy:#1d3562;--blue:#1d3562;--ink:#17202e;--muted:#656b75;--lin
     box-shadow:0 4px 10px #1d35622b;
   }
 }
+body.v0-editor #headerCreateContract{background:#15803d;border-color:#15803d;color:#fff}
+body.v0-editor #headerCreateContract:hover:not(:disabled){background:#166534;border-color:#166534}
