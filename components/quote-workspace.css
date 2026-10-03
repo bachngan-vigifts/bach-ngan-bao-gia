@@ -56,3 +56,16 @@
  .qw-mobile-nav a[aria-current=page]{color:var(--qw-primary)}
  .qw-mobile-create>span{width:40px;height:40px;border-radius:50%;box-shadow:0 4px 10px #1d35622b}
 }
+
+/* Mobile polish v0 - chỉ áp dụng cho điện thoại, không ảnh hưởng giao diện máy tính */
+@media(max-width:767px){
+.qw-profit-kpi{min-height:0}
+.qw-profit-kpi strong{font-size:17px;white-space:nowrap;overflow-wrap:normal;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.qw-row-main>strong{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.qw-row-value{max-width:none;flex-shrink:0}
+.qw-row-value strong{white-space:nowrap}
+.qw-row small{gap:2px 6px}
+.qw-contact{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px}
+.qw-contact a{min-width:0;min-height:40px;padding:6px 10px;font-size:13px}
+.qw-contact a:only-child{grid-column:1/-1}
+}
