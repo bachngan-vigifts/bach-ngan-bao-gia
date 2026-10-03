@@ -165,7 +165,7 @@ globalThis.ContractDocument = (() => {
     if (!contractNumber) throw new Error('Thiếu số HĐKT.');
     const files = unzipSync(new Uint8Array(templateBytes)), path = 'word/document.xml';
     if (!files[path]) throw new Error('Mẫu HĐKT không hợp lệ.');
-    const filledQuote = {...quote, contractDetails: details || {}, customer: {...(quote.customer || {}), contact_name: details?.representativeName || quote.customer?.contact_name || quote.customer?.contact || ''}, contractTitle: details?.representativeTitle || ''};
+    const filledQuote = {...quote,...(documentType==='HDKT'&&details?.signedDate?{quote_date:details.signedDate}:{}), contractDetails: details || {}, customer: {...(quote.customer || {}), contact_name: details?.representativeName || quote.customer?.contact_name || quote.customer?.contact || ''}, contractTitle: details?.representativeTitle || ''};
     files[path] = strToU8(buildXml(strFromU8(files[path]), filledQuote, contractNumber));
     addWebSourceFooter(files, quote, documentType);
     const output=zipSync(files, {level: 6});

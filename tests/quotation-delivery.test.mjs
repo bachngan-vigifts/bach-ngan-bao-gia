@@ -14,3 +14,16 @@ test('quote date fallback, CRM success, all-done and lost contracts',()=>{
 test('delivery endpoint rejects supplier and inactive viewer before querying',async()=>{
  await assert.rejects(()=>quotationDeliverySummary(null,null,{role:'supplier',active:1}),e=>e.status===403);await assert.rejects(()=>quotationDeliverySummary(null,null,{role:'employee',active:0}),e=>e.status===403);
 });
+
+test('contract terms resolve literal dates, relative calendar days and flag missing anchors',async()=>{
+ const {contractDeliveryDate,validDeliveryDate}=await import('../lib/contract-delivery-date.mjs');
+ const data=terms=>({contractDocument:{details:{deliveryTime:terms}}});
+ assert.equal(validDeliveryDate('31/02/2026'),'');assert.equal(validDeliveryDate('5/10/2026'),'2026-10-05');
+ assert.equal(contractDeliveryDate(data('Giao hàng ngày 05/10/2026')).date,'2026-10-05');
+ assert.equal(contractDeliveryDate(data('10 ngày kể từ ngày ký 01/10/2026')).date,'2026-10-11');
+ const relative=data('10-15 ngày sau khi nhận tạm ứng');assert.equal(contractDeliveryDate(relative).date,'');relative.contractDocument.details.depositReceivedDate='2026-10-01';assert.equal(contractDeliveryDate(relative).date,'2026-10-16');
+ assert.equal(contractDeliveryDate(data('10 ngày làm việc sau khi ký hợp đồng')).date,'');
+ const edited=data('Ngày 02/10/2026');edited.contractDocument.wordEdits=[{text:'Thời gian giao hàng: 06/10/2026'}];assert.equal(contractDeliveryDate(edited).date,'2026-10-06');
+ assert.equal(contractDeliveryDate(edited,{deliveryDate:'2026-10-07'}).date,'2026-10-07');
+ const summary=deliveryAlerts([record([{qty:1}],{contractDocument:{contractNumber:'HD2',details:{deliveryTime:'Giao ngày 03/10/2026'}}})],'2026-10-03T00:00:00Z');assert.equal(summary.contracts[0].deliveryDate,'2026-10-03');
+});
