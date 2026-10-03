@@ -1,0 +1,128 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync,readdirSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {resolve} from 'node:path';
+import {Miniflare} from 'miniflare';
+import {initialStaff} from '../lib/initial-staff.mjs';
+
+test('real Workers/D1 authentication, lifecycle and quotation API enforce membership', {timeout:120000}, async()=>{
+ const origin='https://staff.test';
+ const secrets=Object.fromEntries(initialStaff.map((m,i)=>[m.id,{token:(i+1).toString(16).padStart(64,'0')} ]));
+ const seeds=Object.fromEntries(Object.entries(secrets).map(([id,s])=>[id,{hash:createHash('sha256').update(s.token).digest('hex'),expires:Math.floor(Date.now()/1000)+600}]));
+ const modules=[{type:'ESModule',path:resolve('test-entry.mjs'),contents:"import {staffApi} from './lib/staff-api.mjs'; export default {fetch:staffApi};"},...readdirSync('lib').filter(name=>name.endsWith('.mjs')).map(name=>name.slice(0,-4)).map(name=>({type:'ESModule',path:resolve('lib/'+name+'.mjs'),contents:readFileSync(resolve('lib/'+name+'.mjs'),'utf8').replaceAll("'@noble/hashes/", "'../node_modules/@noble/hashes/").replaceAll("'@neondatabase/serverless'", "'../node_modules/@neondatabase/serverless/index.mjs'")}))];
+ modules.push({type:'ESModule',path:resolve('node_modules/@neondatabase/serverless/index.mjs'),contents:readFileSync('node_modules/@neondatabase/serverless/index.mjs','utf8')});
+ for(const file of readdirSync('node_modules/@noble/hashes').filter(f=>f.endsWith('.js')))modules.push({type:'ESModule',path:resolve('node_modules/@noble/hashes/'+file),contents:readFileSync('node_modules/@noble/hashes/'+file,'utf8')});
+
+ for(const file of ['quote-math.js','shipping.js','supplier-progress.js'])modules.push({type:'ESModule',path:resolve('public/'+file),contents:readFileSync('public/'+file,'utf8')});
+ const mf=new Miniflare({modules,modulesRoot:process.cwd(),compatibilityDate:'2026-05-01',compatibilityFlags:['nodejs_compat'],d1Databases:['DB'],r2Buckets:['FILES'],bindings:{STAFF_ACTIVATION_SEEDS:JSON.stringify(seeds),BACKUP_TOKEN:'test-backup-key',SAPO_STATUS_TOKEN:'test-sapo-status-token',CONTRACT_STATUS_TOKEN:'test-contract-status-token'}});
+ try {
+ const db=await mf.getD1Database('DB');
+ for(const file of readdirSync('drizzle').filter(f=>f.endsWith('.sql')).sort())for(const sql of readFileSync(new URL('../drizzle/'+file,import.meta.url),'utf8').split('--> statement-breakpoint'))if(sql.trim())await db.prepare(sql).run();
+ const call=async(path,method='GET',body,cookie='',source=origin)=>{
+  const r=await mf.dispatchFetch(origin+'/api/staff'+path,{method,headers:{Origin:source,'Content-Type':'application/json',Cookie:cookie},body:body?JSON.stringify(body):undefined});
+  return {status:r.status,data:await r.json(),cookie:r.headers.get('Set-Cookie')};
+ };
+ const sapoCallback=async(body,authorization='Bearer test-sapo-status-token')=>{
+  const r=await mf.dispatchFetch(origin+'/api/staff/integrations/sapo/status',{method:'POST',headers:{'Content-Type':'application/json',Authorization:authorization},body:JSON.stringify(body)});
+  return {status:r.status,data:await r.json()};
+ };
+ const contractCallback=async(body,authorization='Bearer test-contract-status-token')=>{const r=await mf.dispatchFetch(origin+'/api/staff/integrations/contract/status',{method:'POST',headers:{'Content-Type':'application/json',Authorization:authorization},body:JSON.stringify(body)});return {status:r.status,data:await r.json()};};
+ assert.equal((await call('/me')).status,401);
+ const callback=await sapoCallback({quote_number:'BGTEST-CALLBACK',status:'created',sapo_order_id:1070212469,sapo_order_code:'SO-1070212469',customer_name:'Khách thử nghiệm',message:'Đã tạo đơn'});
+ assert.equal(callback.status,200);assert.equal(callback.data.status.status,'created');
+ assert.deepEqual(await db.prepare('SELECT quote_number,status,sapo_order_id,sapo_order_code,customer_name,message FROM sapo_order_statuses WHERE quote_number=?').bind('BGTEST-CALLBACK').first(),{quote_number:'BGTEST-CALLBACK',status:'created',sapo_order_id:'1070212469',sapo_order_code:'SO-1070212469',customer_name:'Khách thử nghiệm',message:'Đã tạo đơn'});
+ assert.equal((await sapoCallback({quote:'BGTEST-CALLBACK',action:'existing',message:'Đơn đã tồn tại'})).status,200);
+ assert.equal((await db.prepare('SELECT status,message FROM sapo_order_statuses WHERE quote_number=?').bind('BGTEST-CALLBACK').first()).status,'existing');
+ assert.equal((await sapoCallback({quote:'BGTEST-CALLBACK',status:'canceled',message:'Đơn đã hủy trên Sapo'})).status,200);
+ assert.equal((await db.prepare('SELECT status,message FROM sapo_order_statuses WHERE quote_number=?').bind('BGTEST-CALLBACK').first()).status,'cancelled');
+ assert.equal((await sapoCallback({quote_number:'BGTEST-CALLBACK'},'Bearer wrong')).status,401);
+ const contractBody={quote_number:'BGB2B-20260907-0268',contract_number:'09-01/08092026/HĐKT/BN-CUZN01718',status:'created',crm_row_id:'gJ92-SkyG2qoni6FR7_zvw',crm_url:'https://crm.example.test/contracts/gJ92',customer_name:'CÔNG TY TNHH THƯƠNG MẠI PHẠM ANH',item_count:1,message:'Đã tạo HĐKT trên CRM',updated_at:'2026-09-07T22:31:55.000Z'};
+ assert.equal((await contractCallback(contractBody,'Bearer wrong')).status,401);
+ const contractResponse=await contractCallback(contractBody);assert.equal(contractResponse.status,200);assert.equal(contractResponse.data.status.status,'created');
+ assert.deepEqual(await db.prepare('SELECT quote_number,contract_number,status,crm_row_id,crm_url,customer_name,item_count,message FROM contract_statuses WHERE quote_number=?').bind(contractBody.quote_number).first(),{quote_number:contractBody.quote_number,contract_number:contractBody.contract_number,status:'created',crm_row_id:contractBody.crm_row_id,crm_url:contractBody.crm_url,customer_name:contractBody.customer_name,item_count:1,message:contractBody.message});
+ assert.equal((await contractCallback({...contractBody,status:'invalid'})).status,400);
+ assert.equal((await call('/login','POST',{email:initialStaff[0].email,password:'incorrect'},'','https://evil.test')).status,403);
+ assert.equal((await call('/login','POST',{email:initialStaff[0].email,password:'incorrect'})).status,401);
+ assert.equal((await call('/activate','POST',{email:initialStaff[0].email,token:secrets.NV001.token,password:'short'})).status,400);
+ const password='12345678';
+ const info=await call('/activation-info','POST',{token:secrets.NV001.token});assert.equal(info.status,200);assert.equal(info.data.email,initialStaff[0].email);
+ assert.equal((await call('/activation-info','POST',{token:'f'.repeat(64)})).status,400);
+ await db.prepare('UPDATE staff_auth_attempts SET count=99 WHERE key=?').bind(createHash('sha256').update('email:'+initialStaff[0].email).digest('hex')).run();
+ const sessions={};
+ for(const id of ['NV001','NV003','NV004','NV005','NV008','NV009']){
+   const email=initialStaff.find(m=>m.id===id).email;
+   assert.equal((await call('/activate','POST',{email:'wrong-autofill@example.invalid',token:secrets[id].token,password})).status,200);
+   assert.equal((await call('/activate','POST',{email,token:secrets[id].token,password})).status,400);
+   const login=await call('/login','POST',{email,password});assert.equal(login.status,200);
+   assert.match(login.cookie,/Secure; HttpOnly; SameSite=Strict; Max-Age=2592000/);sessions[id]=login.cookie.split(';')[0];
+   const savedSession=await db.prepare('SELECT expires FROM staff_sessions WHERE hash=?').bind(createHash('sha256').update(sessions[id].split('=')[1]).digest('hex')).first();
+   assert(savedSession.expires-Math.floor(Date.now()/1000)<=2592000);assert(savedSession.expires-Math.floor(Date.now()/1000)>2591900);
+ }
+ for(const id of Object.keys(sessions)){
+  assert.equal((await call('/incoming-stock','GET',undefined,sessions[id])).status,200);
+  assert.equal((await call('/incoming-stock/00000000-0000-4000-8000-000000000000','GET',undefined,sessions[id])).status,404);
+  assert.equal((await call('/incoming-stock/00000000-0000-4000-8000-000000000000','DELETE',{revision:'test'},sessions[id])).status,id==='NV001'?404:403);
+  if(id!=='NV001')for(const action of ['preview','apply'])assert.equal((await call('/incoming-stock/'+action,'POST',{},sessions[id])).status,403);
+ }
+ assert.equal((await call('/incoming-stock')).status,401);
+ const q={type:'HRC',quoteNo:'BGTEST',customer:'Test',vat:8,rows:[{sku:'SP-TEST',name:'Sản phẩm test',qty:1,price:100000,discount:0,discountType:'percent',taxRate:8}]};
+ const a=await call('/quotes','POST',{data:{...q,creatorId:'NV001',role:'manager'}},sessions.NV003);
+ const b=await call('/quotes','POST',{data:{...q,type:'B2B'}},sessions.NV005);
+ assert.equal(a.status,201);assert.equal(b.status,201);
+ await sapoCallback({quote_number:'BGTEST',status:'created',sapo_order_id:1070212469,sapo_order_code:'SO-1070212469',sapo_order_url:'https://admin.sapo.vn/orders/1070212469'});
+ await contractCallback({...contractBody,quote_number:'BGTEST',customer_name:'Test',contract_number:'09-02/08092026/HĐKT/BN-TEST'});
+ const closedCustomers=await call('/closed-customers','GET',undefined,sessions.NV001);
+ assert.equal(closedCustomers.status,200);
+ assert.equal(closedCustomers.data.count,1);
+ assert.deepEqual(closedCustomers.data.customers[0].source.sort(),['CRM','Sapo']);
+ const orderStatus=await call('/quotes/'+a.data.id+'/sapo-status','GET',undefined,sessions.NV003);
+ assert.deepEqual(orderStatus.data.status,{quoteNumber:'BGTEST',status:'created',sapoOrderId:'1070212469',sapoOrderCode:'SO-1070212469',sapoOrderUrl:'https://admin.sapo.vn/orders/1070212469',customerName:'',message:'',updatedAt:orderStatus.data.status.updatedAt});
+ assert.equal((await call('/quotes/'+a.data.id+'/sapo-status','GET',undefined,sessions.NV005)).status,404);
+ const stored=await db.prepare('SELECT data FROM staff_quotations WHERE id=?').bind(a.data.id).first();
+ assert.ok(JSON.parse(stored.data).r2Key);assert.ok(stored.data.length<200);
+ const blockedPdf=await mf.dispatchFetch(origin+'/api/staff/quotes/'+a.data.id+'/pdf?revision=1',{method:'POST',headers:{Origin:origin,Cookie:sessions.NV003,'Content-Type':'application/pdf'},body:'%PDF-1.7\ntest'});
+ assert.equal(blockedPdf.status,403);
+ assert.equal((await call('/quotes/'+a.data.id+'/approve','POST',{},sessions.NV001)).status,200);
+ const pdf=await mf.dispatchFetch(origin+'/api/staff/quotes/'+a.data.id+'/pdf?revision=2',{method:'POST',headers:{Origin:origin,Cookie:sessions.NV003,'Content-Type':'application/pdf'},body:'%PDF-1.7\ntest'});
+ assert.equal(pdf.status,200);
+ const notifications=await call('/notifications','GET',undefined,sessions.NV001);assert.equal(notifications.status,200);assert.deepEqual(notifications.data.notifications.map(n=>n.eventType),['pdf','saved','saved']);assert.equal(notifications.data.unreadCount,3);
+ assert.equal((await call('/notifications','GET',undefined,sessions.NV004)).status,403);
+ assert.equal((await call('/notifications/read','POST',{ids:notifications.data.notifications.map(n=>n.id)},sessions.NV001)).status,200);
+ assert.equal((await call('/notifications','GET',undefined,sessions.NV001)).data.unreadCount,0);
+ const getPdf=async cookie=>mf.dispatchFetch(origin+'/api/staff/quotes/'+a.data.id+'/pdf',{headers:{Cookie:cookie}});
+ assert.equal((await getPdf(sessions.NV004)).status,200);
+ assert.equal((await getPdf(sessions.NV005)).status,404);
+ assert.equal((await call('/admin/backup','POST',{},sessions.NV004)).status,403);
+ const backup=await call('/admin/backup','POST',{},sessions.NV001);assert.equal(backup.status,200);
+ const exportResult=await call('/admin/backup?key='+encodeURIComponent(backup.data.key),'GET',undefined,sessions.NV001);
+ assert.equal(exportResult.status,200);assert.equal(exportResult.data.quotes.length,2);
+ assert.equal(exportResult.data.quotes.find(q=>q.id===a.data.id).data.customer,'Test');
+ assert.equal(Buffer.from(exportResult.data.quotes.find(q=>q.id===a.data.id).pdfBase64,'base64').toString(),'%PDF-1.7\ntest');
+ assert.ok(!JSON.stringify(exportResult.data).includes('password_hash'));
+ assert.equal((await call('/quotes','GET',undefined,sessions.NV004)).data.records.length,1);
+ assert.equal((await call('/quotes','GET',undefined,sessions.NV001)).data.records.length,2);
+ assert.equal((await call('/quotes/'+a.data.id,'GET',undefined,sessions.NV005)).status,404);
+ assert.equal((await call('/quotes/'+a.data.id,'GET',undefined,sessions.NV004)).status,200);
+ assert.equal((await call('/quotes/'+a.data.id,'PUT',{data:q,revision:1},sessions.NV004)).status,409);
+ assert.equal((await call('/admin/members','GET',undefined,sessions.NV004)).status,403);
+ const memberAdmin=await call('/admin/members','GET',undefined,sessions.NV001);assert.equal(memberAdmin.data.members.length,10);assert.deepEqual(memberAdmin.data.positions.filter(p=>p.id.startsWith('sales-')).map(p=>p.name).sort(),['NVBH LOCK','NVBH ML']);
+ assert.equal((await call('/quotes/'+a.data.id,'PUT',{data:q,revision:2},sessions.NV003)).status,200);
+ assert.equal((await call('/quotes/'+a.data.id,'PUT',{data:q,revision:2},sessions.NV003)).status,409);
+ const reset=await call('/admin/reset','POST',{id:'NV004'},sessions.NV001);assert.equal(reset.status,200);
+ assert.equal((await call('/me','GET',undefined,sessions.NV004)).status,401);
+ assert.equal((await call('/login','POST',{email:initialStaff[3].email,password})).status,401);
+ const params=new URLSearchParams(new URL(reset.data.url).hash.slice(1));
+ const resetInfo=await call('/activation-info','POST',{token:params.get('token')});assert.equal(resetInfo.status,200);assert(resetInfo.data.expiresAt-Date.now()<=900000);assert(resetInfo.data.expiresAt-Date.now()>800000);
+ assert.equal((await call('/activation-info','POST',{token:secrets.NV004.token})).status,400);
+ assert.equal((await call('/activate','POST',{email:params.get('email'),token:params.get('token'),password})).status,200);
+ assert.equal((await call('/admin/member','PUT',{id:'NV003',name:'Trần Thị Bé Ngọc mới',email:'ngoc.updated@gmail.com',phone:'0909000000',role:'employee',positionId:'accounting',active:false},sessions.NV001)).status,200);
+ const editedMember=await db.prepare('SELECT name,email,phone,position_id AS positionId FROM staff_members WHERE id=?').bind('NV003').first();assert.deepEqual(editedMember,{name:'Trần Thị Bé Ngọc mới',email:'ngoc.updated@gmail.com',phone:'0909000000',positionId:'accounting'});
+ assert.equal((await call('/me','GET',undefined,sessions.NV003)).status,401);
+ assert.equal((await call('/quotes','GET',undefined,sessions.NV009)).data.records.length,1);
+ assert.equal((await call('/logout','POST',{},sessions.NV008)).status,200);
+ assert.equal((await call('/me','GET',undefined,sessions.NV008)).status,401);
+ for(let i=0;i<10;i++)await call('/login','POST',{email:'unknown@quatangvigifts.com',password:'wrong'});
+ assert.equal((await call('/login','POST',{email:'unknown@quatangvigifts.com',password:'wrong'})).status,429);
+ } finally { await mf.dispose(); }
+});

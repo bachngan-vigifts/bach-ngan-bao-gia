@@ -1,0 +1,35 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync,readdirSync} from 'node:fs';
+import {Miniflare} from 'miniflare';
+import {openReportShift,workCashLedger,requestWorkCash,reviewWorkCashRequest,refreshWorkCash} from '../lib/work-reports.mjs';
+test('manual cash approval, isolation, idempotency, pending exclusion and automatic settlement',async()=>{
+ const mf=new Miniflare({modules:true,script:'export default {fetch(){return new Response("ok")}}',compatibilityDate:'2026-05-01',d1Databases:['DB']});
+ try{const db=await mf.getD1Database('DB'),env={DB:db,SAPO_ADMIN_COOKIE:'test'},a={id:'a',role:'employee'},boss={id:'boss',role:'manager'},other={id:'other',role:'employee'};
+ for(const file of readdirSync('drizzle').filter(f=>f.endsWith('.sql')).sort())for(const sql of readFileSync('drizzle/'+file,'utf8').split('--> statement-breakpoint'))if(sql.trim())await db.prepare(sql).run();
+ for(const m of [a,boss,other])await db.prepare('INSERT INTO staff_members(id,email,name,role,created_at) VALUES(?,?,?,?,?)').bind(m.id,m.id+'@test.vn',m.id,m.role,'2026-09-28').run();
+ await db.prepare("INSERT INTO work_branches(id,name,keeper_id,updated_at) VALUES('10','Chi nhánh A','a','now')").run();
+ await db.prepare("INSERT INTO work_assignments(member_id,branch_id,sapo_account_id,updated_at) VALUES('a','10','11','now')").run();
+ const s=await openReportShift(env,a,{branchId:'10',date:'2026-09-28',start:'08:00',end:'12:00'}),shiftId=s.shift.id;
+ await assert.rejects(()=>workCashLedger(env,other,shiftId));
+ assert.equal((await workCashLedger(env,boss,shiftId)).canWrite,true);
+ const req=(kind,amount)=>({id:crypto.randomUUID(),shiftId,kind,amount,note:'Chứng từ ngoài Sapo'});
+ const opening=req('opening',1000);await requestWorkCash(env,a,opening);assert.equal((await workCashLedger(env,boss,shiftId)).balance,null);
+ await assert.rejects(()=>reviewWorkCashRequest(env,a,{id:opening.id,status:'approved'}));
+ await reviewWorkCashRequest(env,boss,{id:opening.id,status:'approved'});
+ const incoming=req('in',200);await requestWorkCash(env,a,incoming);assert.equal((await requestWorkCash(env,a,incoming)).duplicate,true);
+ assert.equal((await workCashLedger(env,a,shiftId)).balance,1000);
+ const mock=async url=>Response.json(new URL(url).pathname.endsWith('receipts.json')?{receipts:[{id:1,location_id:10,paid_on:'2026-09-28T02:00:00Z',status:'paid',payment_method_name:'Tiền mặt',amount:100}]}:{payments:[]});
+ assert.equal((await refreshWorkCash(env,boss,{shiftId},mock)).shift.cash_status,'open');
+ await reviewWorkCashRequest(env,boss,{id:incoming.id,status:'approved'});
+ await assert.rejects(()=>reviewWorkCashRequest(env,boss,{id:incoming.id,status:'approved'}));
+ const outgoing=req('out',50);await requestWorkCash(env,a,outgoing);await reviewWorkCashRequest(env,boss,{id:outgoing.id,status:'rejected',note:'Không hợp lệ'});
+ const final=await refreshWorkCash(env,boss,{shiftId},mock);assert.equal(final.balance,1300);assert.equal(final.automatic,true);assert.equal(final.shift.cash_status,'closed');
+ await assert.rejects(()=>requestWorkCash(env,a,req('out',50)));
+ const next=await openReportShift(env,a,{branchId:'10',date:'2026-09-28',start:'13:00',end:'17:00'});
+ const unavailable=async()=>Response.json({error:'offline'},{status:503});
+ const partial=await refreshWorkCash(env,boss,{shiftId:next.shift.id},unavailable);assert.equal(partial.shift.opening,1300);assert.equal(partial.shift.cash_status,'open');assert.equal(partial.complete,false);
+ const balance={...req('balance',1250),shiftId:next.shift.id};await requestWorkCash(env,a,balance);assert.equal((await workCashLedger(env,a,next.shift.id)).balance,1300);
+ await reviewWorkCashRequest(env,boss,{id:balance.id,status:'approved',note:'Đã kiểm tra'});const manual=await workCashLedger(env,a,next.shift.id);assert.equal(manual.balance,1250);assert.equal(manual.automatic,false);assert.equal(JSON.parse(manual.shift.data).verification,'unverified');
+ }finally{await mf.dispose();}
+});

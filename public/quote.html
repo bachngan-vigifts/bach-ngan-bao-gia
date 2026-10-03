@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#102a56" />
+  <title>Phần mềm báo giá Bách Ngân - VIGIFTS</title>
+  <link rel="icon" href="/favicon-32.webp" sizes="32x32" type="image/webp" />
+  <link rel="icon" href="/favicon-192.webp" sizes="192x192" type="image/webp" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.webp" />
+  <link rel="stylesheet" href="styles.css?v=printing-lines-20261002" />
+  <link rel="stylesheet" href="/staff.css?v=customer-care-2" />
+  <link rel="stylesheet" href="/v0-editor.css?v=mobile-v0-20261002" />
+  <link rel="stylesheet" href="/quote-tools.css?v=right-tabs-20261002" />
+  <link rel="stylesheet" href="/left-navigation.css?v=bottom-draft-note-20261002" />
+</head>
+<body hidden class="v0-editor">
+<aside class="bn-left-navigation" aria-label="Menu chính">
+  <a class="bn-left-brand" href="/"><strong>VIGIFTS · Bách Ngân</strong><small>Quản lý báo giá</small></a>
+  <nav aria-label="Điều hướng chính bên trái">
+    <a href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Tổng quan</span></a>
+    <a href="/quotes" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z M14 2v6h6 M8 13h8 M8 17h6"/></svg><span>Báo giá</span></a>
+    <a href="/contracts"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z M14 2v6h6 M8 13h8 M8 17h6"/></svg><span>HĐKT đã sinh</span></a>
+    <a href="/products"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 9-4 9 4-9 4-9-4ZM3 7v10l9 4 9-4V7M12 11v10"/></svg><span>Sản phẩm</span></a>
+    <a href="/customers"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 4v2"/></svg><span>Khách hàng</span></a>
+    <details class="bn-left-group" open><summary>Báo giá</summary><div class="bn-left-actions" id="leftActionsQuote"></div></details>
+    <details class="bn-left-group" open><summary>Sản phẩm &amp; NCC</summary><div class="bn-left-actions" id="leftActionsProducts"></div></details>
+    <details class="bn-left-group"><summary>Sapo &amp; hợp đồng</summary><div class="bn-left-actions" id="leftActionsContracts"></div></details>
+    <details class="bn-left-group"><summary>Vận chuyển</summary><div class="bn-left-actions" id="leftActionsShipping"></div></details>
+    <details class="bn-left-group"><summary>Công việc &amp; hỗ trợ</summary><div class="bn-left-actions" id="leftActionsWork"><a href="/work-reports.html">Báo cáo công việc</a><a href="/crm">CRM &amp; hợp đồng</a><a href="/supplier">Đơn nhà cung cấp</a></div></details>
+    <details class="bn-left-group" open><summary>Tài khoản &amp; quản lý</summary><div class="bn-left-actions" id="leftActionsAccount"></div></details>
+  </nav>
+  <div class="bn-left-account"><strong id="leftNavUser">Tài khoản</strong><small id="leftNavEmail"></small><div class="bn-left-save-state" id="leftSaveState"></div><button type="button" id="leftNavLogout"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H3V3h6M10 12h11m-4-4 4 4-4 4"/></svg>Đăng xuất</button></div>
+</aside>
+<header class="v0-header"><div class="v0-header-inner"><a href="/" class="v0-brand"><span>VG</span>Báo giá</a><span class="v0-company">Bách Ngân · VIGIFTS</span><nav class="v0-nav" aria-label="Điều hướng chính"><a href="/" aria-label="Tổng quan" class="v0-home"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Tổng quan</a><a href="/quotes" aria-label="Báo giá" class="v0-quotes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z M14 2v6h6 M8 13h8 M8 17h6"/></svg>Báo giá</a><a href="/quote?dashboardAction=new" aria-label="Tạo mới" class="v0-new"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Tạo mới</a><a href="/customers" aria-label="Khách hàng" class="v0-customers"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 4v2"/></svg>Khách hàng</a><a href="/products" aria-label="Sản phẩm" class="v0-products"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 9-4 9 4-9 4-9-4ZM3 7v10l9 4 9-4V7M12 11v10"/></svg>Sản phẩm</a></nav></div></header>
+  <header class="topbar">
+    <div class="brand" aria-label="Phần mềm báo giá Bách Ngân - VIGIFTS">
+      <img class="brand-strip" src="/bach-ngan-brand-strip.jpeg" alt="VIGIFTS và Bách Ngân" />
+      <strong class="brand-system-name">PHẦN MỀM BÁO GIÁ BÁCH NGÂN - VIGIFTS</strong>
+    </div>
+    <div class="top-actions">
+      <span class="save-state" id="saveState">● Đang tải danh mục…</span>
+      <button class="btn quote-action top-actions-toggle" id="quoteTopActionsToggle" type="button" aria-expanded="false"><span>Thao tác báo giá ▾</span><b class="supplier-order-badge" id="topActionApprovalBadge" hidden aria-label="0 báo giá chờ duyệt">0</b></button>
+      <button class="btn quote-action action-save" id="saveQuote"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12l4 4v12a2 2 0 0 1-2 2Z"/><path d="M7 3v6h10V3M7 21v-8h10v8"/></svg><span>Lưu báo giá</span></button>
+      <button class="btn quote-action action-library" id="quoteLibrary"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7h18v14H3zM2 3h20v4H2zM9 11h6"/></svg><span>Báo giá đã lưu</span></button>
+      <button class="btn quote-action action-library" id="pendingQuoteApprovals" hidden><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7h18v14H3zM2 3h20v4H2zM8 12h8M8 16h5"/></svg><span>Báo giá đợi duyệt</span><b class="supplier-order-badge" hidden aria-label="0 báo giá chờ duyệt">0</b></button>
+      <button class="btn quote-action action-new" id="newQuote"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Báo giá mới</span></button>
+      <button class="btn primary" id="printQuote">Tải file ▾</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="sidebar quote-tools" aria-label="Thao tác báo giá">
+      <h2 class="quote-tools-heading">Thao tác báo giá</h2>
+      <div class="quote-tools-tabs" role="tablist" aria-label="Nhóm thao tác">
+        <button type="button" id="quoteToolsComposeTab" role="tab" data-quote-tools-tab="compose" aria-controls="quoteToolsCompose" aria-selected="true">Soạn báo giá</button>
+        <button type="button" id="quoteToolsUtilitiesTab" role="tab" data-quote-tools-tab="utilities" aria-controls="quoteToolsUtilities" aria-selected="false" tabindex="-1">Tiện ích</button>
+      </div>
+      <div class="quote-tools-panel" id="quoteToolsCompose" data-quote-tools-panel="compose">
+      <div class="quote-tools-group">
+      <p class="quote-tools-label">Loại báo giá</p>
+      <button class="quote-type active" data-type="HRC"><span class="type-icon">H</span><span><b>Báo giá HRC</b><small>Nhà hàng - Khách sạn - quán ăn</small></span></button>
+      <button class="quote-type" data-type="B2B"><span class="type-icon">B</span><span><b>Báo giá B2B</b><small>Maquette & phí in</small></span></button>
+      <button class="quote-type" data-type="VIGIFTS"><span class="type-icon">V</span><span><b>Báo giá Vigifts</b><small>Quà tặng & in logo</small></span></button>
+      </div>
+      <div class="quote-tools-group">
+      <p class="quote-tools-label">Sản phẩm</p>
+      <button class="side-link" id="openSearch"><span>Tìm sản phẩm</span><kbd>F2</kbd></button>
+      <button class="side-link" id="openIncomingStock" type="button"><span>Hàng sắp về</span></button>
+      </div>
+      </div>
+      <div class="quote-tools-panel" id="quoteToolsUtilities" data-quote-tools-panel="utilities">
+      <div class="quote-tools-group">
+      <p class="quote-tools-label">Sapo &amp; hợp đồng</p>
+      <button class="side-link" id="previewPayload"><span>Copy báo giá vào Sapo</span></button>
+      <button class="side-link" id="createContract" type="button"><span>Tạo HĐKT CRM</span></button>
+      <button class="side-link" id="createContractCrm" type="button"><span>Sinh HĐKT</span></button>
+      <button class="side-link" id="downloadContractFile" type="button" hidden><span>Tải HĐKT</span></button>
+      <button class="side-link" id="printDeliveryNote" type="button" hidden><span>In phiếu giao hàng</span></button>
+      </div>
+      <div class="quote-tools-group">
+      <p class="quote-tools-label">Vận chuyển &amp; hỗ trợ</p>
+      <button class="side-link" id="openLalamove" type="button"><span>Đặt Lalamove</span></button>
+      <a class="side-link guide-link" id="openUserGuide" href="/huong-dan.html" target="_blank" rel="noopener noreferrer"><span>Hướng dẫn sử dụng</span></a>
+      </div>
+      </div>
+      <div class="sidebar-note"><b id="catalogStatus">Đang tải dữ liệu…</b><br/>Giá và quy cách lấy từ file Excel của Bách Ngân.</div>
+    </aside>
+
+    <section class="workspace">
+      <div class="page-heading">
+        <div><p class="eyebrow">BÁO GIÁ ĐANG SOẠN</p><div class="page-title-row"><h1 id="pageTitle">Báo giá HRC</h1><span class="title-inline-actions"><button class="template-switch-inline" id="templateSwitchInline" type="button">Đổi mẫu</button><button class="template-switch-inline inline-save-quote" id="inlineSaveQuote" type="button">Lưu</button><button class="template-switch-inline inline-approve-quote" id="inlineApproveQuote" type="button" hidden>Duyệt</button></span></div></div>
+        <div class="quote-heading-controls"><label class="quote-badge"><span>Số báo giá</span><input id="quoteNo" aria-label="Số báo giá" /></label><div class="quote-template-picker" role="group" aria-labelledby="quoteTypeMenuTitle"><span id="quoteTypeMenuTitle">Mẫu báo giá</span><div class="quote-template-options" id="leftActionsType"></div></div><div class="quote-heading-actions" id="quoteHeadingActions" hidden><button class="btn primary" id="headerSaveQuote" type="button" disabled>Lưu báo giá</button><button class="btn primary" id="headerApproveQuote" type="button" disabled>Duyệt</button><button class="btn quote-delete-action" id="headerDeleteQuote" type="button" disabled>Xoá báo giá</button></div></div>
+      </div>
+
+      <section class="card customer-card">
+        <div class="section-title"><span>01</span><div><h2>Thông tin khách hàng</h2><p>Thông tin hiển thị trên báo giá và tên file PDF</p></div></div>
+        <button class="btn soft customer-info-toggle" id="customerInfoToggle" type="button" aria-expanded="false" aria-controls="customerInfoFields">Nhập thông tin khách hàng ▾</button>
+        <div class="form-grid" id="customerInfoFields">
+          <label class="wide"><span>Tên khách hàng</span><input id="customerName" placeholder="Gõ để tìm/chọn khách hàng, ví dụ: Marriott Đà Nẵng" /></label>
+          <label class="quote-date-field"><span>Ngày báo giá</span><input id="quoteDate" type="date" /></label>
+          <label><span>Người liên hệ</span><input id="contactName" placeholder="Họ và tên" /></label>
+          <label><span>Số điện thoại</span><input id="phone" placeholder="0900 000 000" /></label>
+          <label class="wide"><span>Email</span><input id="email" type="email" placeholder="email@khachhang.vn" /></label>
+          <label><span>Phụ trách</span><input id="owner" placeholder="Nhân viên phụ trách" /></label>
+          <label><span>SĐT phụ trách</span><input id="ownerPhone" type="tel" maxlength="40" placeholder="Số điện thoại nhân viên" /></label>
+        </div>
+      </section>
+
+      <section class="card products-card">
+        <div class="products-head">
+          <div class="section-title"><span>02</span><div><h2>Sản phẩm báo giá</h2><p id="productHint">Giá lấy theo danh mục GIÁ L1</p></div></div>
+          <div class="products-head-actions"><a class="btn sapo-order-button" id="viewSapoOrder" target="_blank" rel="noopener noreferrer" hidden><img src="/sapo-icon.jpeg" alt="">Xem đơn</a><button class="btn soft supplier-review-action" id="openSupplierReview" type="button" hidden><span>Đợi duyệt</span><b class="supplier-order-badge" hidden aria-label="0 đơn chờ duyệt">0</b></button><button class="btn soft supplier-order-action" id="openSupplierOrder" type="button"><span>Đặt hàng NCC</span></button><button class="btn soft" id="addBlank" type="button">+ Thêm dòng trống</button><button class="btn primary" id="openSearch2" type="button">+ Thêm sản phẩm</button></div>
+        </div>
+        <div class="table-wrap"><table><thead id="tableHead"></thead><tbody id="quoteRows"></tbody></table></div>
+      </section>
+
+      <section class="bottom-grid">
+        <div class="card totals">
+          <div><span>Tạm tính</span><strong id="subtotal">0 ₫</strong></div>
+          <div><span id="vatLabel">Thuế VAT 8%</span><strong id="vatAmount">0 ₫</strong><input id="vatRate" type="hidden" value="8" /></div>
+          <div class="grand"><span>Tổng thanh toán</span><strong id="grandTotal">0 ₫</strong></div>
+          <button class="btn soft mobile-sapo-copy mobile-quote-actions-toggle" id="mobileQuoteActionsToggle" type="button" aria-expanded="false" aria-controls="mobileQuoteActions">Tác vụ báo giá ▾</button>
+          <div class="mobile-quote-actions" id="mobileQuoteActions" hidden>
+            <button class="btn primary mobile-sapo-copy mobile-sapo-button" id="mobileSapoCopy" type="button"><img src="/sapo-icon.jpeg" alt="">Copy báo giá vào Sapo</button>
+            <button class="btn soft mobile-sapo-copy mobile-supplier-orders" id="staffSupplierBottomPortal" type="button"><span>Xem đơn NCC</span><b class="supplier-order-badge" id="supplierPortalOrderBadge" aria-label="0 đơn NCC">0</b></button>
+            <button class="btn mobile-sapo-copy mobile-contract-crm" id="mobileContractCrm" type="button">Tạo HĐKT CRM</button>
+            <button class="btn soft mobile-sapo-copy" id="mobileContract" type="button">Sinh HĐKT</button>
+            <button class="btn soft mobile-sapo-copy" id="mobileDownloadContract" type="button" hidden>Tải HĐKT</button>
+            <button class="btn soft mobile-sapo-copy" id="mobilePrintDeliveryNote" type="button" hidden>In phiếu giao hàng</button>
+            <button class="btn mobile-sapo-copy mobile-lalamove" id="mobileLalamove" type="button"><img src="/lalamove-icon.png" alt="">Đặt Lalamove</button>
+            <button class="btn soft mobile-sapo-copy mobile-incoming-stock" id="mobileIncomingStock" type="button"><span class="truck-icon" aria-hidden="true"></span>Hàng sắp về</button>
+          </div>
+        </div>
+        <div class="profit-section" id="profitSection" hidden>
+          <button class="btn primary profit-toggle" id="toggleProfit" type="button" aria-expanded="false" aria-controls="profitCard">Xem lợi nhuận tạm tính</button>
+        <div class="card profit-card" id="profitCard" hidden>
+          <div class="profit-head"><span>Lợi nhuận nhanh</span><div class="profit-head-actions"><button id="refreshProfitCosts" type="button">Cập nhật CK mua vào</button><button id="toggleCostFields" type="button" aria-pressed="false">Xem giá nhập</button></div><b id="profitMargin">0%</b></div>
+          <div><span>Doanh thu trước VAT</span><strong id="profitRevenue">0 ₫</strong></div>
+          <div><span>Giá nhập</span><strong id="profitCost">0 ₫</strong></div>
+          <div><span>Cước vận chuyển</span><strong id="profitShipping">Chưa có cước dự toán</strong></div>
+          <section class="profit-printing" id="profitPrintingRow" hidden>
+            <h3>Phí in gia công</h3>
+            <div class="printing-table-wrap"><table class="printing-cost-table"><thead id="printingCostHead"></thead><tbody id="printingCostRows"></tbody></table></div>
+            <p id="printingWorkshopsStatus" role="status"></p>
+          </section>
+          <fieldset class="profit-shipping-payer"><legend>Bên thanh toán cước</legend><label><input type="radio" name="profitShippingPayer" value="sender"> Người gửi trả</label><label><input type="radio" name="profitShippingPayer" value="receiver" checked> Người nhận trả</label></fieldset>
+          <p id="profitShippingHint" hidden>Chưa có cước dự toán nên lợi nhuận chưa trừ chi phí vận chuyển.</p>
+          <div class="grand"><span>Lợi nhuận gộp</span><strong id="profitGross">0 ₫</strong></div>
+          <p id="profitHint">Chỉ Manager thấy mục này. Bấm cập nhật CK mua vào để tự điền giá nhập theo nhóm hàng.</p>
+        </div>
+        </div>
+        <div class="card note-card"><label><span>Ghi chú báo giá</span><textarea id="notes" rows="12">- Tổng giá trị thanh toán đã bao gồm 8% hóa đơn VAT.\n- Giá trên chỉ có hiệu lực trong 30 ngày.</textarea></label></div>
+      </section>
+      <details class="shipping-panel"><summary>Tính đóng thùng &amp; phí vận chuyển</summary><button class="btn ghost" id="fillPacking" type="button">Điền quy cách còn thiếu từ Excel</button><div id="shippingBody"></div></details>
+    </section>
+  </main>
+
+  <nav class="mobile-app-nav" aria-label="Menu chức năng chính">
+    <button type="button" id="mobileSearchNav">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m3 7 9-4 9 4-9 4-9-4Z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/><path d="m7.5 9.2 9-4"/></svg>
+      <span>SP</span>
+    </button>
+    <button type="button" id="mobileAddRowNav">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.8 20a5.2 5.2 0 0 1 10.4 0"/><circle cx="17" cy="9.5" r="2.4"/><path d="M14.8 15.5A4.7 4.7 0 0 1 21 20"/></svg>
+      <span>Khách Hàng</span>
+    </button>
+    <button class="mobile-nav-add" type="button" id="mobileTemplateNav" aria-expanded="false" aria-controls="mobileTemplateSheet" aria-label="Chọn mẫu báo giá">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <button type="button" id="mobileMoreNav" aria-expanded="false" aria-controls="mobileMoreSheet">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h10"/><path d="M18 7h2"/><circle cx="16" cy="7" r="2"/><path d="M4 17h2"/><path d="M10 17h10"/><circle cx="8" cy="17" r="2"/></svg>
+      <span>Tác vụ</span>
+    </button>
+    <button type="button" id="mobileDownloadNav">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>
+      <span>Tải file</span>
+    </button>
+  </nav>
+
+  <div class="mobile-sheet" id="mobileTemplateSheet" hidden>
+    <button class="mobile-sheet-backdrop" type="button" data-mobile-sheet-close aria-label="Đóng"></button>
+    <section class="mobile-sheet-panel" aria-label="Chọn mẫu báo giá">
+      <div class="mobile-sheet-handle"></div>
+      <h2 id="mobileTemplateSheetTitle">Tạo báo giá mới</h2>
+      <button type="button" class="mobile-sheet-option" data-mobile-type="HRC"><b>HRC</b><span>Nhà hàng - Khách sạn - quán ăn</span></button>
+      <button type="button" class="mobile-sheet-option" data-mobile-type="B2B"><b>B2B</b><span>Maquette & phí in</span></button>
+      <button type="button" class="mobile-sheet-option" data-mobile-type="VIGIFTS"><b>Vigifts</b><span>Quà tặng & in logo</span></button>
+    </section>
+  </div>
+
+  <div class="mobile-sheet" id="mobileMoreSheet" hidden>
+    <button class="mobile-sheet-backdrop" type="button" data-mobile-sheet-close aria-label="Đóng"></button>
+    <section class="mobile-sheet-panel" aria-label="Tác vụ báo giá">
+      <div class="mobile-sheet-handle"></div>
+      <h2>Tác vụ báo giá</h2>
+      <div class="mobile-action-grid">
+        <button type="button" id="mobileApproveQuote" data-click-target="approveQuote" hidden>Duyệt báo giá</button>
+        <button type="button" id="mobilePendingQuotes" hidden>Báo giá đợi duyệt <b class="supplier-order-badge" hidden aria-label="0 báo giá chờ duyệt">0</b></button>
+        <button type="button" data-click-target="saveQuote">Lưu báo giá</button>
+        <button type="button" data-click-target="quoteLibrary">Báo giá đã lưu</button>
+        <button type="button" id="mobileDownloadPdfA4">Tải PDF A4</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal" id="searchModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="search"></div>
+    <div class="dialog search-dialog" role="dialog" aria-modal="true" aria-labelledby="searchTitle">
+      <div class="dialog-head"><div><p class="eyebrow">DANH MỤC SAPO</p><h2 id="searchTitle">Tìm nhanh sản phẩm</h2></div><button class="icon-btn" data-close="search" aria-label="Đóng">×</button></div>
+      <div class="catalog-options">
+        <label class="catalog-policy">Chính sách giá <select id="catalogPolicy" aria-label="Chính sách giá"></select></label>
+        <label class="catalog-search-scope"><input id="searchAllProducts" type="checkbox"> Tìm trên tất cả sản phẩm</label>
+      </div>
+      <p id="catalogSnapshot" class="search-help"></p>
+      <div class="search-box"><span>⌕</span><input id="searchInput" autocomplete="off" placeholder="Nhập mã hoặc tên, ví dụ: chén cơm jas…" /></div>
+      <p class="search-help">Có thể nhập nhiều từ khóa. Kết quả sẽ khớp dần theo tất cả từ đã gõ.</p>
+      <div class="catalog-product-filters">
+        <label><span>Nhóm sản phẩm</span><select id="searchProductGroup"><option value="all">Tất cả nhóm</option><option value="dinner">Bộ đồ ăn</option><option value="tea">Bộ trà</option><option value="thermalCup">Ly / cốc giữ nhiệt</option><option value="thermalBottle">Bình giữ nhiệt</option><option value="tableware">Chén, tô, đĩa</option><option value="vase">Bình hoa</option><option value="cookware">Nồi, chảo</option></select></label>
+        <label><span>Khoảng giá</span><select id="searchPriceRange"><option value="">Tất cả giá</option><option value="0:500000">Đến 500 nghìn</option><option value="500000:1000000">500 nghìn – 1 triệu</option><option value="1000000:2000000">1 – 2 triệu</option><option value="2000000:5000000">2 – 5 triệu</option><option value="5000000:">Từ 5 triệu</option><option value="custom">Tự nhập khoảng giá</option></select></label>
+        <label><span>Giá từ (đ)</span><input id="searchPriceMin" type="number" min="0" step="1000" placeholder="Ví dụ: 1000000"></label>
+        <label><span>Giá đến (đ)</span><input id="searchPriceMax" type="number" min="0" step="1000" placeholder="Ví dụ: 2000000"></label>
+        <button class="btn ghost" id="clearSearchFilters" type="button">Xoá bộ lọc</button>
+      </div>
+      <p class="search-help" id="searchFilterStatus" aria-live="polite">Giá lọc theo chính sách đang chọn và giá hiển thị của sản phẩm.</p>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="payloadModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="payload"></div>
+    <div class="dialog payload-dialog" role="dialog" aria-modal="true" aria-labelledby="sapoConfirmTitle"><div class="dialog-head"><div><p class="eyebrow">XÁC NHẬN BÁO GIÁ</p><h2 id="sapoConfirmTitle">Copy báo giá vào Sapo</h2></div><button class="icon-btn" data-close="payload" aria-label="Đóng">×</button></div><p class="payload-note">Kiểm tra thông tin bên dưới trước khi xác nhận chuyển báo giá vào Sapo.</p><div id="sapoConfirmation"></div><p id="sapoSendStatus" role="status"></p><div class="dialog-actions"><button class="btn ghost" data-close="payload">Quay lại chỉnh sửa</button><button class="btn primary" id="sendWebhook">Xác nhận copy vào Sapo</button></div></div>
+  </div>
+
+  <div class="modal" id="quoteDiscountModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="quoteDiscount"></div>
+    <div class="dialog payload-dialog" role="dialog" aria-modal="true" aria-labelledby="quoteDiscountTitle"><div class="dialog-head"><div><p class="eyebrow">TẠO BÁO GIÁ MỚI</p><h2 id="quoteDiscountTitle">Tạo báo giá mới <span id="quoteDiscountTypeName">HRC</span></h2></div><button class="icon-btn" data-close="quoteDiscount" aria-label="Đóng">×</button></div><p class="payload-note">Nhập ngày, số báo giá và % chiết khấu mặc định cho toàn bảng, hoặc chọn nhập thủ công để mỗi dòng tự chỉnh riêng.</p><div class="quote-discount-grid"><label class="stack-label"><span>Ngày báo giá</span><input id="quoteDiscountDate" type="date"></label><label class="stack-label"><span>Số báo giá</span><input id="quoteDiscountNo" type="text" autocomplete="off" placeholder="Số báo giá"></label></div><label class="stack-label"><span>Chiết khấu toàn bảng (%)</span><input id="quoteDefaultDiscount" type="number" min="0" max="100" step="any" inputmode="decimal" placeholder="Ví dụ: 10"></label><div class="dialog-actions"><button class="btn ghost" type="button" id="useManualDiscounts">Nhập CK thủ công</button><button class="btn primary" type="button" id="applyQuoteDefaultDiscount">Áp dụng cho toàn bảng</button></div></div>
+  </div>
+
+  <div class="modal" id="hrcPdfChoiceModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="hrcPdfChoice"></div>
+    <div class="dialog payload-dialog" role="dialog" aria-modal="true" aria-labelledby="hrcPdfChoiceTitle"><div class="dialog-head"><div><p class="eyebrow">TẢI BÁO GIÁ HRC</p><h2 id="hrcPdfChoiceTitle">Chọn mẫu file PDF</h2></div><button class="icon-btn" data-close="hrcPdfChoice" aria-label="Đóng">×</button></div><p class="payload-note">Chọn cách hiển thị cột chiết khấu trong file báo giá HRC.</p><div class="dialog-actions"><button class="btn soft" type="button" id="downloadHrcPdfHiddenCk">Ẩn Cột CK</button><button class="btn primary" type="button" id="downloadHrcPdfShownCk">Hiện cột CK</button></div></div>
+  </div>
+
+  <div class="modal" id="imageModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="image"></div>
+    <div class="dialog image-dialog" role="dialog" aria-modal="true"><div class="dialog-head"><div><p class="eyebrow" id="imageKind">HÌNH SẢN PHẨM</p><h2>Chèn hình vừa khung</h2></div><button class="icon-btn" data-close="image">×</button></div><p class="payload-note">Chọn ảnh từ máy hoặc dán đường dẫn Google Drive/ảnh trực tiếp. Ảnh sẽ tự co vừa ô khi in.</p><label class="stack-label"><span>Đường dẫn ảnh</span><input id="imageUrl" type="url" placeholder="https://..." /></label><label class="file-picker">Chọn ảnh từ máy<input id="imageFile" type="file" accept="image/*" /></label><div class="image-preview" id="imagePreview">Chưa có ảnh</div><div class="dialog-actions"><button class="btn danger" id="removeImage">Xóa ảnh</button><button class="btn primary" id="applyImage">Áp dụng</button></div></div>
+  </div>
+
+  <div class="modal" id="libraryModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="library"></div>
+    <div class="dialog" role="dialog" aria-modal="true"><div class="dialog-head"><div><p class="eyebrow">BÁO GIÁ DÙNG CHUNG</p><h2>Báo giá đã lưu</h2></div><button class="icon-btn" data-close="library">×</button></div><form id="quoteFilters" class="quote-filters"><label>Từ ngày báo giá<input type="date" name="from"></label><label>Đến ngày báo giá<input type="date" name="to"></label><label>Số báo giá hoặc khách hàng<input name="customer" type="search" maxlength="200" placeholder="Nhập số báo giá, khách hàng hoặc số HĐKT"></label><label>Số HĐKT<input name="contract" type="search" maxlength="200" placeholder="Nhập số HĐKT hoặc số báo giá"></label><label>Sản phẩm<input name="product" type="search" maxlength="200" placeholder="Tên sản phẩm hoặc SKU"></label><label>Nhân viên tạo báo giá<input name="employee" type="search" maxlength="200" placeholder="Tên hoặc email nhân viên"></label><label class="filter-check"><input type="checkbox" name="hasContract" value="1"> Chỉ báo giá đã sinh HĐKT</label><div class="filter-actions"><button class="btn primary" type="submit">Tìm báo giá</button><button class="btn ghost" type="reset">Xóa bộ lọc</button></div></form><div id="savedQuotes" class="saved-quotes" aria-live="polite"></div><div class="dialog-actions"></div></div>
+  </div>
+
+  <div class="modal" id="inventoryModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="inventory"></div>
+    <div class="dialog inventory-dialog" role="dialog" aria-modal="true" aria-labelledby="inventoryTitle"><div class="dialog-head"><div><p class="eyebrow">TỒN KHO HIỆN TẠI</p><h2 id="inventoryTitle">Tồn kho sản phẩm</h2></div><button class="icon-btn" data-close="inventory" aria-label="Đóng">×</button></div><div id="inventoryBody"></div><div class="dialog-actions"><button class="btn primary" data-close="inventory">Đóng</button></div></div>
+  </div>
+
+  <dialog id="printingWorkshopDialog" class="printing-workshop-dialog" aria-labelledby="printingWorkshopDialogTitle">
+    <form id="printingWorkshopForm">
+      <header><h2 id="printingWorkshopDialogTitle">Thêm xưởng in mới</h2><button type="button" data-close-printing-workshop aria-label="Đóng form xưởng in">×</button></header>
+      <label>Tên xưởng<input name="name" required maxlength="180" autocomplete="organization"></label>
+      <label>MST<input name="taxCode" maxlength="40"></label>
+      <label>Địa chỉ<input name="address" maxlength="1000" autocomplete="street-address"></label>
+      <label>SĐT<input name="phone" type="tel" maxlength="40" autocomplete="tel"></label>
+      <label>Email<input name="email" type="email" maxlength="254" autocomplete="email"></label>
+      <p id="printingWorkshopError" role="alert"></p>
+      <footer><button type="button" data-close-printing-workshop>Huỷ</button><button class="btn primary" type="submit">Lưu xưởng in</button></footer>
+    </form>
+  </dialog>
+  <div id="toast" class="toast"></div>
+  <script src="pdf-lib.min.js"></script>
+  <script src="fontkit.umd.min.js"></script>
+  <script src="fflate.min.js"></script>
+  <script src="contract-document.js?v=web-template-mark-20261002"></script>
+  <script src="shipping.js?v=flat-shipping-rate-20261002"></script>
+  <script src="quote-notes.js?v=delivery-2"></script>
+  <script src="quote-math.js?v=printing-lines-20261002"></script>
+  <script src="excel-export.js?v=quote-excel-vigifts-values-7"></script>
+  <script src="hrc-pdf.js?v=b2b-ck-column-2"></script>
+  <script src="editable-pdf.js?v=b2b-ck-column-2"></script>
+  <script src="/stock-file.js?v=duplicate-sku-max-1"></script>
+  <script src="/loading-buttons.js?v=cancel-loading-2"></script>
+  <script src="/quote-tools.js?v=right-tabs-20261002"></script>
+  <script src="/left-actions.js?v=full-backup-delivery-note-action-20261002"></script>
+  <script src="/staff.js?v=full-backup-20261002"></script>
+<nav class="v0-bottom-nav" aria-label="Điều hướng trên điện thoại"><a href="/" aria-label="Tổng quan" class="v0-home"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>Tổng quan</a><a href="/quotes" aria-label="Báo giá" class="v0-quotes"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z M14 2v6h6 M8 13h8 M8 17h6"/></svg></span>Báo giá</a><a href="/quote?dashboardAction=new" aria-label="Tạo mới" class="v0-new"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></a><a href="/customers" aria-label="Khách hàng" class="v0-customers"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 4v2"/></svg></span>Khách hàng</a><a href="/products" aria-label="Sản phẩm" class="v0-products"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 9-4 9 4-9 4-9-4ZM3 7v10l9 4 9-4V7M12 11v10"/></svg></span>Sản phẩm</a></nav>
+</body>
+</html>

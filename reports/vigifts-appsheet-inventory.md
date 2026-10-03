@@ -1,0 +1,300 @@
+# VIGIFTS AppSheet Inventory
+Generated: 2026-09-23T21:29:48.330Z
+Source: reports/vigifts_live_verify_20260905_fix_vigifts_cham_kpi_month_context.json
+Counts: tables=77, slices=29, actions=219, controls=148, menu=148, bots=33, events=36, tasks=41
+Default start view: Nhiệm vụ hôm nay
+
+## Menu Entries
+- 1. HĐKT (far fa-file-signature)
+- 1. Home (fas fa-home-alt)
+- 1. Đề xuất (far fa-user-astronaut)
+- 1. Báo giá đợi duyệt (far fa-list-ul)
+- 1. Báo giá_Detail (fa-indent)
+- 1. Báo giá_Form (fa-edit)
+- 1. Báo giá_Inline (fa-table)
+- 1. chấm kpi_Detail (fa-indent)
+- 1. chấm kpi_Form (fa-edit)
+- 1. chấm kpi_Inline (fa-table)
+- 1. Chi phí_Detail (fa-indent)
+- 1. Chi phí_Form (fa-edit)
+- 1. Chi phí_Inline (fa-table)
+- 1. Chi tiết báo giá_Detail (fa-indent)
+- 1. Chi tiết báo giá_Form (fa-edit)
+- 1. Chi tiết báo giá_Inline (fa-table)
+- 1. Chi tiết đơn hàng Nhân viên phụ trách is the app users email_Detail (fa-indent)
+- 1. Chi tiết đơn hàng Nhân viên phụ trách is the app users email_Form (fa-edit)
+- 1. Chi tiết đơn hàng_Detail (fa-indent)
+- 1. Chi tiết đơn hàng_Form (fa-edit)
+- 1. Chi tiết đơn hàng_Inline (fa-table)
+- 1. Chi tiết sản phẩm đã báo giá (fa-list-ul)
+- 1. ChiTieuDoanhSo_Detail (fa-indent)
+- 1. ChiTieuDoanhSo_Form (fa-edit)
+- 1. ChiTieuDoanhSo_Inline (fa-table)
+- 1. Công nợ đến hạn (fa-list-ul)
+- 1. Công nợ đến hạn (bản cũ) (fa-list-ul)
+- 1. Công nợ tổng (fa-list-ul)
+- 1. CongNoQuaHa_Detail (fa-indent)
+- 1. CongNoQuaHa_Form (fa-edit)
+- 1. Copy of KhachHang_Detail (fa-indent)
+- 1. Copy of KhachHang_Form (fa-edit)
+- 1. Dashboard_Detail (fa-indent)
+- 1. Dashboard_Form (fa-edit)
+- 1. Dashboard_Inline (fa-table)
+- 1. Ds trong ngày (fa-list-ul)
+- 1. Ds trong tuần (fa-list-ul)
+- 1. Giao dịch đến hạn (fa-list-ul)
+- 1. Giao dịch_Detail (fa-indent)
+- 1. Giao dịch_Form (fa-edit)
+- 1. Giao dịch_Inline (fa-table)
+- 1. HĐ cần phê duyệt (fa-list-ul)
+- 1. HĐKT chưa xuất HĐ (fa-list-ul)
+- 1. Home_Detail (fa-indent)
+- 1. Home_Form (fa-edit)
+- 1. in hồ sơ_Detail (fa-indent)
+- 1. in hồ sơ_Form (fa-edit)
+- 1. in hồ sơ_Inline (fa-table)
+- 1. KH đợi duyệt (fa-list-ul)
+- 1. Khách mua hàng cùng kỳ (fa-list-ul)
+- 1. Khách năm chẵn (far fa-user-astronaut)
+- 1. KhachHang_Detail (fa-indent)
+- 1. KhachHang_Form (fa-edit)
+- 1. KhachHang_Inline (fa-list-ul)
+- 1. khoá chỉnh sửa home_Detail (fa-indent)
+- 1. khoá chỉnh sửa home_Form (fa-edit)
+- 1. KT_chi tiết đơn hàng (fa-list-ul)
+- 1. Lịch sử 2_Detail (fa-indent)
+- 1. Lịch sử 2_Form (fa-edit)
+- 1. New Slice_Detail (fa-indent)
+- 1. New Slice_Detail2 (fa-indent)
+- 1. New Slice_Detail222 (fa-indent)
+- 1. New Slice_Detail2222 (fa-indent)
+- 1. New Slice_Detail22222 (fa-indent)
+- 1. New Slice_Form (fa-edit)
+- 1. New Slice_Form2 (fa-edit)
+- 1. New Slice_Form222 (fa-edit)
+- 1. New Slice_Form2222 (fa-edit)
+- 1. New Slice_Form22222 (fa-edit)
+- 1. New View (fa-list-ul)
+- 1. Người liên hệ_Detail (fa-indent)
+- 1. Người liên hệ_Form (fa-edit)
+- 1. Người liên hệ_Inline (fa-table)
+- 1. Nhắc hẹn_Detail (fa-indent)
+- 1. Nhắc hẹn_Form (fa-edit)
+- 1. NhaCungCap_Detail (fa-indent)
+- 1. NhaCungCap_Form (fa-edit)
+- 1. NhanVien_Detail (fa-indent)
+- 1. NhanVien_Form (fa-edit)
+- 1. NhanVien_Inline (fa-list-ul)
+- 1. Nhập đơn hàng Trạng thái thanh toán is blank_Detail (fa-indent)
+- 1. Nhập đơn hàng Trạng thái thanh toán is blank_Form (fa-edit)
+- 1. Nhập đơn hàng_Detail (fa-indent)
+- 1. Nhập đơn hàng_Form (fa-edit)
+- 1. Nhập đơn hàng_Inline (fa-table)
+- 1. Nhiệm vụ hôm nay (fa-list-ul)
+- 1. Pháp nhân 2_Detail (fa-indent)
+- 1. Pháp nhân 2_Form (fa-edit)
+- 1. Pháp nhân_Detail (fa-indent)
+- 1. Phê duyệt HĐKT_Detail (fa-indent)
+- 1. Phê duyệt HĐKT_Form (fa-edit)
+- 1. Sản phẩm đến hạn giao_Detail (fa-indent)
+- 1. Sản phẩm đến hạn giao_Form (fa-edit)
+- 1. Sản phẩm đợi duyệt (fa-list-ul)
+- 1. Sản phẩm theo nhân viên_Detail (fa-indent)
+- 1. Sản phẩm theo nhân viên_Form (fa-edit)
+- 1. SanPham_Detail (fa-indent)
+- 1. SanPham_Form (fa-edit)
+- 1. SanPham_Inline (fa-table)
+- 1. Slice xem lợi nhuận_Detail (fa-indent)
+- 1. Slice xem lợi nhuận_Form (fa-edit)
+- 1. Sổ quỹ_Detail (fa-indent)
+- 1. Sổ quỹ_Form (fa-edit)
+- 1. Sổ thu chi Số tiền còn lại > 2_Detail (fa-indent)
+- 1. Sổ thu chi Số tiền còn lại > 2_Form (fa-edit)
+- 1. Sổ thu chi_Detail (fa-indent)
+- 1. Sổ thu chi_Form (fa-edit)
+- 1. Sổ thu chi_Inline (fa-table)
+- 1. SP đến hạn giao (fa-list-ul)
+- 1. Status is chưa giao hàng_Detail (fa-indent)
+- 1. Status is chưa giao hàng_Form (fa-edit)
+- 1. Status is Đã giao hàng_Detail (fa-indent)
+- 1. Status is Đã giao hàng_Form (fa-edit)
+- 1. Tạo ghi chú - Nhắc việc (fa-list-ul)
+- 1. Task_Detail (fa-indent)
+- 1. Task_Form (fa-edit)
+- 1. THÔNG TIN HĐ_Detail (fa-indent)
+- 1. THÔNG TIN HĐ_Form (fa-edit)
+- 1. THÔNG TIN HĐ_Inline (fa-table)
+- 1. THÔNG TIN IN HĐ (fa-list-ul)
+- 1. xem kpi trong tháng_Detail (fa-indent)
+- 1. xem kpi trong tháng_Form (fa-edit)
+- 1. XuongGiaGong_Detail (fa-indent)
+- 1. XuongGiaGong_Form (fa-edit)
+- 2. CÔNG NỢ (fas fa-funnel-dollar)
+- 2. Khách hàng (fas fa-users)
+- 2. Người Liên Hệ (fas fa-users)
+- 2. Sổ quỹ (fa-list-ul)
+- 3. Xem kpi tháng (fas fa-running)
+- 3. Thu công nợ (fas fa-hands-usd)
+- 4. Xem kpi tháng này (fas fa-running)
+- 5. Sản Phẩm (far fa-boxes)
+- 6. Giao dịch (fas fa-inbox-out)
+- 7. Báo giá (far fa-file-check)
+- 8. Chi tiết sản phẩm (far fa-dolly-flatbed-alt)
+- 9. Lịch giao hàng (fa-calendar)
+- 10. Công nợ quá hạn (fas fa-alarm-exclamation)
+- 11. Thanh toán (fas fa-bow-arrow)
+- 11. Cảnh báo thiếu giá vốn (fas fa-exclamation-triangle)
+- 12. Xem doanh năm (fas fa-landmark)
+- 13. Tỉ trọng đóng góp trong năm (fas fa-chart-pie)
+- 14. NhanVien (fas fa-user-friends)
+- 14. Xem lợi nhuận (fas fa-chart-bar)
+- 15. Pháp nhân (fas fa-cash-register)
+- 15. Xem địa chỉ xưởng (fa-map-marker)
+- 16. Assistant (fa-microphone)
+- 16. NhaCungCap (fas fa-user-headset)
+- 21. Doanh số chi nhánh (fas fa-chart-pie)
+
+## Tables
+- SanPham: Row ID, Phê duyệt, Lý do từ chối, Mã hàng, Tên sản phẩm, Ảnh, Mô tả, Đơn vị tính, Giá nhập, Giá bán, Ngày nhập, Nhà cung cấp, NV tạo, MH+GIÁ BÁN, Giá bán trung bình, SL đã bán:, Sản phẩm đã bán/chưa, SL đã bán: Prediction, LN gộp, SL đã bán: Prediction 2...
+- NhaCungCap: Row ID, Id, Tên NCC, Địa chỉ NCC, Ma So Thue NCC, Người liên hệ, Số ĐT, Email NCC, Hiển thị, Hiển thị NCC
+- KhachHang: Row ID, Phê Duyệt, MÃ KH, TênKH, Giới hạn công nợ, Số ngày công nợ, Ngày tạo, Ngày thành lập, Dia Chi, Ma So Thue, So Dien Thoai, Email, Loai Khach Hang, Cong No, Logo, NV phu trach, Người liên hê, Lý do từ chối, NV Chia sẻ, HĐNT...
+- Nhập đơn hàng: Row ID, Pháp nhân, dấu thời gian, Phê duyệt, Đính kèm HĐKT, Đã giao hàng, Số Hoá đơn, Giới hạn công nợ, Hạn thanh toán, Số HĐ, Giá nhập SON, Thành Tiền (-Thuế), Nhân viên phụ trách, Tiền thuế, Thành tiền (+thuế), Lợi nhuận, Ngày hẹn giao, Ghi chú, Cảnh báo công nợ, KH_NDP...
+- NhanVien: Row ID, Id, Ten, Dia Chi, So Dien Thoai, Email, Chuc Vu, Ngay Vao Lam, Ảnh, BaoGiaDangChon, DSTH, Số đơn thực hiện
+- ChiTieuDoanhSo: Row ID, Id, Tháng, Năm, Chỉ tiêu, Nhan Vien, Khách hàng mới, Số giao dịch, Số báo giá, Số hđ, dsth, Tháng năm, DSTHCTY, NV, doanh số thực hiện, Chỉ tiêu công ty, DSTH+_CHỮ, Ds VIGIFTS, Ds BÁCH NGÂN, Ds CÁ NHÂN...
+- Người liên hệ: Row ID, Id, Tên liên hệ, Chức vụ, Số điẹn thoai, Email, Khách hàng, Hiển thị
+- Sổ thu chi: Row ID, Id, Ngày ghi nhận, Số HĐ, Tilecoc, Số tiền thanh toán, Nọi dung, Nhân Viên, Tênkh_stc, Tài khoản thanh toán, Thành tiền (+VAT) Trên HĐ, Trạng thái thanh toán, Tổng số tiền đã thanh toán theo hđ, Số tiền còn lại, shđ-kh, Số tiền cần thanh toán, hoach toan chi phi, Tính số tiền theo tỉ lệ cọc, Số hoá đơn
+- _Per User Settings: _EMAIL, _NAME, _LOCATION, Options Heading, Option 1, Option 2, Country Option, Language Option, Option 5, Option 6, Option 7, Option 8, BaoGiaDangChon, _THISUSER
+- XuongGiaGong: Row ID, Id_XGC, Ten, Dia Chi, Ma So Thue, So Dien Thoai, Email
+- Chi tiết đơn hàng: Row ID, IDCTDH, dấu thời gian, Đơn vị tính, Mô tả sản phẩm, Số lượng, Ck mua hàng, Đơn giá nhập, Đơn giá bán, Chi phí in logo, Chi phí khác (gói quà, giao hàng, túi), Chiết khấu tiền, Chiết khấu %, Lợi nhuận, Thành tiền (-VAT), Tiền Thuế, Thành tiền (+VAT), Status, Ngày hẹn giao, Xưởng in...
+- Chi phí: Row ID, id, Loại chi phí, Nhân viên, Số hoá đơn (nếu có), Xưởng gia công, Ngày ghi nhận, Hoạch toán vào Số HĐ (nếu có), Số tiền, Người nhận, Tài khoản chi, Xưởng bao bì, NCC, SP, Tìm ncc, Tìm sp
+- Báo giá: Row ID, dấu thời gian, Pháp nhân, Số báo giá, Nhân viên phụ trách, Người liên hệ, Đặt cọc (%), Thời gian giao hàng, Trạng thái, Khách hàng, Số lượng, Đơn giá, Chiết khấu, Thành tiền (-VAT), Thành tiền (+VAT), Tổng Ck, Ghi chú, in báo giá, Địa chỉ lưu file, Hiển thị...
+- Chi tiết báo giá: Row ID, IDCTDH, dấu thời gian, Đơn vị tính, Mô tả, Số lượng, Đơn giá nhập, Đơn giá bán, Chi phí in logo, Chi phí khác (gói quà, giao hàng, túi), Chiết khấu tiền, Chiết khấu %, Lợi nhuận, Số tiền ck, Thành tiền (-VAT), Thành tiền (+VAT), Ngày hẹn giao, Xưởng in, Xưởng bao bì, Sản phẩm...
+- chấm kpi: Row ID, đã chốt, Chốt tháng, Số HĐTH, Nv, Số khm, Số gd, dsth, Tháng, năm, dấu thời gian, TỔNG KPI, Ngày làm hàng, Điểm kpi, Số sao hđ, Thưởng, Hiển thị thưởng, Số HĐ ****, Số HĐ *****, Báo cáo tuần...
+- Giao dịch: Row ID, Chăm sóc lần sau, Thời gian tạo, Khách hàng, Hiển thị tên HK, Người liên hệ, Nôi dung, Nhân viên phụ trách, Kết quả, Loại giao dịch, Điểm, Doanh số, Nhắc tôi trước, Tháng, Năm, Nhắc nhở chăm sóc, Xem báo giá, Quá hạn
+- in hồ sơ: Row ID, Chăm sóc lần sau, Kết quả, Nhân viên phụ trách, Khách hàng, Địa chỉ, Mã số thuế, Số HĐ, Dấu thời gian, Đại diện bên A, Chúc vụ, Tỉ lệ cọc, Thời gian giao hàng, Hạn thanh toán, IN, Lưu HĐKT, Số ngày giao hàng, tháng ký, năm ký, chi tiết sp...
+- Pháp nhân: Row ID, Untitled Text, Untitled Dropdown, Tên công ty, Địa chỉ, Mã số thuế, Người đại diện, Chức vụ, LOGO, Số tài khoản, ngân hàng, Email nhân hoá đơn
+- Home: Row ID, Số mục, Danh mục, danh mục con, link to view, icon, Phân quyền, link to view BN, sắp xếp BN
+- MST_MASTER: Row ID, Ma So Thue_Master
+- Sổ quỹ: Row ID, Mô tả, TK Nguồn, Pháp nhân, Số dư đầy kỳ, Số dư cuối kỳ
+- Pháp nhân 2: Row ID, CTY, THÁNG, NĂM, DSTH, Lợi nhuận
+- Task: Row ID, Đính kèm file, Dấu thời gian, Tên công việc, Độ ưu tiên, Số đơn hàng, Mô tả, Ngày bắt đầu, Ghi nhận thời gian hoàn thành, Ngày hết hạn, Trạng thái, Hoàn thành trong, Người tạo, Nguoi Phu Trach, Giao bằng, Tên người nhận, Số điện thoại người nhận, Địa chỉ, Chụp ảnh 1, Chụp ảnh 2...
+- Nhắc hẹn: Row ID, Nhân viên, Nội dung, Trạng thái, Ngày nhắc, Giờ, Hẹn giờ, Đã nhắc, Hiển thị, Hẹn giờ 1
+- Lịch sử 2: Row ID, Thao tác, Untitled Dropdown, Người dùng, Thời gian, Chi tiết
+- Dashboard: Row ID, Số HĐ, sản phẩm - Copy, Ngày, Tháng, Năm, Tổng chi phí, Tổng lợi nhuận, Tổng doanh số, url, Nhân viên, Khách hàng, sản phẩm
+- THÔNG TIN HĐ: Row ID, Mã số thuế, ĐẠI DIỆN, Chức vụ, Địa chỉ giao hàng, Tỉ lệ cọc, Tên KH, Số HĐ, Lệnh in, hình thức thanh toán
+- Process for New Bot - 1 Process Table: Instance Id, Row ID, Pháp nhân, dấu thời gian, Phê duyệt, Đính kèm HĐKT, Đã giao hàng, Số Hoá đơn, Giới hạn công nợ, Hạn thanh toán, Số HĐ, Giá nhập SON, Thành Tiền (-Thuế), Nhân viên phụ trách, Tiền thuế, Thành tiền (+thuế), Lợi nhuận, Ngày hẹn giao, Ghi chú, Cảnh báo công nợ...
+- Process for Lưu lịch sử - 1 Process Table: Instance Id, Row ID, Phê Duyệt, MÃ KH, TênKH, Giới hạn công nợ, Số ngày công nợ, Ngày tạo, Ngày thành lập, Dia Chi, Ma So Thue, So Dien Thoai, Email, Loai Khach Hang, Cong No, Logo, NV phu trach, Người liên hê, Lý do từ chối, NV Chia sẻ...
+- thao tác Output: Instance Id, Row ID, Phê Duyệt, MÃ KH, TênKH, Giới hạn công nợ, Số ngày công nợ, Ngày tạo, Ngày thành lập, Dia Chi, Ma So Thue, So Dien Thoai, Email, Loai Khach Hang, Cong No, Logo, NV phu trach, Người liên hê, Lý do từ chối, NV Chia sẻ...
+- Process for BG MỚI Process Table: Instance Id, Row ID, dấu thời gian, Pháp nhân, Số báo giá, Nhân viên phụ trách, Người liên hệ, Đặt cọc (%), Thời gian giao hàng, Trạng thái, Khách hàng, Số lượng, Đơn giá, Chiết khấu, Thành tiền (-VAT), Thành tiền (+VAT), Tổng Ck, Ghi chú, in báo giá, Địa chỉ lưu file...
+- Process for New Bot 2 - 1 Process Table: Instance Id, Row ID, Phê Duyệt, MÃ KH, TênKH, Giới hạn công nợ, Số ngày công nợ, Ngày tạo, Ngày thành lập, Dia Chi, Ma So Thue, So Dien Thoai, Email, Loai Khach Hang, Cong No, Logo, NV phu trach, Người liên hê, Lý do từ chối, NV Chia sẻ...
+- Process for cảnh báo xoá Process Table: Instance Id, Row ID, Phê Duyệt, MÃ KH, TênKH, Giới hạn công nợ, Số ngày công nợ, Ngày tạo, Ngày thành lập, Dia Chi, Ma So Thue, So Dien Thoai, Email, Loai Khach Hang, Cong No, Logo, NV phu trach, Người liên hê, Lý do từ chối, NV Chia sẻ...
+- Process for Mail xác nhận phê duyệt hđ Process Table: Instance Id, Row ID, Pháp nhân, dấu thời gian, Phê duyệt, Đính kèm HĐKT, Đã giao hàng, Số Hoá đơn, Giới hạn công nợ, Hạn thanh toán, Số HĐ, Giá nhập SON, Thành Tiền (-Thuế), Nhân viên phụ trách, Tiền thuế, Thành tiền (+thuế), Lợi nhuận, Ngày hẹn giao, Ghi chú, Cảnh báo công nợ...
+- cập nhật lợi nhuận sau duyệt HĐ Output: Instance Id, Row ID, Pháp nhân, dấu thời gian, Phê duyệt, Đính kèm HĐKT, Đã giao hàng, Số Hoá đơn, Giới hạn công nợ, Hạn thanh toán, Số HĐ, Giá nhập SON, Thành Tiền (-Thuế), Nhân viên phụ trách, Tiền thuế, Thành tiền (+thuế), Lợi nhuận, Ngày hẹn giao, Ghi chú, Cảnh báo công nợ...
+- Process for New Bot 5 - 1 Process Table: Instance Id, Row ID, Chăm sóc lần sau, Kết quả, Nhân viên phụ trách, Khách hàng, Địa chỉ, Mã số thuế, Số HĐ, Dấu thời gian, Đại diện bên A, Chúc vụ, Tỉ lệ cọc, Thời gian giao hàng, Hạn thanh toán, IN, Lưu HĐKT, Số ngày giao hàng, tháng ký, năm ký...
+- Process for New Bot 6 - 2 Process Table: Instance Id
+- Process for New Bot 4 - 2 Process Table: Instance Id
+- Process for Sản phẩm được duyệt Process Table: Instance Id, Row ID, Phê duyệt, Lý do từ chối, Mã hàng, Tên sản phẩm, Ảnh, Mô tả, Đơn vị tính, Giá nhập, Giá bán, Ngày nhập, Nhà cung cấp, NV tạo, Số nợ còn lại, MH+GIÁ BÁN, Related Chi tiết báo giás, Related Chi phís, Giá bán trung bình, SL đã bán:...
+- Process for duyệt khách hàng - 1 Process Table: Instance Id, Row ID, Phê Duyệt, MÃ KH, TênKH, Giới hạn công nợ, Số ngày công nợ, Ngày tạo, Ngày thành lập, Dia Chi, Ma So Thue, So Dien Thoai, Email, Loai Khach Hang, Cong No, Logo, NV phu trach, Người liên hê, Lý do từ chối, NV Chia sẻ...
+- New Process 2 Process Table: Instance Id, Row ID, Nhân viên, Nội dung, Trạng thái, Ngày nhắc, Giờ, Hẹn giờ, Đã nhắc, Hiển thị, Hẹn giờ 1, New step, New step 1
+- New step Output: Instance Id, Row ID, Nhân viên, Nội dung, Trạng thái, Ngày nhắc, Giờ, Hẹn giờ, Đã nhắc, Hiển thị, Hẹn giờ 1
+- New step 1 Output: Instance Id, Row ID, Nhân viên, Nội dung, Trạng thái, Ngày nhắc, Giờ, Hẹn giờ, Đã nhắc, Hiển thị, Hẹn giờ 1
+- Process for Xuất báo giá Process Table: Instance Id, Row ID, dấu thời gian, Pháp nhân, Số báo giá, Nhân viên phụ trách, Người liên hệ, Đặt cọc (%), Thời gian giao hàng, Trạng thái, Khách hàng, Số lượng, Đơn giá, Chiết khấu, Thành tiền (-VAT), Thành tiền (+VAT), Tổng Ck, Ghi chú, in báo giá, Địa chỉ lưu file...
+- ĐIỀU KIỆN XUẤT BÁO GIÁ Output: Instance Id, Result
+- Lưu báo giá VG Output: Instance Id, Row ID, dấu thời gian, Pháp nhân, Số báo giá, Nhân viên phụ trách, Người liên hệ, Đặt cọc (%), Thời gian giao hàng, Trạng thái, Khách hàng, Số lượng, Đơn giá, Chiết khấu, Thành tiền (-VAT), Thành tiền (+VAT), Tổng Ck, Ghi chú, in báo giá, Địa chỉ lưu file...
+- Lưu báo giá BN Output: Instance Id, Row ID, dấu thời gian, Pháp nhân, Số báo giá, Nhân viên phụ trách, Người liên hệ, Đặt cọc (%), Thời gian giao hàng, Trạng thái, Khách hàng, Số lượng, Đơn giá, Chiết khấu, Thành tiền (-VAT), Thành tiền (+VAT), Tổng Ck, Ghi chú, in báo giá, Địa chỉ lưu file...
+- Process for Xuất HĐKT Process Table: Instance Id, Row ID, Pháp nhân, dấu thời gian, Phê duyệt, Đính kèm HĐKT, Đã giao hàng, Số Hoá đơn, Giới hạn công nợ, Hạn thanh toán, Số HĐ, Giá nhập SON, Thành Tiền (-Thuế), Nhân viên phụ trách, Tiền thuế, Thành tiền (+thuế), Lợi nhuận, Ngày hẹn giao, Ghi chú, Cảnh báo công nợ...
+- ĐIỀU KIỆN XUẤT HĐKT Output: Instance Id, Result
+- Lưu HĐKT VG Output: Instance Id, Row ID, Pháp nhân, dấu thời gian, Phê duyệt, Đính kèm HĐKT, Đã giao hàng, Số Hoá đơn, Giới hạn công nợ, Hạn thanh toán, Số HĐ, Giá nhập SON, Thành Tiền (-Thuế), Nhân viên phụ trách, Tiền thuế, Thành tiền (+thuế), Lợi nhuận, Ngày hẹn giao, Ghi chú, Cảnh báo công nợ...
+- gửi webhook n8n tạo bộ HĐKT VG Output: Instance Id
+- Lưu HĐKT BN Output: Instance Id, Row ID, Pháp nhân, dấu thời gian, Phê duyệt, Đính kèm HĐKT, Đã giao hàng, Số Hoá đơn, Giới hạn công nợ, Hạn thanh toán, Số HĐ, Giá nhập SON, Thành Tiền (-Thuế), Nhân viên phụ trách, Tiền thuế, Thành tiền (+thuế), Lợi nhuận, Ngày hẹn giao, Ghi chú, Cảnh báo công nợ...
+- gửi webhook n8n tạo bộ HĐKT BN Output: Instance Id
+- Process for Chốt KPI Process Table: Instance Id, Row ID, đã chốt, Chốt tháng, Số HĐTH, Nv, Số khm, Số gd, dsth, Tháng, năm, dấu thời gian, TỔNG KPI, Ngày làm hàng, Điểm kpi, Số sao hđ, Thưởng, Hiển thị thưởng, Số HĐ ****, Số HĐ *****...
+- New step 1 Output 2: Instance Id, Row ID, đã chốt, Chốt tháng, Số HĐTH, Nv, Số khm, Số gd, dsth, Tháng, năm, dấu thời gian, TỔNG KPI, Ngày làm hàng, Điểm kpi, Số sao hđ, Thưởng, Hiển thị thưởng, Số HĐ ****, Số HĐ *****...
+- Process for Tạo KPi Process Table: Instance Id, Row ID, đã chốt, Chốt tháng, Số HĐTH, Nv, Số khm, Số gd, dsth, Tháng, năm, dấu thời gian, TỔNG KPI, Ngày làm hàng, Điểm kpi, Số sao hđ, Thưởng, Hiển thị thưởng, Số HĐ ****, Số HĐ *****...
+- New step 1 Output 3: Instance Id, Row ID, đã chốt, Chốt tháng, Số HĐTH, Nv, Số khm, Số gd, dsth, Tháng, năm, dấu thời gian, TỔNG KPI, Ngày làm hàng, Điểm kpi, Số sao hđ, Thưởng, Hiển thị thưởng, Số HĐ ****, Số HĐ *****...
+- Process for mail yc xhd - 2 Process Table: Instance Id, Row ID, Pháp nhân, dấu thời gian, Phê duyệt, Đính kèm HĐKT, Đã giao hàng, Số Hoá đơn, Giới hạn công nợ, Hạn thanh toán, Số HĐ, Giá nhập SON, Thành Tiền (-Thuế), Nhân viên phụ trách, Tiền thuế, Thành tiền (+thuế), Lợi nhuận, Ngày hẹn giao, Ghi chú, Cảnh báo công nợ...
+- Process for PHÁT HÀNH HOÁ ĐƠN Process Table: Instance Id, Row ID, Pháp nhân, dấu thời gian, Phê duyệt, Đính kèm HĐKT, Đã giao hàng, Số Hoá đơn, Giới hạn công nợ, Hạn thanh toán, Số HĐ, Giá nhập SON, Thành Tiền (-Thuế), Nhân viên phụ trách, Tiền thuế, Thành tiền (+thuế), Lợi nhuận, Ngày hẹn giao, Ghi chú, Cảnh báo công nợ...
+- Process for DUYET BG Process Table: Instance Id, Row ID, dấu thời gian, Pháp nhân, Số báo giá, Nhân viên phụ trách, Người liên hệ, Đặt cọc (%), Thời gian giao hàng, Trạng thái, Khách hàng, Số lượng, Đơn giá, Chiết khấu, Thành tiền (-VAT), Thành tiền (+VAT), Tổng Ck, Ghi chú, in báo giá, Địa chỉ lưu file...
+- Process for Cập nhật trạng thái giao hàng Process Table: Instance Id, Row ID, IDCTDH, dấu thời gian, Đơn vị tính, Mô tả sản phẩm, Số lượng, Ck mua hàng, Đơn giá nhập, Đơn giá bán, Chi phí in logo, Chi phí khác (gói quà, giao hàng, túi), Chiết khấu tiền, Chiết khấu %, Lợi nhuận, Thành tiền (-VAT), Tiền Thuế, Thành tiền (+VAT), Status, Ngày hẹn giao...
+- ghi dữ liệu cột đã giao Output: Instance Id, Row ID, IDCTDH, dấu thời gian, Đơn vị tính, Mô tả sản phẩm, Số lượng, Ck mua hàng, Đơn giá nhập, Đơn giá bán, Chi phí in logo, Chi phí khác (gói quà, giao hàng, túi), Chiết khấu tiền, Chiết khấu %, Lợi nhuận, Thành tiền (-VAT), Tiền Thuế, Thành tiền (+VAT), Status, Ngày hẹn giao...
+- Process for Lưu kpi 2 Process Table: Instance Id, Row ID, Chăm sóc lần sau, Thời gian tạo, Khách hàng, Hiển thị tên HK, Người liên hệ, Nôi dung, Nhân viên phụ trách, Kết quả, Loại giao dịch, Điểm, Doanh số, Nhắc tôi trước, Tháng, Năm, Nhắc nhở chăm sóc, Xem báo giá, Quá hạn, New step
+- New step Output 2: Instance Id, Row ID, Chăm sóc lần sau, Thời gian tạo, Khách hàng, Hiển thị tên HK, Người liên hệ, Nôi dung, Nhân viên phụ trách, Kết quả, Loại giao dịch, Điểm, Doanh số, Nhắc tôi trước, Tháng, Năm, Nhắc nhở chăm sóc, Xem báo giá, Quá hạn
+- Process for Lưu kpi 3 Process Table: Instance Id, Row ID, Phê Duyệt, MÃ KH, TênKH, Giới hạn công nợ, Số ngày công nợ, Ngày tạo, Ngày thành lập, Dia Chi, Ma So Thue, So Dien Thoai, Email, Loai Khach Hang, Cong No, Logo, NV phu trach, Người liên hê, Lý do từ chối, NV Chia sẻ...
+- New step Output 3: Instance Id, Row ID, Phê Duyệt, MÃ KH, TênKH, Giới hạn công nợ, Số ngày công nợ, Ngày tạo, Ngày thành lập, Dia Chi, Ma So Thue, So Dien Thoai, Email, Loai Khach Hang, Cong No, Logo, NV phu trach, Người liên hê, Lý do từ chối, NV Chia sẻ...
+- Process for New Bot - 2 Process Table: Instance Id, Row ID, Pháp nhân, dấu thời gian, Phê duyệt, Đính kèm HĐKT, Đã giao hàng, Số Hoá đơn, Giới hạn công nợ, Hạn thanh toán, Số HĐ, Giá nhập SON, Thành Tiền (-Thuế), Nhân viên phụ trách, Tiền thuế, Thành tiền (+thuế), Lợi nhuận, Ngày hẹn giao, Ghi chú, Cảnh báo công nợ...
+- Chạy action cập nhật lợi nhuận Output: Instance Id, Row ID, Pháp nhân, dấu thời gian, Phê duyệt, Đính kèm HĐKT, Đã giao hàng, Số Hoá đơn, Giới hạn công nợ, Hạn thanh toán, Số HĐ, Giá nhập SON, Thành Tiền (-Thuế), Nhân viên phụ trách, Tiền thuế, Thành tiền (+thuế), Lợi nhuận, Ngày hẹn giao, Ghi chú, Cảnh báo công nợ...
+- Process for n8n HĐ chuyển Đợi duyệt Process Table: Instance Id, Row ID, Pháp nhân, dấu thời gian, Phê duyệt, Đính kèm HĐKT, Đã giao hàng, Số Hoá đơn, Giới hạn công nợ, Hạn thanh toán, Số HĐ, Giá nhập SON, Thành Tiền (-Thuế), Nhân viên phụ trách, Tiền thuế, Thành tiền (+thuế), Lợi nhuận, Ngày hẹn giao, Ghi chú, Cảnh báo công nợ...
+- gửi webhook n8n HĐ chờ duyệt Output: Instance Id
+- Process for n8n HĐ mới Đợi duyệt Process Table: Instance Id, Row ID, Pháp nhân, dấu thời gian, Phê duyệt, Đính kèm HĐKT, Đã giao hàng, Số Hoá đơn, Giới hạn công nợ, Hạn thanh toán, Số HĐ, Giá nhập SON, Thành Tiền (-Thuế), Nhân viên phụ trách, Tiền thuế, Thành tiền (+thuế), Lợi nhuận, Ngày hẹn giao, Ghi chú, Cảnh báo công nợ...
+- gửi webhook n8n HĐ chờ duyệt Output 2: Instance Id
+- Process for n8n Khách hàng mới Process Table: Instance Id, Row ID, Phê Duyệt, MÃ KH, TênKH, Giới hạn công nợ, Số ngày công nợ, Ngày tạo, Ngày thành lập, Dia Chi, Ma So Thue, So Dien Thoai, Email, Loai Khach Hang, Cong No, Logo, NV phu trach, Người liên hê, Lý do từ chối, NV Chia sẻ...
+- gửi webhook n8n tạo khách mới Output: Instance Id
+- Process for New Bot 8 - 2 Process Table: Instance Id, Row ID, IDCTDH, dấu thời gian, Đơn vị tính, Mô tả sản phẩm, Số lượng, Ck mua hàng, Đơn giá nhập, Đơn giá bán, Chi phí in logo, Chi phí khác (gói quà, giao hàng, túi), Chiết khấu tiền, Chiết khấu %, Lợi nhuận, Thành tiền (-VAT), Tiền Thuế, Thành tiền (+VAT), Status, Ngày hẹn giao...
+- New step Output 4: Instance Id, Row ID, IDCTDH, dấu thời gian, Đơn vị tính, Mô tả sản phẩm, Số lượng, Ck mua hàng, Đơn giá nhập, Đơn giá bán, Chi phí in logo, Chi phí khác (gói quà, giao hàng, túi), Chiết khấu tiền, Chiết khấu %, Lợi nhuận, Thành tiền (-VAT), Tiền Thuế, Thành tiền (+VAT), Status, Ngày hẹn giao...
+- New step 1 Output 4: Instance Id, Row ID, IDCTDH, dấu thời gian, Đơn vị tính, Mô tả sản phẩm, Số lượng, Ck mua hàng, Đơn giá nhập, Đơn giá bán, Chi phí in logo, Chi phí khác (gói quà, giao hàng, túi), Chiết khấu tiền, Chiết khấu %, Lợi nhuận, Thành tiền (-VAT), Tiền Thuế, Thành tiền (+VAT), Status, Ngày hẹn giao...
+
+## Slices
+- CongNoDenHan <- Nhập đơn hàng: =AND( [Trạng thái thanh toán] <> "đã thanh toán", IF( OR(ISBLANK([dấu thời gian]), ISBLANK([Hạn thanh toán]), [Hạn thanh toán] < 0, [Hạn thanh toán] > 3650), FALSE, ([dấu thời gian] + [Hạn thanh toán]) <= TODAY() + 5 ), 
+- Sổ thu chi Số tiền còn lại > 2 <- Sổ thu chi: =[Số tiền còn lại] > 0
+- xem doanh số tháng hiện tại <- ChiTieuDoanhSo: =[Năm] = YEAR(TODAY())
+- Status is Đã giao hàng <- Chi tiết đơn hàng: =or([Status] = "Đợi sản xuất", [Status] = "Đợi giao hàng")
+- Nhập đơn hàng Trạng thái thanh toán is blank <- Nhập đơn hàng: =AND( [Trạng thái thanh toán] <> "đã thanh toán", ISNOTBLANK([Ngày hẹn giao]), ([Ngày hẹn giao] + 7) <= TODAY() )
+- Sản phẩm thiếu giá vốn <- Chi tiết đơn hàng: =AND( LOOKUP(USEREMAIL(), "NhanVien", "Email", "Chuc Vu") = "Manager", OR( ISBLANK([Đơn giá nhập]), ISBLANK([Chi phí in logo]), ISBLANK([Chi phí khác (gói quà, giao hàng, túi)]) ) )
+- Chăm khách năm chẵn <- KhachHang: =ISNOTBLANK([Nhắc năm chẵn])
+- Giao dịch đến hạn <- Giao dịch: =AND( IF( ISBLANK([Chăm sóc lần sau]), FALSE, ([Chăm sóc lần sau] - SWITCH([Nhắc tôi trước], "1 tháng", 30, "1 tuần", 7, "1 ngày", 1, 0)) <= TODAY() ), [Quá hạn] = FALSE )
+- Sản phẩm theo nhân viên <- Chi tiết đơn hàng: 
+- Khách còn nợ <- KhachHang: =[Tổng số tiền còn lại]<>0
+- xem kpi trong tháng <- chấm kpi: =AND( MONTH([dấu thời gian]) = MONTH(TODAY()), YEAR([dấu thời gian]) = YEAR(TODAY()) )
+- Sản phẩm đợi duyệt <- SanPham: =and([Phê duyệt]="Chưa duyệt", OR( [NV tạo].[Email] = USEREMAIL(), LOOKUP(USEREMAIL(), "NhanVien", "Email", "Chuc Vu") = "Manager" ))
+- DS THEO PHÁP NHÂN <- ChiTieuDoanhSo: 
+- DS THEO CHI NHÁNH <- Pháp nhân 2: =[NĂM] = YEAR(TODAY())
+- Sản phẩm duyệt sản xuất <- Chi tiết đơn hàng: =or([Status]="Đợi triển khai",[Status]="Đang sản xuất mẫu")
+- Sản phẩm đến hạn giao <- Chi tiết đơn hàng: =AND( [Status] = "Đợi giao hàng", ISNOTBLANK([Ngày hẹn giao]), [Ngày hẹn giao] <= TODAY() + 3 )
+- Phê duyệt HĐKT <- Nhập đơn hàng: =AND( [Phê duyệt] = "Đợi duyệt", COUNT([Related Chi tiết đơn hàngs]) > 0, OR( [Nhân viên phụ trách].[Email] = USEREMAIL(), LOOKUP(USEREMAIL(), "NhanVien", "Email", "Chuc Vu") = "Manager" ) )
+- HĐ chưa xuất HĐ <- Nhập đơn hàng: =and( ISBLANK([Số Hoá đơn]), COUNT( SELECT([Related Chi tiết đơn hàngs][Row ID], [Status] <> "Đã giao hàng") ) = 0 )
+- Khách mua hàng cùng kỳ <- Nhập đơn hàng: =AND( YEAR([dấu thời gian]) < YEAR(TODAY()), OR( MONTH([dấu thời gian]) = MONTH(TODAY()), MONTH([dấu thời gian]) = IF(MONTH(TODAY()) = 12, 1, MONTH(TODAY()) + 1) ))
+- Báo giá đợi duyệt <- Báo giá: =and([Trạng thái]="Đợi duyệt giá", OR( [Nhân viên phụ trách].[Email] = USEREMAIL(), LOOKUP(USEREMAIL(), "NhanVien", "Email", "Chuc Vu") = "Manager" ))
+- KT_chi tiết đơn hàng <- Chi tiết đơn hàng: =OR( ISNOTBLANK([Số HĐ].[Số lần đã gửi yêu cầu]), ISNOTBLANK([Số HĐ].[Số Hoá đơn]) )
+- KH đợi duyệt <- KhachHang: =[Phê Duyệt] = "Đợi duyệt"
+- Slice xem lợi nhuận <- Nhập đơn hàng: =AND( ISNOTBLANK([Pháp nhân]), [Row ID] = MAXROW( "Nhập đơn hàng", "dấu thời gian", AND( [Pháp nhân] = [_THISROW].[Pháp nhân], MONTH([dấu thời gian]) = MONTH(TODAY()), YEAR([dấu thời gian]) = YEAR(TODAY()) ) ) )
+- khoá chỉnh sửa home <- Home: 
+- CongNoTÔNG <- Nhập đơn hàng: =[Trạng thái thanh toán]<>"đã thanh toán"
+- Ds trong ngày <- Nhập đơn hàng: =IF( HOUR(NOW() - "00:00:00") < 10, AND( [Phê duyệt] = "Đã duyệt", DATE([dấu thời gian]) = TODAY() - 1 ), AND( [Phê duyệt] = "Đã duyệt", DATE([dấu thời gian]) = TODAY() ) )
+- Ds trong tuần <- Nhập đơn hàng: =AND( [Phê duyệt] = "Đã duyệt", WEEKNUM([dấu thời gian]) = WEEKNUM(TODAY()), YEAR([dấu thời gian]) = YEAR(TODAY()) )
+- Status is chưa giao hàng <- Chi tiết đơn hàng: =[Status] <> "Đã giao hàng"
+- New Slice <- Nhập đơn hàng: 
+
+## Bots
+-  Mail xác nhận đơn hàng | event=THÔNG BÁO TẠO MỚI HỢP ĐỒNG | process=Process for New Bot - 1
+-  Lưu lịch sử | event=Thao tác khách hàng | process=Process for Lưu lịch sử - 1
+-  BG MỚI | event=Báo giá mới | process=Process for BG MỚI
+-  duyệt khách hàng | event=Khách hàng được duyệt | process=Process for duyệt khách hàng - 1
+- [disabled] nhắc giao hàng | event=New Event | process=Process for nhắc giao hàng - 2
+-  cảnh báo xoá 2 | event=Xoá 2 | process=Process for cảnh báo xoá
+-  Mail xác nhận phê duyệt hđ | event=THÔNG BÁO TẠO MỚI HỢP ĐỒNG 2 | process=Process for Mail xác nhận phê duyệt hđ
+-  New Bot 4 | event=chôt kpi | process=Process for New Bot 4 - 2
+-  New Bot 5 | event=in hồ sơ | process=Process for New Bot 5 - 1
+-  New Bot 6 | event=New event 2 | process=Process for New Bot 6 - 2
+-  Sản phẩm được duyệt | event=Sản phẩm được duyệt | process=Process for Sản phẩm được duyệt
+-  tạo khách hàng mới | event=tạo khách hàng mới | process=Process for New Bot 2 - 1
+-  mail yc xhd | event=THÔNG BÁO YC XHD | process=Process for mail yc xhd - 2
+- [disabled] New Bot 7 | event=New event 3 | process=Process for New Bot 7 - 1
+-  NHẮC HẸN | event=NHẮC HẸN | process=New Process 2
+- [disabled] GIAO DỊCH ĐẾN HẠN | event=GIAO DỊCH ĐẾN HẠN | process=Giao dịch đến hạn
+-  Xuất báo giá | event=Xuất báo giá | process=Process for Xuất báo giá
+-  Xuất HĐKT | event=Xuất HĐKT | process=Process for Xuất HĐKT
+-  Chốt KPI | event=Chốt KPI | process=Process for Chốt KPI
+-  Tạo KPi | event=Tạo kpi | process=Process for Tạo KPi
+-  PHÁT HÀNH HOÁ ĐƠN | event=THÔNG BÁO PHÁT HÀNH HOÁ ĐƠN | process=Process for PHÁT HÀNH HOÁ ĐƠN
+-  DUYET BG | event=DUYET BG | process=Process for DUYET BG
+-  Cập nhật trạng thái giao hàng | event=Cập nhật trạng thái giao hàng | process=Process for Cập nhật trạng thái giao hàng
+- [disabled] Lưu kpi | event=New event 4 | process=Process for Lưu kpi
+-  Lưu kpi 2 | event=New event 5 | process=Process for Lưu kpi 2
+-  Lưu kpi 3 | event=New event 6 | process=Process for Lưu kpi 3
+-  New Bot | event=cập nhật lợi nhuận | process=Process for New Bot - 2
+- [disabled] Xuất HĐKT N8N | event=Xuất HĐKT N8N | process=Process for Xuất HĐKT N8N
+-  n8n HĐ chuyển Đợi duyệt | event=n8n HĐ chuyển Đợi duyệt | process=Process for n8n HĐ chuyển Đợi duyệt
+-  n8n HĐ mới Đợi duyệt | event=n8n HĐ mới Đợi duyệt | process=Process for n8n HĐ mới Đợi duyệt
+-  n8n Khách hàng mới | event=n8n Khách hàng mới | process=Process for n8n Khách hàng mới
+-  New Bot 8 | event=Chi tiet don hang saved | process=Process for New Bot 8 - 2
+-  Callback Bot for New step | event=Callback Event for New step | process=New Process 2

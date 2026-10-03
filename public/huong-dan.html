@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#102a56" />
+  <title>Hướng dẫn web báo giá Bách Ngân - VIGIFTS</title>
+  <link rel="icon" href="/favicon-32.webp" sizes="32x32" type="image/webp" />
+  <link rel="icon" href="/favicon-192.webp" sizes="192x192" type="image/webp" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.webp" />
+  <style>
+    :root{--navy:#102a56;--blue:#2459a9;--ink:#172235;--muted:#667085;--line:#dce2ea;--paper:#fff;--bg:#f3f5f8;--green:#138a68;--red:#d92d20;--amber:#a75c10;--violet:#7047c7;--teal:#0f7c8c}
+    *{box-sizing:border-box}html,body{margin:0;max-width:100%;overflow-x:hidden}body{font-family:Inter,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.58}
+    a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}.topbar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{min-width:0}.brand strong{display:block;color:var(--navy);font-size:17px}.brand span{display:block;color:var(--muted);font-size:12px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);padding:9px 12px;font-weight:750}.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .shell{width:min(1180px,calc(100vw - 32px));margin:0 auto;padding:26px 0 44px}.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:24px;align-items:start;margin-bottom:22px}.hero h1{margin:0;color:var(--navy);font-family:Georgia,"Times New Roman",serif;font-size:34px;line-height:1.14}.hero p{color:#475467;margin:12px 0 0}
+    .panel{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:20px}.toc{display:grid;gap:8px}.toc a{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;background:#f8fafc;color:#233954;font-weight:700}.toc b{width:24px;height:24px;border-radius:7px;background:#eaf1fb;color:var(--blue);display:grid;place-items:center;font-size:12px}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0}.item{background:#fff;border:1px solid var(--line);border-radius:8px;padding:15px;min-width:0}.item h3{margin:0 0 6px;color:var(--navy);font-size:16px}.item p,.item li{color:#53647a}.item ul{margin:8px 0 0;padding-left:18px}
+    section{scroll-margin-top:86px;margin-top:18px}.section-title{display:flex;align-items:center;gap:10px;margin:0 0 12px}.section-title b{width:30px;height:30px;border-radius:8px;background:#eaf1fb;color:var(--blue);display:grid;place-items:center;font-size:13px}.section-title h2{margin:0;color:var(--navy);font-size:21px}
+    table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;display:table}th,td{padding:11px 12px;border-bottom:1px solid #edf0f5;text-align:left;vertical-align:top}th{background:#f6f8fb;color:#42526b;font-size:12px;text-transform:uppercase;letter-spacing:.05em}tr:last-child td{border-bottom:0}td:first-child{font-weight:800;color:var(--navy);white-space:nowrap}
+    .flow-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff;padding:12px}.flow{display:block;min-width:1040px;width:100%;height:auto}.legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;color:#53647a;font-size:13px}.dot{width:12px;height:12px;border-radius:3px;display:inline-block;margin-right:5px;border:1px solid rgba(16,42,86,.18);vertical-align:-1px}
+    .note{border-left:4px solid var(--amber);background:#fff8ee;padding:12px 14px;color:#69410b;border-radius:0 8px 8px 0}.good{border-left-color:var(--green);background:#eefaf5;color:#085d48}.risk{border-left-color:var(--red);background:#fff1f1;color:#8a241c}
+    .steps{counter-reset:step;display:grid;gap:10px}.step{position:relative;padding:13px 14px 13px 52px;background:#fff;border:1px solid var(--line);border-radius:8px}.step:before{counter-increment:step;content:counter(step);position:absolute;left:14px;top:14px;width:26px;height:26px;border-radius:8px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:850}
+    .badge{display:inline-flex;align-items:center;border-radius:999px;padding:2px 8px;font-size:12px;font-weight:800;background:#eef3fa;color:#314564}.badge.green{background:#e8f7f1;color:#087a56}.badge.blue{background:#eaf1fb;color:#2459a9}.badge.violet{background:#f4efff;color:#7047c7}.badge.amber{background:#fff5e8;color:#8a4b0e}.badge.red{background:#fff1f1;color:#9b2c23}
+    .footer{margin-top:26px;color:#667085;font-size:13px;text-align:center}.mobile-scroll{display:none;color:#667085;font-size:12px;margin:8px 0 0}
+    @media(max-width:900px){.topbar{display:grid}.shell{width:min(100%,calc(100vw - 24px));padding-top:18px}.hero{grid-template-columns:1fr}.hero h1{font-size:28px}.grid{grid-template-columns:1fr}.table-scroll{overflow:auto}.table-scroll table{min-width:720px}.mobile-scroll{display:block}.panel{padding:16px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><strong>Hướng dẫn web báo giá Bách Ngân - VIGIFTS</strong><span>Tài liệu đào tạo nhân viên và sơ đồ quy trình vận hành</span></div>
+    <a class="btn primary" href="/quote.html">Mở web báo giá</a>
+  </header>
+  <main class="shell">
+    <div class="hero">
+      <div class="panel">
+        <h1>Tài liệu giới thiệu và hướng dẫn sử dụng</h1>
+        <p>Web báo giá là công cụ dùng chung cho nhân viên kinh doanh, manager và bộ phận vận hành. Mục tiêu là tạo báo giá nhanh, giữ dữ liệu sản phẩm tập trung, giảm nhập tay sang Sapo/CRM/NCC, và chuẩn hóa các bước sau bán hàng.</p>
+        <div class="grid">
+          <div class="item"><h3>Đối tượng dùng</h3><p>Nhân viên kinh doanh, manager, kho và NCC có tài khoản riêng.</p></div>
+          <div class="item"><h3>Dữ liệu chính</h3><p>Danh mục sản phẩm, giá, tồn kho, khách hàng Sapo, báo giá đã lưu, đơn NCC.</p></div>
+          <div class="item"><h3>Nguyên tắc an toàn</h3><p>AI/nút tự động chỉ chuẩn bị hoặc tạo nháp; các bước quan trọng cần người dùng xác nhận.</p></div>
+        </div>
+      </div>
+      <nav class="panel toc" aria-label="Mục lục">
+        <a href="#tong-quan"><b>1</b>Tổng quan chức năng</a>
+        <a href="#chuan-sapo"><b>2</b>Quy chuẩn nghiệp vụ Sapo</a>
+        <a href="#quy-trinh"><b>3</b>Sơ đồ luồng công việc</a>
+        <a href="#cach-dung"><b>4</b>Cách dùng theo quy trình</a>
+        <a href="#nut-tac-vu"><b>5</b>Ý nghĩa từng nút</a>
+        <a href="#hieu-suat"><b>6</b>Hiệu suất và lưu ý</a>
+        <a href="#phan-quyen"><b>7</b>Phân quyền và kiểm soát</a>
+      </nav>
+    </div>
+
+    <section id="tong-quan" class="panel">
+      <div class="section-title"><b>1</b><h2>Tổng quan chức năng</h2></div>
+      <div class="grid">
+        <div class="item"><h3>Soạn báo giá</h3><ul><li>Chọn loại HRC, B2B hoặc VIGIFTS.</li><li>Nhập thông tin khách hàng, người liên hệ, ngày báo giá.</li><li>Thêm sản phẩm từ danh mục hoặc thêm dòng trống.</li></ul></div>
+        <div class="item"><h3>Tính toán tự động</h3><ul><li>Tính tạm tính, VAT và tổng thanh toán.</li><li>Hỗ trợ chiết khấu, phí in, quy cách đóng thùng.</li><li>Tự cập nhật khi thay đổi số lượng hoặc đơn giá.</li></ul></div>
+        <div class="item"><h3>Xuất file</h3><ul><li>Tải file báo giá/PDF.</li><li>Tạo hợp đồng/HĐKT theo mẫu.</li><li>Giữ định dạng thống nhất cho Bách Ngân và VIGIFTS.</li></ul></div>
+        <div class="item"><h3>Tích hợp Sapo</h3><ul><li>Copy báo giá thành đơn nháp Sapo direct.</li><li>Kiểm tra trùng theo số báo giá.</li><li>Ghi lại mã/link đơn Sapo trong web.</li></ul></div>
+        <div class="item"><h3>Đơn hàng NCC</h3><ul><li>Tạo phiếu đặt hàng nhanh.</li><li>Manager duyệt rồi gửi NCC xác nhận.</li><li>Theo dõi cọc, chữ ký và trạng thái nhận hàng.</li></ul></div>
+        <div class="item"><h3>Giao hàng</h3><ul><li>Đặt Lalamove từ thông tin khách.</li><li>Tra lịch sử địa chỉ giao.</li><li>Giảm nhập lại thông tin người nhận.</li></ul></div>
+      </div>
+    </section>
+
+    <section id="chuan-sapo" class="panel">
+      <div class="section-title"><b>2</b><h2>Quy chuẩn nghiệp vụ theo Sapo</h2></div>
+      <p>Trang báo giá được tổ chức theo đúng các nhóm nghiệp vụ mà Sapo đang dùng: khách hàng, sản phẩm & kho hàng, đơn hàng, vận chuyển, thanh toán, nhân viên, báo cáo và chứng từ. Khi nhân viên thao tác trên web, dữ liệu cần khớp với cấu trúc này để sang Sapo không bị lệch mã, lệch kho hoặc trùng chứng từ.</p>
+      <div class="grid">
+        <div class="item"><h3>Khách hàng</h3><p>Trước khi chuyển sang Sapo, cần có tên khách, người liên hệ, số điện thoại, email hoặc mã/MST nếu có. Web sẽ tìm khách cũ trước, chỉ tạo mới khi chưa tìm thấy.</p></div>
+        <div class="item"><h3>Sản phẩm & kho hàng</h3><p>SKU là khóa quan trọng nhất. Mỗi dòng báo giá cần có SKU rõ ràng, số lượng hợp lệ, đơn vị tính và giá bán. Khi tạo phiếu nhập, kho nhận phải là kho đang quản lý trên Sapo.</p></div>
+        <div class="item"><h3>Đơn hàng</h3><p>Nút Copy Sapo tạo đơn nháp bán hàng, dùng số báo giá làm mã tham chiếu để chống tạo trùng. Đơn chỉ nên được xử lý tiếp sau khi nhân viên kiểm tra lại trên Sapo.</p></div>
+        <div class="item"><h3>Nhà cung cấp</h3><p>Đơn NCC đi theo luồng riêng: tạo phiếu đặt hàng, manager duyệt, NCC xác nhận, yêu cầu cọc khi cần, rồi mới tạo phiếu nhập/nhận kho.</p></div>
+        <div class="item"><h3>Vận chuyển</h3><p>Thông tin giao hàng phải tách rõ người nhận, số điện thoại, địa chỉ, ghi chú lấy/giao hàng. Lalamove chỉ nên đặt sau khi đơn và thời gian giao đã rõ.</p></div>
+        <div class="item"><h3>Kế toán & đối soát</h3><p>Phiếu nhập Sapo, thanh toán cọc, hóa đơn/HĐKT và nhận kho cần có mã chứng từ để đối chiếu về sau.</p></div>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Nghiệp vụ Sapo</th><th>Trên web báo giá</th><th>Nguyên tắc triển khai</th></tr></thead>
+          <tbody>
+            <tr><td>Khách hàng</td><td>Thông tin khách hàng, tìm khách Sapo, đẩy CRM</td><td>Ưu tiên tìm khách cũ theo mã, MST, điện thoại, email, tên; tránh tạo trùng.</td></tr>
+            <tr><td>Sản phẩm & kho</td><td>Tìm sản phẩm, tồn kho, hàng sắp về, kho nhận</td><td>SKU phải chính xác; kho nhận mặc định KHO VIGIFTS khi tạo phiếu đặt hàng nhanh.</td></tr>
+            <tr><td>Đơn hàng</td><td>Copy Sapo</td><td>Tạo đơn nháp direct, dùng số báo giá làm code/reference để kiểm tra trùng.</td></tr>
+            <tr><td>Nhà cung cấp</td><td>Đặt hàng NCC, xác nhận NCC, tạm ứng/cọc</td><td>Tách bước đặt hàng, duyệt, xác nhận, thanh toán cọc và nhận hàng.</td></tr>
+            <tr><td>Vận chuyển</td><td>Đặt Lalamove</td><td>Chỉ đặt khi người nhận, địa chỉ, số điện thoại và thời gian giao đã kiểm tra.</td></tr>
+            <tr><td>Chứng từ</td><td>Tải HĐKT, tạo HĐKT CRM, phiếu nhập Sapo</td><td>Mọi chứng từ cần giữ số báo giá/mã phiếu để đối chiếu giữa web, Sapo và CRM.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Tài liệu tham chiếu chính thức: <a href="https://help.sapo.vn/tong-quan-cac-tinh-nang-quan-ly-don-hang" target="_blank" rel="noopener noreferrer">Đơn hàng Sapo</a>, <a href="https://help.sapo.vn/tong-quan-cac-tinh-nang-quan-ly-san-pham-kho-hang" target="_blank" rel="noopener noreferrer">Sản phẩm & kho hàng</a>, <a href="https://help.sapo.vn/tong-quan-cac-tinh-nang-quan-ly-khach-hang" target="_blank" rel="noopener noreferrer">Khách hàng</a>, <a href="https://help.sapo.vn/them-san-pham-vao-don-hang" target="_blank" rel="noopener noreferrer">Thêm sản phẩm vào đơn</a>, <a href="https://help.sapo.vn/them-khach-hang-vao-don-hang" target="_blank" rel="noopener noreferrer">Thêm khách vào đơn</a>, <a href="https://help.sapo.vn/them-moi-nha-cung-cap-tren-phan-mem-quan-ly-ban-hang-sapo" target="_blank" rel="noopener noreferrer">Nhà cung cấp</a>.</p>
+    </section>
+
+    <section id="quy-trinh" class="panel">
+      <div class="section-title"><b>3</b><h2>Sơ đồ luồng quy trình công việc</h2></div>
+      <p class="mobile-scroll">Trên điện thoại có thể kéo ngang sơ đồ để xem đủ luồng.</p>
+      <div class="flow-wrap">
+        <svg class="flow" viewBox="0 0 1120 620" role="img" aria-labelledby="flowTitle flowDesc" xmlns="http://www.w3.org/2000/svg">
+          <title id="flowTitle">Sơ đồ quy trình web báo giá</title>
+          <desc id="flowDesc">Luồng từ đăng nhập, tạo báo giá, lưu, copy Sapo, tạo CRM, đơn NCC và giao hàng.</desc>
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#667085"/></marker>
+            <style>
+              .box{fill:#fff;stroke:#cfd8e5;stroke-width:2}.start{fill:#eaf1fb;stroke:#2459a9}.process{fill:#f8fafc;stroke:#667085}.store{fill:#eefaf5;stroke:#138a68}.external{fill:#fff5e8;stroke:#a75c10}.manager{fill:#f4efff;stroke:#7047c7}.risk{fill:#fff1f1;stroke:#d92d20}.title{font:700 18px Arial,sans-serif;fill:#102a56}.text{font:400 13px Arial,sans-serif;fill:#42526b}.small{font:400 12px Arial,sans-serif;fill:#667085}.line{fill:none;stroke:#667085;stroke-width:2;marker-end:url(#arrow)}
+            </style>
+          </defs>
+          <path class="line" d="M180 82 H270"/>
+          <path class="line" d="M440 82 H530"/>
+          <path class="line" d="M700 82 H790"/>
+          <path class="line" d="M880 132 V194"/>
+          <path class="line" d="M620 132 V194"/>
+          <path class="line" d="M360 132 V194"/>
+          <path class="line" d="M360 302 V370"/>
+          <path class="line" d="M620 302 V370"/>
+          <path class="line" d="M880 302 V370"/>
+          <path class="line" d="M360 478 V538"/>
+          <path class="line" d="M620 478 V538"/>
+          <path class="line" d="M880 478 V538"/>
+
+          <rect class="box start" x="40" y="36" width="140" height="96" rx="8"/><text class="title" x="64" y="74">Đăng nhập</text><text class="text" x="64" y="98">Tài khoản nhân viên</text><text class="small" x="64" y="116">hoặc manager</text>
+          <rect class="box process" x="270" y="36" width="170" height="96" rx="8"/><text class="title" x="294" y="68">Tạo báo giá</text><text class="text" x="294" y="94">Chọn HRC/B2B/VIGIFTS</text><text class="small" x="294" y="114">khách hàng + sản phẩm</text>
+          <rect class="box store" x="530" y="36" width="170" height="96" rx="8"/><text class="title" x="554" y="68">Lưu báo giá</text><text class="text" x="554" y="94">Lưu bản nháp/chính</text><text class="small" x="554" y="114">để mở lại và sửa</text>
+          <rect class="box process" x="790" y="36" width="180" height="96" rx="8"/><text class="title" x="814" y="68">Xuất file</text><text class="text" x="814" y="94">PDF/Excel/HĐKT</text><text class="small" x="814" y="114">gửi khách hoặc nội bộ</text>
+
+          <rect class="box external" x="270" y="194" width="180" height="108" rx="8"/><text class="title" x="294" y="228">Copy Sapo</text><text class="text" x="294" y="254">Tạo đơn nháp direct</text><text class="small" x="294" y="274">kiểm tra trùng số báo giá</text>
+          <rect class="box manager" x="530" y="194" width="180" height="108" rx="8"/><text class="title" x="554" y="228">Tạo CRM</text><text class="text" x="554" y="254">Đẩy HĐKT/khách hàng</text><text class="small" x="554" y="274">chờ duyệt khi cần</text>
+          <rect class="box external" x="790" y="194" width="180" height="108" rx="8"/><text class="title" x="814" y="228">Đặt Lalamove</text><text class="text" x="814" y="254">Tạo yêu cầu giao hàng</text><text class="small" x="814" y="274">từ địa chỉ khách</text>
+
+          <rect class="box process" x="270" y="370" width="180" height="108" rx="8"/><text class="title" x="294" y="404">Đơn NCC</text><text class="text" x="294" y="430">Tạo phiếu đặt hàng</text><text class="small" x="294" y="450">manager kiểm tra</text>
+          <rect class="box manager" x="530" y="370" width="180" height="108" rx="8"/><text class="title" x="554" y="404">NCC xác nhận</text><text class="text" x="554" y="430">Ký/xác nhận đơn</text><text class="small" x="554" y="450">yêu cầu thanh toán cọc</text>
+          <rect class="box store" x="790" y="370" width="180" height="108" rx="8"/><text class="title" x="814" y="404">Hàng sắp về</text><text class="text" x="814" y="430">Theo dõi phiếu nhập</text><text class="small" x="814" y="450">và kho nhận</text>
+
+          <rect class="box external" x="270" y="538" width="180" height="62" rx="8"/><text class="title" x="294" y="574">Phiếu nhập Sapo</text>
+          <rect class="box store" x="530" y="538" width="180" height="62" rx="8"/><text class="title" x="554" y="574">Nhận kho</text>
+          <rect class="box risk" x="790" y="538" width="180" height="62" rx="8"/><text class="title" x="814" y="574">Đối soát</text>
+        </svg>
+      </div>
+      <div class="legend"><span><i class="dot" style="background:#eaf1fb"></i>Nhập liệu</span><span><i class="dot" style="background:#eefaf5"></i>Lưu/trạng thái</span><span><i class="dot" style="background:#fff5e8"></i>Hệ thống ngoài</span><span><i class="dot" style="background:#f4efff"></i>Cần duyệt/xác nhận</span></div>
+    </section>
+
+    <section id="cach-dung" class="panel">
+      <div class="section-title"><b>4</b><h2>Cách dùng theo quy trình</h2></div>
+      <div class="steps">
+        <div class="step"><strong>Đăng nhập và chọn loại báo giá.</strong> Chọn đúng HRC, B2B hoặc VIGIFTS trước khi thêm sản phẩm để hệ thống dùng đúng cột giá, mẫu in và quy tắc tính.</div>
+        <div class="step"><strong>Nhập thông tin khách hàng.</strong> Điền tên công ty/khách, người liên hệ, điện thoại, email và nhân viên phụ trách. Theo cách quản lý của Sapo, khách hàng nên có định danh rõ như mã khách, MST, số điện thoại hoặc email để tránh trùng hồ sơ.</div>
+        <div class="step"><strong>Tìm và thêm sản phẩm.</strong> Dùng nút Tìm sản phẩm, nhập SKU hoặc tên hàng. SKU phải khớp Sapo; kiểm tra ảnh, đơn vị tính, tồn kho, số lượng và đơn giá trước khi lưu.</div>
+        <div class="step"><strong>Kiểm tra tổng tiền và ghi chú.</strong> Xem tạm tính, VAT, tổng thanh toán; cập nhật ghi chú hiệu lực báo giá, giao hàng, thanh toán hoặc phí in.</div>
+        <div class="step"><strong>Lưu báo giá.</strong> Lưu trước khi thao tác các bước ngoài hệ thống. Nếu form đang mở hoặc có dữ liệu chưa lưu, ưu tiên lưu/đóng form để tránh chồng thao tác.</div>
+        <div class="step"><strong>Xuất file hoặc chuyển hệ thống.</strong> Sau khi đã kiểm tra, dùng Copy Sapo, Tạo HĐKT CRM, Tải file HĐKT, Đặt hàng NCC hoặc Đặt Lalamove theo nhu cầu. Các thao tác sang Sapo đều dùng số báo giá/mã phiếu làm mã tham chiếu để phục vụ tìm lại và đối soát.</div>
+      </div>
+    </section>
+
+    <section id="nut-tac-vu" class="panel">
+      <div class="section-title"><b>5</b><h2>Ý nghĩa từng nút tác vụ</h2></div>
+      <p class="mobile-scroll">Trên điện thoại có thể kéo ngang bảng để xem đủ cột.</p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Nút</th><th>Dùng khi nào</th><th>Kết quả</th><th>Lưu ý</th></tr></thead>
+          <tbody>
+            <tr><td>Tìm sản phẩm</td><td>Cần thêm hàng vào báo giá.</td><td>Mở danh mục, tìm theo SKU/tên, thêm vào bảng báo giá.</td><td>Nên kiểm tra đúng mã, tồn kho, đơn vị tính.</td></tr>
+            <tr><td>Lưu báo giá</td><td>Sau khi nhập hoặc chỉnh sửa.</td><td>Lưu báo giá vào hệ thống dùng chung.</td><td>Nên lưu trước khi copy Sapo/CRM/NCC.</td></tr>
+            <tr><td>Báo giá đã lưu</td><td>Cần tìm lại báo giá cũ.</td><td>Mở bộ lọc theo ngày, khách hàng, sản phẩm, nhân viên.</td><td>Mở lại báo giá để sửa, in hoặc tiếp tục xử lý.</td></tr>
+            <tr><td>Báo giá mới</td><td>Bắt đầu một báo giá khác.</td><td>Làm sạch màn hình và tạo số báo giá mới.</td><td>Nếu đang nhập dữ liệu, hãy lưu trước khi tạo mới.</td></tr>
+            <tr><td>Tải file</td><td>Cần gửi khách hoặc lưu nội bộ.</td><td>Tải file báo giá/PDF/Excel theo mẫu.</td><td>Kiểm tra thông tin khách và tổng tiền trước khi gửi.</td></tr>
+            <tr><td>Copy Sapo</td><td>Báo giá đã chốt cần tạo đơn nháp Sapo.</td><td>Tạo/cập nhật trạng thái đơn nháp Sapo direct.</td><td>Kiểm tra khách hàng và sản phẩm theo cấu trúc Sapo trước, sau đó dùng số báo giá để hạn chế tạo lặp.</td></tr>
+            <tr><td>Tạo HĐKT CRM</td><td>Cần đẩy hợp đồng/đơn sang CRM.</td><td>Gửi dữ liệu hợp đồng và khách hàng vào CRM.</td><td>Khách mới có thể ở trạng thái chờ duyệt.</td></tr>
+            <tr><td>Tải file HĐKT</td><td>Cần file hợp đồng để gửi ký.</td><td>Tải mẫu HĐKT đã điền dữ liệu báo giá.</td><td>Kiểm tra pháp nhân, MST, địa chỉ trước khi gửi.</td></tr>
+            <tr><td>Đặt hàng NCC</td><td>Cần tạo đơn đặt hàng cho nhà cung cấp.</td><td>Tạo phiếu đặt hàng nhanh, manager duyệt rồi gửi NCC.</td><td>Chọn đúng NCC, ngày về, kho nhận; kho nhận mặc định là KHO VIGIFTS.</td></tr>
+            <tr><td>Hàng sắp về</td><td>Theo dõi phiếu nhập hoặc hàng đang về.</td><td>Xem lịch hàng về, tạo phiếu nhập Sapo và nhận kho.</td><td>Phiếu nhập cần đúng NCC, kho, SKU và số lượng; giá nhập gửi Sapo hiện để 0 theo quy trình kiểm tra sau.</td></tr>
+            <tr><td>Đặt Lalamove</td><td>Cần giao hàng cho khách.</td><td>Tạo yêu cầu giao hàng từ dữ liệu người nhận.</td><td>Kiểm tra địa chỉ, số điện thoại và thời gian lấy hàng.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="hieu-suat" class="panel">
+      <div class="section-title"><b>6</b><h2>Hiệu suất và lưu ý vận hành</h2></div>
+      <div class="grid">
+        <div class="item"><h3>Tốc độ thao tác</h3><p>Danh mục được tải một lần rồi tìm nhanh trong trình duyệt. Các thao tác Sapo/CRM/Lalamove chạy qua backend để bảo mật token và cookie.</p></div>
+        <div class="item"><h3>Tránh lỗi nhập liệu</h3><p>Các form có kiểm tra thiếu SKU, số lượng, kho nhận, NCC, ngày nhập và quyền manager trước khi gửi hệ thống ngoài.</p></div>
+        <div class="item"><h3>Chống tạo trùng</h3><p>Luồng Sapo direct tìm đơn/phiếu theo số báo giá hoặc mã phiếu trước khi tạo mới.</p></div>
+      </div>
+      <p class="note good"><strong>Khuyến nghị:</strong> Nhân viên nên lưu báo giá trước khi dùng các nút tích hợp. Manager nên kiểm tra báo giá có giá, số lượng, khách hàng và ghi chú đầy đủ trước khi đẩy sang Sapo/CRM/NCC.</p>
+      <p class="note risk"><strong>Lưu ý bảo mật:</strong> Không chia sẻ tài khoản web, không gửi ảnh/token/cookie Sapo ra ngoài, và không tự ý tạo đơn thật khi chưa được khách xác nhận.</p>
+    </section>
+
+    <section id="phan-quyen" class="panel">
+      <div class="section-title"><b>7</b><h2>Phân quyền và kiểm soát</h2></div>
+      <div class="grid">
+        <div class="item"><h3><span class="badge blue">Nhân viên</span></h3><p>Soạn báo giá, lưu, mở báo giá đã lưu, tải file, chuẩn bị dữ liệu cho các thao tác bán hàng.</p></div>
+        <div class="item"><h3><span class="badge violet">Manager</span></h3><p>Duyệt đơn NCC, tạo phiếu nhập Sapo, xem yêu cầu thanh toán cọc, quản lý nhân viên và kiểm tra dữ liệu.</p></div>
+        <div class="item"><h3><span class="badge amber">NCC</span></h3><p>Xem đơn đã gửi, xác nhận đơn, tải chữ ký, gửi yêu cầu thanh toán cọc khi cần.</p></div>
+      </div>
+      <p class="note">Khi triển khai cho nhân viên, nên thống nhất quy trình: báo giá phải lưu trước, đơn Sapo/CRM/NCC chỉ thao tác khi thông tin đã được kiểm tra, và mọi lỗi tích hợp cần chụp màn hình gửi manager để đối soát.</p>
+    </section>
+
+    <p class="footer">Tài liệu dùng nội bộ Bách Ngân - VIGIFTS. Cập nhật theo phiên bản web báo giá đang vận hành.</p>
+  </main>
+</body>
+</html>

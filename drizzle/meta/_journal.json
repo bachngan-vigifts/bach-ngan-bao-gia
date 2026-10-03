@@ -1,0 +1,111 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1788685196380,
+      "tag": "0000_thin_ozymandias",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1788685811682,
+      "tag": "0001_abnormal_maelstrom",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1788689011199,
+      "tag": "0002_dry_nicolaos",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1788702631836,
+      "tag": "0003_pretty_tarot",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1788703247729,
+      "tag": "0004_perfect_hiroim",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1788704339141,
+      "tag": "0005_remove_approved_personal_customers",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1788704826269,
+      "tag": "0006_refresh_sapo_tax_codes",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1788707623242,
+      "tag": "0007_product_edits",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1788710335990,
+      "tag": "0008_stock_imports",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1788748238162,
+      "tag": "0009_add_sales_positions",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1790641772867,
+      "tag": "0021_work_reports",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1790646411089,
+      "tag": "0022_work_cash_requests",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1790648157923,
+      "tag": "0023_staff_sapo_links",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1790650437340,
+      "tag": "0024_nuong_retail_position",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1790891775696,
+      "tag": "0014_curved_skrulls",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+export async function saveExport(blob,fileName){const form=new FormData();form.append('file',blob,fileName);const response=await fetch('/api/staff/export-files',{method:'POST',body:form});if(!response.ok){const text=await response.text();let message=text;try{message=JSON.parse(text).error||text;}catch{}throw Error('Chưa lưu file vào R2: '+message);}return response.json();}

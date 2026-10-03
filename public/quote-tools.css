@@ -1,0 +1,123 @@
+/* Keep the existing mobile toolbar; use a dedicated tool panel on desktop. */
+@media screen {
+  .v0-editor .quote-tools-heading,
+  .v0-editor .quote-tools-tabs,
+  .v0-editor .quote-tools-label { display: none; }
+
+  .v0-editor .quote-tools-panel,
+  .v0-editor .quote-tools-group { display: contents; }
+
+  .v0-editor .quote-tools-panel[hidden],
+  .v0-editor .sidebar .quote-type[hidden] { display: none !important; }
+
+  .v0-editor .sidebar .quote-type b { color: inherit; }
+}
+
+@media screen and (min-width: 1024px) {
+  .v0-editor .v0-header-inner,
+  .v0-editor .topbar,
+  .v0-editor .app-shell { max-width: 1520px; }
+
+  .v0-editor .staff-strip { max-width: 1488px; width: calc(100% - 32px); }
+
+  .v0-editor .app-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 272px;
+    align-items: start;
+    gap: 24px;
+  }
+
+  .v0-editor .workspace { grid-column: 1; grid-row: 1; }
+
+  .v0-editor .sidebar.quote-tools {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex !important;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    align-self: start;
+    gap: 16px;
+    position: sticky;
+    top: 72px;
+    height: auto;
+    max-height: calc(100vh - 88px);
+    max-height: calc(100dvh - 88px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 16px;
+    border: 1px solid #e0e3e8;
+    border-radius: 16px;
+    background: #fff;
+  }
+
+  .v0-editor .quote-tools-heading {
+    display: block;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #17202e;
+  }
+
+  .v0-editor .quote-tools-ready .quote-tools-tabs {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 10px;
+    background: #f0f2f6;
+  }
+
+  .quote-tools-tabs button {
+    min-width: 0;
+    min-height: 40px;
+    padding: 8px 4px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: #656b75;
+    font: 500 14px/1.4 'Be Vietnam Pro', Inter, 'Segoe UI', sans-serif;
+    cursor: pointer;
+  }
+
+  .quote-tools-tabs button[aria-selected="true"] {
+    border-color: #e0e3e8;
+    background: #fff;
+    color: #1d3562;
+    box-shadow: 0 1px 3px #17202e0d;
+  }
+
+  .quote-tools-tabs button:focus-visible {
+    outline: 3px solid #7893bf77;
+    outline-offset: 2px;
+  }
+
+  .v0-editor .quote-tools-panel { display: grid; gap: 20px; }
+  .v0-editor .quote-tools-group { display: grid; gap: 8px; }
+
+  .v0-editor .quote-tools-label {
+    display: block;
+    margin: 0 0 2px;
+    color: #656b75;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  .v0-editor .sidebar.quote-tools .quote-type,
+  .v0-editor .sidebar.quote-tools .side-link {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 10px;
+    font-size: 14px;
+    line-height: 1.4;
+    white-space: normal;
+  }
+
+  .v0-editor .sidebar.quote-tools .quote-type { min-height: 66px; }
+  .v0-editor .sidebar.quote-tools .side-link { min-height: 46px; }
+  .v0-editor .sidebar.quote-tools .type-icon { flex: 0 0 32px; box-shadow: none; }
+  .v0-editor .sidebar.quote-tools .quote-type small { line-height: 1.5; }
+}
