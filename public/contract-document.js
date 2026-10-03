@@ -13,7 +13,7 @@ globalThis.ContractDocument = (() => {
   ];
   const templatesFor = quote => quote.quote_type === 'VIGIFTS'
     ? vigiftsTemplates
-    : bachNganTemplates;
+    : bachNganTemplates.map(t=>t.file==='HDKT'?{...t,path:quote.quote_type==='HRC'?'/mau-hop-dong-hrc-hdkt.docx':'/mau-hop-dong-b2b-hdkt.docx'}:t);
   const money = value => new Intl.NumberFormat('vi-VN', {maximumFractionDigits: 0}).format(Math.round(Number(value) || 0));
   const unitMoney = value => new Intl.NumberFormat('vi-VN', {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(Number(value) || 0);
   const clean = value => String(value ?? '').replace(/^\s*[-–]\s*/, '').trim();
@@ -168,7 +168,9 @@ globalThis.ContractDocument = (() => {
     const filledQuote = {...quote, contractDetails: details || {}, customer: {...(quote.customer || {}), contact_name: details?.representativeName || quote.customer?.contact_name || quote.customer?.contact || ''}, contractTitle: details?.representativeTitle || ''};
     files[path] = strToU8(buildXml(strFromU8(files[path]), filledQuote, contractNumber));
     addWebSourceFooter(files, quote, documentType);
-    return zipSync(files, {level: 6});
+    const output=zipSync(files, {level: 6});
+    if(documentType==='HDKT'&&quote.contract_word_edits?.length){if(!globalThis.ContractWordEdit)throw new Error('Chưa tải công cụ chỉnh Word.');return globalThis.ContractWordEdit.apply(output,quote.contract_word_edits);}
+    return output;
   }
   async function buildPack({quote, contractNumber, details, templateFiles}) {
     const folder = archiveName(quote, contractNumber), files = {};
