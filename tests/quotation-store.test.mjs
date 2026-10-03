@@ -175,10 +175,11 @@ test('manager saved quotations are approved immediately', async () => {
   const employeeQuote=await store.save('a',data);
   assert.equal(employeeQuote.approvalStatus,'pending');
   const managerEdit=await store.save('m',{...data,rows:[{...data.rows[0],price:120000}]},employeeQuote.id,employeeQuote.revision);
-  assert.equal(managerEdit.approvalStatus,'approved');
+  assert.equal(managerEdit.approvalStatus,'pending');
   const editedRecord=await store.get('m',employeeQuote.id);
-  assert.equal(editedRecord.approvalStatus,'approved');
-  assert.equal(editedRecord.approvedBy,'m');
+  assert.equal(editedRecord.approvalStatus,'pending');
+  assert.equal(editedRecord.approvedBy,'');
+  const explicit=await store.approve('m',employeeQuote.id);assert.equal(explicit.approvalStatus,'approved');
  }finally{sql.close();}
 });
 
@@ -231,7 +232,7 @@ test('purchase discount and cost price are visible only to managers and survive 
  }finally{sql.close();}
 });
 
-test('approved quotations only require reapproval when total or notes change', async () => {
+test('saved quotations preserve approval even when total or notes change', async () => {
  const {sql,store}=fixture();
  try {
   const data={...quote,notes:'- Giao hàng theo thỏa thuận.',rows:[{sku:'SP-01',name:'Sản phẩm',qty:2,price:100000,discount:0,discountType:'percent',taxRate:8}]};
@@ -241,12 +242,12 @@ test('approved quotations only require reapproval when total or notes change', a
   assert.equal(cosmetic.approvalStatus,'approved');
   assert.equal((await store.get('a',saved.id)).approvalStatus,'approved');
   const noteChange=await store.save('a',{...data,customer:'Khách hàng cập nhật',owner:'Nhân viên mới',notes:'- Giao hàng trong 10 ngày.'},saved.id,cosmetic.revision);
-  assert.equal(noteChange.approvalStatus,'pending');
+  assert.equal(noteChange.approvalStatus,'approved');
 
   const another=await store.save('a',data);
   const anotherApproved=await store.approve('m',another.id);
   const totalChange=await store.save('a',{...data,rows:[{...data.rows[0],price:120000}]},another.id,anotherApproved.revision);
-  assert.equal(totalChange.approvalStatus,'pending');
+  assert.equal(totalChange.approvalStatus,'approved');
  } finally { sql.close(); }
 });
 
@@ -388,5 +389,18 @@ for(const useR2 of [false,true])test('contract approval is independent, server-o
  await assert.rejects(store.contractApprovalAction('a',saved.id,{action:'export',revision:employee.revision}),e=>e.status===409);
  assert.equal((await store.list('a',null,{hasContract:'1'})).records[0].contractApprovalStatus,'approved');
  const copy=await store.save('a',record.data);assert.equal((await store.get('a',copy.id)).contractApproval.status,'draft');
+ }finally{sql.close();}
+});
+
+for(const useR2 of [false,true])test('only explicit approval changes existing quote status '+(useR2?'R2':'D1'),async()=>{
+ const {sql,db}=fixture(),objects=new Map(),bucket={put:async(k,v)=>objects.set(k,String(v)),get:async k=>objects.has(k)?{json:async()=>JSON.parse(objects.get(k))}:null},store=createQuotationStore(db,useR2?bucket:null);
+ try{
+ const saved=await store.save('a',quote);
+ const edited=await store.save('m',{...quote,notes:'Manager chỉnh ghi chú',approvalStatus:'approved'},saved.id,saved.revision);
+ assert.equal(edited.approvalStatus,'pending');assert.equal((await store.get('m',saved.id)).approvedBy,'');
+ const approved=await store.approve('m',saved.id),before=await store.get('m',saved.id);
+ await store.save('a',{...before.data,notes:'Thay ghi chú',rows:[{...before.data.rows[0],price:999999}]},saved.id,approved.revision);
+ const after=await store.get('a',saved.id);assert.equal(after.approvalStatus,'approved');assert.equal(after.approvedAt,before.approvedAt);assert.equal(after.approvedBy,before.approvedBy);
+ const created=await store.save('m',quote);assert.equal(created.approvalStatus,'approved');
  }finally{sql.close();}
 });

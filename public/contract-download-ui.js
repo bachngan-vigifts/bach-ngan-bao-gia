@@ -63,8 +63,10 @@
       button.disabled = !approved;
       button.title = generated ? `In phiếu giao hàng ${state.contractDocument.contractNumber}` : "Cần bấm Sinh HĐKT trước.";
     });
-    [$("#createContractCrm"), $("#mobileContract")].filter(Boolean).forEach(button => {
-      const label = generated ? "Sửa thông tin HĐKT" : "Sinh HĐKT";
+    [$("#createContractCrm"), $("#mobileContract"), $("#headerCreateContract")].filter(Boolean).forEach(button => {
+      const label = generated ? "Xem HĐKT" : "Sinh HĐKT";
+      button.disabled=state._record?.approvalStatus!=='approved'||Boolean(BN.headerQuoteActionBusy);
+      button.title=button.disabled?'Báo giá cần được duyệt trước khi sinh HĐKT.':label;
       button.querySelector("span") ? button.querySelector("span").textContent = label : button.textContent = label;
     });
   }
@@ -240,6 +242,7 @@
     alertBox.textContent = "";
     if (quoteId) await loadQuoteRecord(quoteId);
     else {
+      if(BN.quoteHasUnsavedChanges?.()&&!(await saveToLibrary()))return false;
       if (BN.reloadCurrentQuote) {
         try { await BN.reloadCurrentQuote(); }
         catch (error) { toast(error.message || "Không tải được dữ liệu báo giá mới nhất."); return false; }
@@ -248,6 +251,7 @@
     }
     if(selectedQuoteData?.contractDocument?.contractNumber&&selectedRecord?.id){location.assign('/contracts/detail?quoteId='+encodeURIComponent(selectedRecord.id));return false;}
     if (mode === "download" && !selectedQuoteData?.contractDocument?.contractNumber) { toast("Vui lòng bấm Sinh HĐKT trước."); return false; }
+    if(selectedRecord?.approvalStatus!=='approved'){toast('Báo giá cần được duyệt trước khi sinh HĐKT.');return false;}
     if (!(await fillFromSelected())) return false;
     openModal();
     quoteStatus.textContent = "Đang tải danh sách báo giá đã lưu...";
@@ -489,7 +493,7 @@
   });
   f.elements.quoteId.addEventListener("change", () => chooseQuoteFromInput().catch(error => { alertBox.textContent = error.message; }));
   f.addEventListener("submit", submitForm);
-  [$("#createContractCrm"), $("#mobileContract")].filter(Boolean).forEach(button => (button.onclick = () => fill("generate")));
+  [$("#createContractCrm"), $("#mobileContract"), $("#headerCreateContract")].filter(Boolean).forEach(button => (button.onclick = () => fill("generate")));
   [$("#downloadContractFile"), $("#mobileDownloadContract")].filter(Boolean).forEach(button => (button.onclick = () => hasDocument() ? fill("download") : toast("Vui lòng bấm Sinh HĐKT trước.")));
   [$("#printDeliveryNote"), $("#mobilePrintDeliveryNote")].filter(Boolean).forEach(button => (button.onclick = () => hasDocument() ? printDeliveryNote() : toast("Vui lòng bấm Sinh HĐKT trước.")));
   BN.openContractDocumentForQuoteId = (id, download = true) => fill(download ? "download" : "generate", id);
