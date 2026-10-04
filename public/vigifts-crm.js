@@ -1046,7 +1046,8 @@
       const wide = /ghi chú|mô tả|địa chỉ|nội dung|cảnh báo|hiển thị/i.test(name) ? " wide" : "";
       return `<label class="${wide}"><span>${esc(name)}</span><strong>${rendered}</strong></label>`;
     }).join("");
-    const customerActions = isCustomerTable() && !isDebtView() ? `<button type="button" data-customer-edit="${esc(rowId(row))}">Sửa</button>${isManager() && normalize(row.values["Phê Duyệt"]) !== "da duyet" ? `<button type="button" class="approve" data-customer-approve="${esc(rowId(row))}">Duyệt khách hàng</button>` : ""}${isManager() ? `<button type="button" class="danger" data-customer-delete="${esc(rowId(row))}">Xóa</button>` : ""}` : "";
+    const unifiedCustomerStorage = Boolean(state.currentData?.unifiedStorage);
+    const customerActions = isCustomerTable() && !isDebtView() ? `<button type="button" data-customer-edit="${esc(rowId(row))}">Sửa</button>${!unifiedCustomerStorage && isManager() && normalize(row.values["Phê Duyệt"]) !== "da duyet" ? `<button type="button" class="approve" data-customer-approve="${esc(rowId(row))}">Duyệt khách hàng</button>` : ""}${!unifiedCustomerStorage && isManager() ? `<button type="button" class="danger" data-customer-delete="${esc(rowId(row))}">Xóa</button>` : ""}` : "";
     const phone = valueText(row.values["Số điẹn thoai"]);
     const email = valueText(row.values.Email);
     const contactActions = isContactTable() ? `<button type="button" data-contact-edit="${esc(rowId(row))}">Sửa</button>${phone ? `<a href="tel:${esc(phone.replace(/[^+\d]/g, ""))}">Gọi</a>` : ""}${email ? `<a href="mailto:${esc(email)}">Gửi email</a>` : ""}${isManager() ? `<button type="button" class="danger" data-contact-delete="${esc(rowId(row))}">Xóa</button>` : ""}` : "";
