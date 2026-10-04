@@ -29,6 +29,13 @@ let pendingQuoteDiscountType=null;
 let showCostFields=false;
 let showProfit=false;
 function currentUserOwner(){return {owner:BN.user?.name||'',ownerPhone:BN.user?.phone||''}}
+function refreshCustomerInfoToggle(){
+ const toggle=$('#customerInfoToggle'),card=toggle?.closest('.customer-card');
+ if(!toggle||!card)return;
+ const expanded=card.classList.contains('is-expanded'),name=($('#customerName')?.value||state.customer||'').trim();
+ toggle.setAttribute('aria-expanded',String(expanded));
+ toggle.textContent=expanded?`${name||'Thông tin khách hàng'} · Thu gọn ▴`:`${name||'Chọn khách hàng'} · Xem thêm ▾`;
+}
 const quoteSavedKeysToIgnore=new Set(['_record','_quoteMetaConfirmed']);
 let lastSavedQuoteSignature='';
 function stableQuoteValue(value){
@@ -114,7 +121,7 @@ function hydrate(){
  if(!String(state.notes||'').trim())state.notes=defaultNotes(state.type);
  state.notes=QuoteNotes.updateDelivery(state.notes,state.type);
  $('#quoteNo').value=state.quoteNo;$('#quoteDate').value=state.date;$('#customerName').value=state.customer;$('#contactName').value=state.contact;$('#phone').value=state.phone;$('#email').value=state.email;if(state.ownerPhone===undefined)state.ownerPhone=state.owner===BN.user.name?(BN.user.phone||''):'';BN.syncOwnerSelect?.(state.owner);$('#owner').value=state.owner||'';$('#ownerPhone').value=state.ownerPhone;$('#vatRate').value=state.vat;$('#notes').value=state.notes||'';
-$$('.quote-type').forEach(b=>{b.hidden=!canUseQuoteType(b.dataset.type);b.classList.toggle('active',b.dataset.type===state.type)});$('#pageTitle').textContent=`Báo giá ${state.type==='VIGIFTS'?'Vigifts':state.type}`;$('#productHint').textContent=state.type==='VIGIFTS'?'Danh mục quà tặng Vigifts · đã ẩn các nhóm Minh Long':'Chỉ hiện Minh Long, Minh Long LYS, Healthy Cook và Sứ dưỡng sinh';setSapoOrderLink(null);queueMicrotask(()=>{refreshSapoOrderStatus(state.quoteNo,{showUpdating:true,poll:true});BN.refreshContractAction?.()});updateCatalogStatus();render();
+$$('.quote-type').forEach(b=>{b.hidden=!canUseQuoteType(b.dataset.type);b.classList.toggle('active',b.dataset.type===state.type)});$('#pageTitle').textContent=`Báo giá ${state.type==='VIGIFTS'?'Vigifts':state.type}`;$('#productHint').textContent=state.type==='VIGIFTS'?'Danh mục quà tặng Vigifts · đã ẩn các nhóm Minh Long':'Chỉ hiện Minh Long, Minh Long LYS, Healthy Cook và Sứ dưỡng sinh';refreshCustomerInfoToggle();setSapoOrderLink(null);queueMicrotask(()=>{refreshSapoOrderStatus(state.quoteNo,{showUpdating:true,poll:true});BN.refreshContractAction?.()});updateCatalogStatus();render();
 }
 function afterPrice(r){return QuoteMath.after(r,state)}
 function canShowCostFields(){return isManager()&&showCostFields}
@@ -323,6 +330,8 @@ loadDraft();hydrate();loadCatalog();
 // Keep typed contact data current before another action rehydrates the form.
 ['quoteNo','customerName','quoteDate','contactName','phone','email','owner','ownerPhone','vatRate','notes'].forEach(id=>$('#'+id).addEventListener('input',()=>{collect();refreshQuoteSaveState()}));
 ['quoteNo','customerName','quoteDate','contactName','phone','email','owner','ownerPhone','vatRate','notes'].forEach(id=>$('#'+id).addEventListener('change',()=>{saveDraft();if(id==='vatRate')render()}));
+$('#customerName')?.addEventListener('input',refreshCustomerInfoToggle);
+$('#customerName')?.addEventListener('change',refreshCustomerInfoToggle);
 function nextQuoteNoForType(type){
  if(type===state.type&&state.quoteNo)return state.quoteNo;
  if(/^BG(?:HRC|B2B)-/.test(state.quoteNo)&&['HRC','B2B'].includes(type))return state.quoteNo.replace(/^BG(?:HRC|B2B)-/,`BG${type}-`);
@@ -412,7 +421,7 @@ $('#applyQuoteDefaultDiscount').onclick=()=>{const type=pendingQuoteDiscountType
 $('#useManualDiscounts').onclick=()=>{const type=pendingQuoteDiscountType||state.type,meta=quoteDiscountFormValues(type);closeModal('quoteDiscount');applyQuoteTypeAndDiscount({type,scope:'manual',...meta})};
 const quoteTopActionsToggle=$('#quoteTopActionsToggle'),quoteTopActions=quoteTopActionsToggle?.closest('.top-actions');if(quoteTopActionsToggle&&quoteTopActions)quoteTopActionsToggle.onclick=()=>{quoteTopActions.classList.toggle('is-expanded');const expanded=quoteTopActions.classList.contains('is-expanded'),label=quoteTopActionsToggle.querySelector('span');quoteTopActionsToggle.setAttribute('aria-expanded',String(expanded));if(label)label.textContent=expanded?'Ẩn thao tác báo giá ▴':'Thao tác báo giá ▾';else quoteTopActionsToggle.textContent=expanded?'Ẩn thao tác báo giá ▴':'Thao tác báo giá ▾';};
 const mobileQuoteActionsToggle=$('#mobileQuoteActionsToggle'),mobileQuoteActions=$('#mobileQuoteActions');if(mobileQuoteActionsToggle&&mobileQuoteActions)mobileQuoteActionsToggle.onclick=()=>{mobileQuoteActions.hidden=!mobileQuoteActions.hidden;mobileQuoteActionsToggle.setAttribute('aria-expanded',String(!mobileQuoteActions.hidden));mobileQuoteActionsToggle.textContent=mobileQuoteActions.hidden?'Tác vụ báo giá ▾':'Ẩn tác vụ báo giá ▴';};
-const customerInfoToggle=$('#customerInfoToggle'),customerCard=customerInfoToggle?.closest('.customer-card');if(customerInfoToggle&&customerCard)customerInfoToggle.onclick=()=>{customerCard.classList.toggle('is-expanded');const expanded=customerCard.classList.contains('is-expanded');customerInfoToggle.setAttribute('aria-expanded',String(expanded));customerInfoToggle.textContent=expanded?'Ẩn thông tin khách hàng ▴':'Nhập thông tin khách hàng ▾';};
+const customerInfoToggle=$('#customerInfoToggle'),customerCard=customerInfoToggle?.closest('.customer-card');if(customerInfoToggle&&customerCard){refreshCustomerInfoToggle();customerInfoToggle.onclick=()=>{customerCard.classList.toggle('is-expanded');refreshCustomerInfoToggle();};}
 function toggleMobileSheet(id,force){
  const sheet=$('#'+id),nav=id==='mobileTemplateSheet'?$('#mobileTemplateNav'):$('#mobileMoreNav');
  if(!sheet)return;
@@ -451,7 +460,7 @@ $('#mobileTemplateNav')?.addEventListener('click',()=>openMobileTemplateSheet('n
 $('#templateSwitchInline')?.addEventListener('click',()=>openMobileTemplateSheet('switch'));
 $('#mobileMoreNav')?.addEventListener('click',()=>{toggleMobileSheet('mobileTemplateSheet',false);toggleMobileSheet('mobileMoreSheet')});
 $('#mobileSearchNav')?.addEventListener('click',()=>{$('#openSearch2').click()});
-$('#mobileAddRowNav')?.addEventListener('click',()=>{customerCard?.classList.add('is-expanded');customerInfoToggle?.setAttribute('aria-expanded','true');if(customerInfoToggle)customerInfoToggle.textContent='Ẩn thông tin khách hàng ▴';customerCard?.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>$('#customerName')?.focus(),260)});
+$('#mobileAddRowNav')?.addEventListener('click',()=>{customerCard?.classList.add('is-expanded');refreshCustomerInfoToggle();customerCard?.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>$('#customerName')?.focus(),260)});
 function runMobilePdfDownload(){closeMobileSheets();(globalThis.openHrcPdfChoice||createPdf)()}
 $('#mobileDownloadNav')?.addEventListener('click',runMobilePdfDownload);
 $('#mobileDownloadPdfA4')?.addEventListener('click',runMobilePdfDownload);
