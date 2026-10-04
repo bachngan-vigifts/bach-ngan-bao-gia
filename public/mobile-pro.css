@@ -533,10 +533,34 @@
   }
 
   body.v0-editor .customer-card {
+    position: relative;
     padding: 12px 14px !important;
   }
   body.v0-editor .customer-card:not(.is-expanded) .section-title {
+    display: block !important;
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    z-index: 2;
+  }
+  body.v0-editor .customer-card:not(.is-expanded) .section-title > span,
+  body.v0-editor .customer-card:not(.is-expanded) .section-title > div {
     display: none !important;
+  }
+  body.v0-editor .customer-card:not(.is-expanded) .section-title .customer-pick-button {
+    display: inline-flex !important;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    margin: 0 !important;
+    padding: 0 14px !important;
+    border-color: rgba(125,242,176,.28) !important;
+    background: rgba(125,242,176,.12) !important;
+    color: #7df2b0 !important;
+    border-radius: 14px !important;
+    font-size: 13px !important;
+    font-weight: 780;
+    white-space: nowrap;
   }
   body.v0-editor .customer-card .customer-info-toggle {
     display: flex !important;
@@ -577,6 +601,9 @@
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  body.v0-editor .customer-card:not(.is-expanded) .customer-info-toggle {
+    padding-right: 150px !important;
   }
   body.v0-editor .customer-card:not(.is-expanded) #customerInfoFields {
     display: none !important;
