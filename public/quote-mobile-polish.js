@@ -39,6 +39,11 @@
       expandCustomerCard();
       setTimeout(()=>input?.focus(),180);
     },true);
+    $('#mobileTemplateNav')?.addEventListener('click',event=>{
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      document.querySelector('#newQuote')?.click();
+    },true);
     setCustomerSummary();
   }
 
