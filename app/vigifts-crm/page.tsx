@@ -64,7 +64,7 @@ export default function VigiftsCrmMirror() {
           <button type="button" data-mobile-view="CÔNG NỢ"><span>◒</span><small>CÔNG NỢ</small></button>
         </nav>
       </section>
-      <script src="/vigifts-crm.js?v=media-cache-20260926-6" defer></script>
+      <script src="/vigifts-crm.js?v=fast-customer-product-20261004" defer></script>
     </main>
   );
 }

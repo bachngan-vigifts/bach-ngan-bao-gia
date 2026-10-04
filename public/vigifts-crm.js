@@ -141,6 +141,12 @@
     "Pháp nhân": { icon: "fas fa-cash-register", menuOrder: 15, tableName: "Pháp nhân" },
     "Assistant": { icon: "fa-microphone", menuOrder: 16, tableName: "SanPham" },
   };
+  const FAST_ROUTES = {
+    "khach hang": "/customers",
+    "san pham": "/products",
+    "sản phẩm": "/products",
+  };
+  const fastRoute = (name) => FAST_ROUTES[normalize(name)];
   const displayName = (view) => {
     const raw = String(view.displayName || "").trim();
     if (!raw) return view.name;
@@ -300,7 +306,9 @@
       const tableName = tableByName.has(rawTableName) || rawTableName === "Home" ? rawTableName : meta.tableName || rawTableName;
       const label = displayName(view);
       const today = view.name === "Nhiệm vụ hôm nay";
-      return `<button type="button" ${today ? 'data-today-view="true"' : `data-table="${esc(tableName)}" data-view="${esc(view.name)}"`} ${tableName || today ? "" : "disabled"}>${navIcon(today ? "Việc hôm nay" : label, view.icon || meta.icon)}<span class="vigifts-nav-label">${esc(today ? "Việc hôm nay" : label)}</span><small>${esc(today ? "Dashboard" : tableName || view.actionType || view.position)}</small></button>`;
+      const route = fastRoute(view.name) || fastRoute(label);
+      const attrs = route ? `data-fast-route="${esc(route)}"` : today ? 'data-today-view="true"' : `data-table="${esc(tableName)}" data-view="${esc(view.name)}"`;
+      return `<button type="button" ${attrs} ${route || tableName || today ? "" : "disabled"}>${navIcon(today ? "Việc hôm nay" : label, view.icon || meta.icon)}<span class="vigifts-nav-label">${esc(today ? "Việc hôm nay" : label)}</span><small>${esc(route ? "Trang nhanh" : today ? "Dashboard" : tableName || view.actionType || view.position)}</small></button>`;
     }).join("");
     const footer = document.getElementById("vigiftsSidebarUser");
     if (footer) footer.innerHTML = `<span>${esc(state.user?.name || state.user?.email || "VIGIFTS")}</span><small>${esc(state.user?.email || state.user?.role || "AppSheet mirror")}</small>`;
@@ -386,7 +394,10 @@
         ],
       },
     ];
-    const html = groups.map((group) => `<section class="vigifts-home-section"><h3>${esc(group.title)}</h3><div>${group.items.map(([icon, label, target]) => `<button class="vigifts-home-card" type="button" data-home-target="${esc(target)}"><span>${esc(icon)}</span><strong>${esc(label)}</strong></button>`).join("")}</div></section>`).join("");
+    const html = groups.map((group) => `<section class="vigifts-home-section"><h3>${esc(group.title)}</h3><div>${group.items.map(([icon, label, target]) => {
+      const route = fastRoute(target) || fastRoute(label);
+      return `<button class="vigifts-home-card" type="button" ${route ? `data-fast-route="${esc(route)}"` : `data-home-target="${esc(target)}"`}><span>${esc(icon)}</span><strong>${esc(label)}</strong></button>`;
+    }).join("")}</div></section>`).join("");
     $("vigiftsContent").innerHTML = `<div class="vigifts-home-appsheet">${html}</div>`;
   }
   const TODAY_PANELS = [
@@ -1137,6 +1148,11 @@
       return void api(`/transactions/${encodeURIComponent(transactionDelete.dataset.transactionDelete)}`, { method: "DELETE" }).then(() => refreshCustomer("Đã xóa giao dịch.")).catch((cause) => toast(cause.message));
     }
     if (event.target.closest("[data-transaction-cancel]") || event.target.id === "vigiftsTransactionBackdrop") return void closeOverlay("vigiftsTransactionBackdrop");
+    const fast = event.target.closest("[data-fast-route]");
+    if (fast) {
+      location.href = fast.dataset.fastRoute;
+      return;
+    }
     const todayView = event.target.closest("[data-today-view]");
     if (todayView) return void loadTodayDashboard();
     const productFilter = event.target.closest("[data-product-filter]");
@@ -1159,6 +1175,11 @@
     }
     const mobileView = event.target.closest("[data-mobile-view]");
     if (mobileView) {
+      const route = fastRoute(mobileView.dataset.mobileView);
+      if (route) {
+        location.href = route;
+        return;
+      }
       document.querySelectorAll("[data-mobile-view]").forEach((item) => item.classList.toggle("active", item === mobileView));
       const view = viewForName(mobileView.dataset.mobileView);
       if (view) loadTable(view.dataset.table, view.dataset.view);
