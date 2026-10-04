@@ -34,7 +34,7 @@ function refreshCustomerInfoToggle(){
  if(!toggle||!card)return;
  const expanded=card.classList.contains('is-expanded'),name=($('#customerName')?.value||state.customer||'').trim();
  toggle.setAttribute('aria-expanded',String(expanded));
- toggle.textContent=expanded?`${name||'Thông tin khách hàng'} · Thu gọn ▴`:`${name||'Chọn khách hàng'} · Xem thêm ▾`;
+ toggle.textContent=expanded?`${name||'Thông tin khách hàng'} · Thu gọn ▴`:`${name||'Khách hàng'} · Xem thêm ▾`;
 }
 const quoteSavedKeysToIgnore=new Set(['_record','_quoteMetaConfirmed']);
 let lastSavedQuoteSignature='';
