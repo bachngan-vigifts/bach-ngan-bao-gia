@@ -688,17 +688,21 @@
     display: grid;
     gap: 12px;
     margin: 14px 0;
+    width: 100%;
   }
   body.v0-editor .search-dialog .catalog-policy {
     display: grid !important;
     grid-template-columns: minmax(0, 1fr);
     gap: 8px;
+    width: 100% !important;
     margin: 0 !important;
     font-size: 13px !important;
     font-weight: 760;
   }
   body.v0-editor .search-dialog .catalog-policy select {
+    display: block;
     width: 100% !important;
+    max-width: none !important;
     min-height: 48px;
     padding: 0 42px 0 14px !important;
     border-radius: 14px !important;
