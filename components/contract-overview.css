@@ -1,2 +1,34 @@
-.co-card{background:#fff;border:1px solid var(--qw-border,#e0e5ed);border-radius:16px;padding:20px}.co-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}.co-controls label{display:grid;gap:6px;font-size:12px;color:var(--qw-muted,#607086)}.co-controls input,.co-controls select{width:100%;min-width:0;min-height:40px;border:1px solid #dce2eb;border-radius:8px;padding:8px;background:white;color:#172b4d;font:inherit}.co-controls input:focus,.co-controls select:focus{outline:2px solid #5478ba;outline-offset:2px}.co-products{white-space:normal;overflow-wrap:anywhere}.co-card .qw-badge{flex-shrink:0}.co-card .qw-filters{flex-wrap:wrap}@media(max-width:767px){.co-card{padding:14px}.co-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.co-card .qw-row{align-items:flex-start}.co-card .qw-row-main{min-width:0}}
+.co-card{background:#fff;border:1px solid var(--qw-border,#e0e5ed);border-radius:16px;padding:20px}.co-summary{display:flex;align-items:center;justify-content:space-between;gap:12px}.co-summary strong{font-size:18px;font-weight:700}.co-summary button{border:1px solid var(--qw-border,#dce2eb);background:#fff;border-radius:999px;min-height:38px;padding:7px 14px;color:var(--qw-primary,#1d3562);font-weight:700}.co-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}.co-controls label{display:grid;gap:6px;font-size:12px;color:var(--qw-muted,#607086)}.co-controls input,.co-controls select{width:100%;min-width:0;min-height:40px;border:1px solid #dce2eb;border-radius:8px;padding:8px;background:white;color:#172b4d;font:inherit}.co-controls input:focus,.co-controls select:focus{outline:2px solid #5478ba;outline-offset:2px}.co-products{white-space:normal;overflow-wrap:anywhere}.co-card .qw-badge{flex-shrink:0}.co-card .qw-filters{flex-wrap:wrap}@media(max-width:767px){.co-card{padding:14px}.co-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.co-card .qw-row{align-items:flex-start}.co-card .qw-row-main{min-width:0}}
 .co-card .qw-badge.approved,.qw-contract-list .qw-badge.approved{background:#2563eb;color:#fff}
+
+@media(max-width:767px){
+ .co-card{
+  border-color:rgba(255,255,255,.12);
+  background:rgba(255,255,255,.055);
+  color:#f8fafc;
+  backdrop-filter:blur(12px);
+  box-shadow:0 16px 34px rgba(0,0,0,.12);
+ }
+ .co-summary strong{color:#f8fafc}
+ .co-summary button{
+  border-color:rgba(125,242,176,.22);
+  background:rgba(125,242,176,.1);
+  color:#9ff6c1;
+ }
+ .co-controls input,.co-controls select{
+  border-color:rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:#f8fafc;
+ }
+ .co-products{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  overflow-wrap:normal;
+ }
+ .co-card .qw-badge.approved,.qw-contract-list .qw-badge.approved{
+  border-color:rgba(56,189,248,.24);
+  background:rgba(56,189,248,.12);
+  color:#93e8ff;
+ }
+}
