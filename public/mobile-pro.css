@@ -20,6 +20,28 @@
     font-family: 'Be Vietnam Pro', Inter, 'Segoe UI', sans-serif;
     padding-bottom: calc(var(--mp-nav-h) + 24px + env(safe-area-inset-bottom));
     -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    touch-action: manipulation;
+  }
+  html body.v0-editor input,
+  html body.v0-editor select,
+  html body.v0-editor textarea {
+    font-size: 16px !important;
+  }
+  html body.v0-editor input[type="date"] {
+    min-height: 46px;
+    text-align: center !important;
+    font: 800 16px/1.2 Inter, "Segoe UI", Arial, sans-serif !important;
+    letter-spacing: 0 !important;
+  }
+  html body.v0-editor input[type="date"]::-webkit-date-and-time-value {
+    text-align: center;
+  }
+  html body.v0-editor input[type="date"]::-webkit-calendar-picker-indicator {
+    margin-left: 0;
+  }
+  body.v0-editor .supplier-order-badge {
+    animation: none !important;
   }
   html body.v0-editor :is(button, input, select, textarea, label, summary, b, span, a, h1, h2, h3, p, td, th) {
     font-family: inherit;
