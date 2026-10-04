@@ -684,6 +684,40 @@
   body.v0-editor .search-dialog .result-price small {
     color: rgba(248,250,252,.68) !important;
   }
+  body.v0-editor .search-dialog .catalog-options {
+    display: grid;
+    gap: 12px;
+    margin: 14px 0;
+  }
+  body.v0-editor .search-dialog .catalog-policy {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    margin: 0 !important;
+    font-size: 13px !important;
+    font-weight: 760;
+  }
+  body.v0-editor .search-dialog .catalog-policy select {
+    width: 100% !important;
+    min-height: 48px;
+    padding: 0 42px 0 14px !important;
+    border-radius: 14px !important;
+    font-size: 15px !important;
+  }
+  body.v0-editor .search-dialog .catalog-search-scope {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-weight: 760;
+  }
+  body.v0-editor .search-dialog .catalog-search-scope input {
+    width: 24px;
+    height: 24px;
+    min-height: 24px !important;
+    flex: 0 0 24px;
+  }
   body.v0-editor .search-dialog .search-box {
     display: flex;
     min-height: 56px;
