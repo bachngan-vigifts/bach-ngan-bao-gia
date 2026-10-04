@@ -614,9 +614,17 @@
 
   body.v0-editor .modal.open,
   body.v0-editor .modal[aria-hidden="false"] {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 1000 !important;
+    display: block !important;
     overflow-y: auto !important;
     align-items: flex-start !important;
     padding: max(12px, env(safe-area-inset-top)) 12px calc(var(--mp-nav-h) + 24px + env(safe-area-inset-bottom)) !important;
+  }
+  body.v0-editor .modal .modal-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
   }
   body.v0-editor .modal .dialog {
     width: min(100%, 430px) !important;
@@ -644,5 +652,10 @@
     top: max(12px, env(safe-area-inset-top)) !important;
     bottom: auto !important;
     max-height: calc(100dvh - var(--mp-nav-h) - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+  }
+  body.v0-editor .mobile-sheet {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 1000 !important;
   }
 }
