@@ -143,8 +143,11 @@
   };
   const FAST_ROUTES = {
     "khach hang": "/customers",
+    "khachhang": "/customers",
     "san pham": "/products",
     "sản phẩm": "/products",
+    "sanpham": "/products",
+    "sp": "/products",
   };
   const fastRoute = (name) => FAST_ROUTES[normalize(name)];
   const displayName = (view) => {
