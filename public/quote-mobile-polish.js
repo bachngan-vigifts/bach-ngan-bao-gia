@@ -8,7 +8,7 @@
     const button=toggle(),wrap=card();
     if(!button||!wrap)return;
     const expanded=wrap.classList.contains('is-expanded');
-    const name=(customerInput()?.value||'').trim()||'Chọn khách hàng';
+    const name=(customerInput()?.value||'').trim()||'Khách hàng';
     button.setAttribute('aria-expanded',String(expanded));
     button.innerHTML='<span class="customer-summary-name"></span>';
     button.querySelector('.customer-summary-name').textContent=name;
