@@ -5,9 +5,16 @@ import './entity-detail.css';
 type Row=Record<string,any>;
 const money=(v:any)=>Number(v||0).toLocaleString('vi-VN')+' ₫';
 const day=(v:any)=>v?String(v).slice(0,10).split('-').reverse().join('/'):'Chưa ghi nhận';
+const storage=()=>{try{return window.sessionStorage;}catch{return null;}};
+const currentId=(kind:'customer'|'product')=>new URLSearchParams(location.search).get(kind==='customer'?'id':'sku')||'';
+const cacheKey=(kind:'customer'|'product',id:string)=>'bn-entity-detail:'+kind+':'+id;
+const readCached=(kind:'customer'|'product')=>{try{const id=currentId(kind),raw=id&&storage()?.getItem(cacheKey(kind,id));return raw?JSON.parse(raw):null;}catch{return null;}};
+const writeCached=(kind:'customer'|'product',id:string,data:Row)=>{try{storage()?.setItem(cacheKey(kind,id),JSON.stringify(data));}catch{}};
 export default function EntityDetail({kind,revision}:{kind:'customer'|'product',revision:number}){
- const [data,setData]=useState<Row|null>(null),[error,setError]=useState(''),[tab,setTab]=useState('overview'),[query,setQuery]=useState(''),[limit,setLimit]=useState(30);
- useEffect(()=>{const c=new AbortController();setError('');setData(null);const id=new URLSearchParams(location.search).get(kind==='customer'?'id':'sku')||'';(async()=>{if(!id)throw Error('Thiếu mã hồ sơ. Vui lòng chọn lại từ danh sách.');const r=await fetch('/api/staff/entity-detail?kind='+kind+'&id='+encodeURIComponent(id)+(revision?'&refresh=1':''),{signal:c.signal,cache:'no-store',credentials:'include'});const d=await r.json();if(r.status===401){location.replace('/login.html?returnTo='+encodeURIComponent(location.pathname+location.search+location.hash));return;}if(!r.ok)throw Error(d.error||'Không tải được hồ sơ');setData(d);})().catch(e=>{if(e.name!=='AbortError')setError(e.message);});return()=>c.abort();},[kind,revision]);
+ const [data,setData]=useState<Row|null>(()=>revision?null:readCached(kind)),[error,setError]=useState(''),[tab,setTab]=useState('overview'),[query,setQuery]=useState(''),[limit,setLimit]=useState(30);
+ useEffect(()=>{const c=new AbortController();setError('');const id=currentId(kind),cached=revision?null:readCached(kind);if(cached)setData(cached);else setData(null);
+  const load=async(includeDebt:boolean)=>{const r=await fetch('/api/staff/entity-detail?kind='+kind+'&id='+encodeURIComponent(id)+(revision?'&refresh=1':'')+(includeDebt?'':'&debt=0'),{signal:c.signal,cache:'no-store',credentials:'include'});const d=await r.json();if(r.status===401){location.replace('/login.html?returnTo='+encodeURIComponent(location.pathname+location.search+location.hash));return null;}if(!r.ok)throw Error(d.error||'Không tải được hồ sơ');return d;};
+  (async()=>{if(!id)throw Error('Thiếu mã hồ sơ. Vui lòng chọn lại từ danh sách.');const quick=await load(false);if(!quick)return;setData(quick);writeCached(kind,id,quick);if(kind==='customer'&&!c.signal.aborted){try{const full=await load(true);if(full){setData(full);writeCached(kind,id,full);}}catch{/* Keep the quick profile visible if CRM debt is slow. */}}})().catch(e=>{if(e.name!=='AbortError')setError(e.message);});return()=>c.abort();},[kind,revision]);
  if(error)return <div className="qw-error" role="alert">{error}<a href={kind==='customer'?'/customers':'/products'}>Quay lại danh sách</a></div>;
  if(!data)return <p className="qw-empty" role="status">Đang tổng hợp hồ sơ trong phạm vi tài khoản…</p>;
  const customer=kind==='customer',e=data.entity,s=data.summary,debt=data.debt,quotes=data.quotes.filter((q:Row)=>(tab!=='contracts'||q.contractNumber)&&[q.quoteNo,q.contractNumber,q.customer].join(' ').toLocaleLowerCase().includes(query.toLocaleLowerCase()));
