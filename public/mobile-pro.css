@@ -524,4 +524,61 @@
     color: #101827;
     box-shadow: 0 10px 28px rgba(56,189,248,.24);
   }
+
+  body.v0-editor .sidebar.quote-tools .quote-type-group {
+    display: none !important;
+  }
+
+  body.v0-editor .customer-card {
+    padding: 12px 14px !important;
+  }
+  body.v0-editor .customer-card:not(.is-expanded) .section-title {
+    display: none !important;
+  }
+  body.v0-editor .customer-card .customer-info-toggle {
+    display: flex !important;
+    width: 100%;
+    min-height: 48px;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 !important;
+    padding: 0 2px !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #f8fafc !important;
+    font-size: 15px !important;
+    font-weight: 760;
+    text-align: left;
+    box-shadow: none !important;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  body.v0-editor .customer-card .customer-info-toggle::after {
+    content: "Xem thêm";
+    flex: 0 0 auto;
+    margin-left: 10px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(125,242,176,.12);
+    color: #7df2b0;
+    font-size: 12px;
+    font-weight: 760;
+  }
+  body.v0-editor .customer-card.is-expanded .customer-info-toggle {
+    margin-bottom: 12px !important;
+  }
+  body.v0-editor .customer-card.is-expanded .customer-info-toggle::after {
+    content: "Thu gọn";
+  }
+  body.v0-editor .customer-card .customer-info-toggle .customer-summary-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  body.v0-editor .customer-card:not(.is-expanded) #customerInfoFields {
+    display: none !important;
+  }
+  body.v0-editor .customer-card.is-expanded #customerInfoFields {
+    display: grid !important;
+  }
 }
