@@ -611,4 +611,38 @@
   body.v0-editor .customer-card.is-expanded #customerInfoFields {
     display: grid !important;
   }
+
+  body.v0-editor .modal.open,
+  body.v0-editor .modal[aria-hidden="false"] {
+    overflow-y: auto !important;
+    align-items: flex-start !important;
+    padding: max(12px, env(safe-area-inset-top)) 12px calc(var(--mp-nav-h) + 24px + env(safe-area-inset-bottom)) !important;
+  }
+  body.v0-editor .modal .dialog {
+    width: min(100%, 430px) !important;
+    max-width: 430px !important;
+    max-height: calc(100dvh - var(--mp-nav-h) - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+    margin: 0 auto !important;
+    border-radius: 18px !important;
+    overflow: auto !important;
+  }
+  body.v0-editor dialog[open] {
+    position: fixed !important;
+    top: max(12px, env(safe-area-inset-top)) !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: min(calc(100vw - 24px), 430px) !important;
+    max-width: 430px !important;
+    max-height: calc(100dvh - var(--mp-nav-h) - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+    margin: 0 !important;
+    transform: translateX(-50%) !important;
+    overflow: auto !important;
+    border-radius: 18px !important;
+  }
+  body.v0-editor .mobile-sheet-panel {
+    top: max(12px, env(safe-area-inset-top)) !important;
+    bottom: auto !important;
+    max-height: calc(100dvh - var(--mp-nav-h) - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+  }
 }
