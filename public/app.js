@@ -337,7 +337,22 @@ function nextQuoteNoForType(type){
  if(/^BG(?:HRC|B2B)-/.test(state.quoteNo)&&['HRC','B2B'].includes(type))return state.quoteNo.replace(/^BG(?:HRC|B2B)-/,`BG${type}-`);
  return makeNo(type);
 }
-function openQuoteDiscountChoice(type){pendingQuoteDiscountType=type;$('#quoteDiscountTypeName').textContent=type==='VIGIFTS'?'Vigifts':type;$('#quoteDiscountDate').value=state.date||today();$('#quoteDiscountNo').value=nextQuoteNoForType(type);$('#quoteDefaultDiscount').value=Number(state.defaultDiscount)>0?Number(state.defaultDiscount):'';openModal('quoteDiscount')}
+function refreshQuoteDiscountTypeButtons(){
+ $$('[data-quote-discount-type]').forEach(button=>{
+  const type=button.dataset.quoteDiscountType;
+  button.hidden=!canUseQuoteType(type);
+  button.classList.toggle('active',type===pendingQuoteDiscountType);
+  button.setAttribute('aria-pressed',String(type===pendingQuoteDiscountType));
+ });
+}
+function setQuoteDiscountType(type,{resetNo=true}={}){
+ if(!canUseQuoteType(type))type=firstAllowedQuoteType();
+ pendingQuoteDiscountType=type;
+ $('#quoteDiscountTypeName').textContent=type==='VIGIFTS'?'Vigifts':type;
+ if(resetNo)$('#quoteDiscountNo').value=nextQuoteNoForType(type);
+ refreshQuoteDiscountTypeButtons();
+}
+function openQuoteDiscountChoice(type){setQuoteDiscountType(type);$('#quoteDiscountDate').value=state.date||today();$('#quoteDefaultDiscount').value=Number(state.defaultDiscount)>0?Number(state.defaultDiscount):'';openModal('quoteDiscount')}
 function quoteDiscountFormValues(type){return {quoteNo:$('#quoteDiscountNo')?.value.trim()||makeNo(type),date:$('#quoteDiscountDate')?.value||today()}}
 function openFirstProductQuoteDiscount(wasEmpty){if(!wasEmpty||state._quoteMetaConfirmed)return;if($('#searchModal')?.classList.contains('open'))closeModal('search');openQuoteDiscountChoice(state.type)}
 const canKeepRowsOnTypeChange=(from,to)=>['HRC','B2B'].includes(from)&&['HRC','B2B'].includes(to);
@@ -419,6 +434,8 @@ $('#downloadHrcPdfHiddenCk').onclick=()=>{closeModal('hrcPdfChoice');createPdf(s
 $('#downloadHrcPdfShownCk').onclick=()=>{closeModal('hrcPdfChoice');createPdf(state.type==='B2B'?{hideB2bDiscountColumn:false}:{hideHrcDiscountColumn:false})};
 $('#applyQuoteDefaultDiscount').onclick=()=>{const type=pendingQuoteDiscountType||state.type,value=Math.min(100,Math.max(0,inputNumber($('#quoteDefaultDiscount').value))),meta=quoteDiscountFormValues(type);closeModal('quoteDiscount');applyQuoteTypeAndDiscount({type,scope:'table',discount:value,...meta})};
 $('#useManualDiscounts').onclick=()=>{const type=pendingQuoteDiscountType||state.type,meta=quoteDiscountFormValues(type);closeModal('quoteDiscount');applyQuoteTypeAndDiscount({type,scope:'manual',...meta})};
+$$('[data-quote-discount-type]').forEach(button=>button.addEventListener('click',()=>setQuoteDiscountType(button.dataset.quoteDiscountType)));
+$('#quoteDiscountPickCustomer')?.addEventListener('click',()=>document.querySelector('.customer-pick-button')?.click());
 const quoteTopActionsToggle=$('#quoteTopActionsToggle'),quoteTopActions=quoteTopActionsToggle?.closest('.top-actions');if(quoteTopActionsToggle&&quoteTopActions)quoteTopActionsToggle.onclick=()=>{quoteTopActions.classList.toggle('is-expanded');const expanded=quoteTopActions.classList.contains('is-expanded'),label=quoteTopActionsToggle.querySelector('span');quoteTopActionsToggle.setAttribute('aria-expanded',String(expanded));if(label)label.textContent=expanded?'Ẩn thao tác báo giá ▴':'Thao tác báo giá ▾';else quoteTopActionsToggle.textContent=expanded?'Ẩn thao tác báo giá ▴':'Thao tác báo giá ▾';};
 const mobileQuoteActionsToggle=$('#mobileQuoteActionsToggle'),mobileQuoteActions=$('#mobileQuoteActions');if(mobileQuoteActionsToggle&&mobileQuoteActions)mobileQuoteActionsToggle.onclick=()=>{mobileQuoteActions.hidden=!mobileQuoteActions.hidden;mobileQuoteActionsToggle.setAttribute('aria-expanded',String(!mobileQuoteActions.hidden));mobileQuoteActionsToggle.textContent=mobileQuoteActions.hidden?'Tác vụ báo giá ▾':'Ẩn tác vụ báo giá ▴';};
 const customerInfoToggle=$('#customerInfoToggle'),customerCard=customerInfoToggle?.closest('.customer-card');if(customerInfoToggle&&customerCard){refreshCustomerInfoToggle();customerInfoToggle.onclick=()=>{customerCard.classList.toggle('is-expanded');refreshCustomerInfoToggle();};}
