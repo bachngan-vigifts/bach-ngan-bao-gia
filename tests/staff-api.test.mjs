@@ -10,7 +10,7 @@ test('real Workers/D1 authentication, lifecycle and quotation API enforce member
  const origin='https://staff.test';
  const secrets=Object.fromEntries(initialStaff.map((m,i)=>[m.id,{token:(i+1).toString(16).padStart(64,'0')} ]));
  const seeds=Object.fromEntries(Object.entries(secrets).map(([id,s])=>[id,{hash:createHash('sha256').update(s.token).digest('hex'),expires:Math.floor(Date.now()/1000)+600}]));
- const modules=[{type:'ESModule',path:resolve('test-entry.mjs'),contents:"import {staffApi} from './lib/staff-api.mjs'; export default {fetch:staffApi};"},...readdirSync('lib').filter(name=>name.endsWith('.mjs')).map(name=>name.slice(0,-4)).map(name=>({type:'ESModule',path:resolve('lib/'+name+'.mjs'),contents:readFileSync(resolve('lib/'+name+'.mjs'),'utf8').replaceAll("'@noble/hashes/", "'../node_modules/@noble/hashes/").replaceAll("'@neondatabase/serverless'", "'../node_modules/@neondatabase/serverless/index.mjs'")}))];
+ const modules=[{type:'ESModule',path:resolve('test-entry.mjs'),contents:"import {staffApi} from './lib/staff-api.mjs'; export default {fetch:staffApi};"},...readdirSync('lib').filter(name=>name.endsWith('.mjs')).map(name=>name.slice(0,-4)).map(name=>({type:'ESModule',path:resolve('lib/'+name+'.mjs'),contents:readFileSync(resolve('lib/'+name+'.mjs'),'utf8').replaceAll("'@noble/hashes/", "'../node_modules/@noble/hashes/").replaceAll("'@neondatabase/serverless'", "'../node_modules/@neondatabase/serverless/index.mjs'").replaceAll('"@neondatabase/serverless"', '"../node_modules/@neondatabase/serverless/index.mjs"')}))];
  modules.push({type:'ESModule',path:resolve('node_modules/@neondatabase/serverless/index.mjs'),contents:readFileSync('node_modules/@neondatabase/serverless/index.mjs','utf8')});
  for(const file of readdirSync('node_modules/@noble/hashes').filter(f=>f.endsWith('.js')))modules.push({type:'ESModule',path:resolve('node_modules/@noble/hashes/'+file),contents:readFileSync('node_modules/@noble/hashes/'+file,'utf8')});
 
@@ -60,9 +60,12 @@ test('real Workers/D1 authentication, lifecycle and quotation API enforce member
    assert(savedSession.expires-Math.floor(Date.now()/1000)<=2592000);assert(savedSession.expires-Math.floor(Date.now()/1000)>2591900);
  }
  for(const id of Object.keys(sessions)){
-  assert.equal((await call('/incoming-stock','GET',undefined,sessions[id])).status,200);
-  assert.equal((await call('/incoming-stock/00000000-0000-4000-8000-000000000000','GET',undefined,sessions[id])).status,404);
+  assert.equal((await call('/incoming-stock','GET',undefined,sessions[id])).status,id==='NV001'?200:403);
+  assert.equal((await call('/incoming-stock/00000000-0000-4000-8000-000000000000','GET',undefined,sessions[id])).status,id==='NV001'?404:403);
   assert.equal((await call('/incoming-stock/00000000-0000-4000-8000-000000000000','DELETE',{revision:'test'},sessions[id])).status,id==='NV001'?404:403);
+  assert.equal((await call('/supplier-orders','GET',undefined,sessions[id])).status,id==='NV001'?200:403);
+  assert.equal((await call('/supplier-orders/pending-count','GET',undefined,sessions[id])).status,id==='NV001'?200:403);
+  assert.equal((await call('/quotes/profit-summary','GET',undefined,sessions[id])).status,id==='NV001'?200:403);
   if(id!=='NV001')for(const action of ['preview','apply'])assert.equal((await call('/incoming-stock/'+action,'POST',{},sessions[id])).status,403);
  }
  assert.equal((await call('/incoming-stock')).status,401);

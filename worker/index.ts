@@ -71,9 +71,13 @@ const worker = {
     const pageRequest = (request.method === 'GET' || request.method === 'HEAD')
       && ((request.headers.get('accept') || '').includes('text/html') || ['/', '/quote', '/quote.html', '/index.html'].includes(url.pathname))
       && (!extensionMatch || extensionMatch[1] === 'html');
-    const supplierPagePaths = new Set(['/supplier', '/supplier.html', '/login.html']);
-    if (pageRequest && !supplierPagePaths.has(url.pathname) && await staffPageRole(env.DB, request) === 'supplier') {
+    const supplierPagePaths = new Set(['/supplier', '/supplier.html']);
+    const staffPageRoleValue = pageRequest ? await staffPageRole(env.DB, request) : null;
+    if (pageRequest && staffPageRoleValue === 'supplier' && !supplierPagePaths.has(url.pathname) && url.pathname !== '/login.html') {
       return Response.redirect(new URL('/supplier', url), 302);
+    }
+    if (pageRequest && staffPageRoleValue === 'employee' && supplierPagePaths.has(url.pathname)) {
+      return Response.redirect(new URL('/', url), 302);
     }
 
     return handler.fetch(request, env, ctx);

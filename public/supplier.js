@@ -5,7 +5,7 @@
  const number=value=>Number(value||0).toLocaleString('vi-VN',{maximumFractionDigits:3});
  const date=value=>value?new Date(value).toLocaleDateString('vi-VN'):'—';
  const api=async(path,method='GET',body)=>{
-  const response=await fetch('/api/staff'+path,{method,cache:'no-store',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});
+  const response=await fetch('/api/staff'+path,{method,cache:'no-store',credentials:'include',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});
   let data={};try{data=await response.json();}catch{}
   if(response.status===401){location.replace('/login.html?returnTo='+encodeURIComponent(location.pathname+location.search+location.hash));throw Error('Vui lòng đăng nhập lại.');}
   if(!response.ok)throw Error(data.error||'Không thể kết nối hệ thống.');
@@ -939,7 +939,7 @@ function renderOrders(){
  }
  async function load(){
   const me=await api('/me');
-  if(!['supplier','manager','employee'].includes(me.user.role)){location.replace('/quote');return;}
+  if(!['supplier','manager'].includes(me.user.role)){location.replace('/');return;}
   currentUser=me.user;
   setupHomeLayout(me.user);
   $('#supplierUser').textContent=`${me.user.name} · ${me.user.email}`;
