@@ -793,4 +793,84 @@
   body.v0-editor .search-dialog .money {
     color: #7df2b0 !important;
   }
+
+  body.v0-editor .quote-discount-dialog {
+    border: 1px solid rgba(255,255,255,.14) !important;
+    background:
+      radial-gradient(120% 70% at 90% -12%, rgba(56,189,248,.18), transparent 58%),
+      linear-gradient(180deg, rgba(16,24,39,.96), rgba(23,32,51,.96)) !important;
+    color: #f8fafc !important;
+    box-shadow: 0 24px 70px rgba(0,0,0,.36) !important;
+  }
+  body.v0-editor .quote-discount-dialog .eyebrow,
+  body.v0-editor .quote-discount-dialog .dialog-head h2,
+  body.v0-editor .quote-discount-dialog .stack-label span {
+    color: #f8fafc !important;
+  }
+  body.v0-editor .quote-discount-dialog .payload-note {
+    color: rgba(248,250,252,.68) !important;
+  }
+  body.v0-editor .quote-discount-dialog .icon-btn {
+    background: rgba(255,255,255,.08) !important;
+    color: #f8fafc !important;
+  }
+  body.v0-editor .quote-discount-types {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: 14px 0;
+  }
+  body.v0-editor .quote-discount-types button {
+    min-height: 46px;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 14px;
+    background: rgba(255,255,255,.065);
+    color: rgba(248,250,252,.70);
+    font: 780 14px/1.1 inherit;
+  }
+  body.v0-editor .quote-discount-types button.active {
+    border-color: transparent;
+    background: linear-gradient(135deg, #7df2b0, #38bdf8);
+    color: #101827;
+  }
+  body.v0-editor .quote-discount-customer {
+    width: 100%;
+    min-height: 48px;
+    justify-content: space-between;
+    margin: 0 0 12px;
+    border-color: rgba(125,242,176,.28) !important;
+    background: rgba(125,242,176,.12) !important;
+    color: #7df2b0 !important;
+    border-radius: 14px !important;
+  }
+  body.v0-editor .quote-discount-customer span {
+    color: rgba(248,250,252,.58);
+    font-size: 12px;
+    font-weight: 650;
+  }
+  body.v0-editor .quote-discount-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  body.v0-editor .quote-discount-dialog :is(input, select) {
+    width: 100% !important;
+    min-height: 48px;
+    border-color: rgba(255,255,255,.14) !important;
+    background: rgba(255,255,255,.06) !important;
+    color: #f8fafc !important;
+    border-radius: 14px !important;
+  }
+  body.v0-editor .quote-discount-dialog .dialog-actions {
+    display: grid;
+    grid-template-columns: minmax(0,1fr);
+  }
+  body.v0-editor .quote-discount-dialog .dialog-actions .btn {
+    width: 100%;
+  }
+  body.v0-editor .quote-discount-dialog .dialog-actions .btn.primary {
+    border-color: transparent !important;
+    background: linear-gradient(135deg, #7df2b0, #38bdf8) !important;
+    color: #101827 !important;
+  }
 }
