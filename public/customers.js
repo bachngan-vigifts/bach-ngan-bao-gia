@@ -1,5 +1,5 @@
 (()=>{
- const button=document.createElement('button');button.className='btn soft customer-pick-button';button.textContent='Chọn khách hàng';button.type='button';document.querySelector('.customer-card .section-title').append(button);
+ const button=document.createElement('button');button.className='btn soft customer-pick-button';button.textContent='Chọn';button.type='button';button.setAttribute('aria-label','Chọn khách hàng');document.querySelector('.customer-card .section-title').append(button);
  const dialog=document.createElement('dialog');dialog.className='staff-dialog';dialog.innerHTML='<header><h2>Danh sách khách hàng</h2><button class="btn ghost" type="button">Đóng</button></header><label>Tìm theo tên, số điện thoại hoặc email<input id="sapoSearch" type="search" autocomplete="off" style="display:block;width:100%;padding:12px;margin:12px 0;font-size:16px"></label><p id="sapoStatus" role="status"></p><div id="sapoResults"></div>';document.body.append(dialog);
  const input=dialog.querySelector('input'),results=dialog.querySelector('#sapoResults'),status=dialog.querySelector('#sapoStatus'),customerNameInput=document.getElementById('customerName');let timer,sequence=0,quickTimer,quickSequence=0,quickMatches=[];
  dialog.querySelector('header button').onclick=()=>dialog.close();
