@@ -473,7 +473,12 @@ async function createNewQuoteWithType(type){
  state={type,quoteNo:makeNo(type),date:today(),customer:'',contact:'',phone:'',email:'',...currentUserOwner(),vat:8,notes:defaultNotes(type),notesVersion:2,rows:[]};
  hydrate();saveDraft();openQuoteDiscountChoice(type);toast(`Đã tạo báo giá mới mẫu ${type}`);
 }
-$('#mobileTemplateNav')?.addEventListener('click',()=>openMobileTemplateSheet('new'));
+$('#mobileTemplateNav')?.addEventListener('click',async()=>{
+ closeMobileSheets();
+ if(!(await confirmQuoteLeave({allowDiscard:true})))return;
+ startBlankQuote();
+ openQuoteDiscountChoice(state.type);
+});
 $('#templateSwitchInline')?.addEventListener('click',()=>openMobileTemplateSheet('switch'));
 $('#mobileMoreNav')?.addEventListener('click',()=>{toggleMobileSheet('mobileTemplateSheet',false);toggleMobileSheet('mobileMoreSheet')});
 $('#mobileSearchNav')?.addEventListener('click',()=>{$('#openSearch2').click()});
