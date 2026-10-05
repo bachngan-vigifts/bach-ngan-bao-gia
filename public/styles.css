@@ -139,7 +139,7 @@ input[type=date]::-webkit-calendar-picker-indicator{margin-inline-start:0}
 .quote-discount-choice-row{display:flex;align-items:stretch;gap:10px;margin:14px 0 12px}
 .quote-discount-choice-row .quote-discount-customer{flex:1 1 280px;margin:0}
 .quote-discount-types{display:flex;flex:0 0 auto;gap:8px;align-items:stretch}
-.quote-discount-types button{min-height:46px;border:1px solid #cbd5e1;border-radius:10px;padding:0 14px;background:#102a56;color:#fff;font:800 14px/1.15 Inter,"Segoe UI",Arial,sans-serif;white-space:nowrap;cursor:pointer;box-shadow:0 8px 18px rgba(16,42,86,.14)}
+.quote-discount-types button{min-height:46px;border:1px solid #cbd5e1;border-radius:10px;padding:0 14px;background:#102a56;color:#fff;font:inherit;font-size:14px;font-weight:650;line-height:1.2;white-space:nowrap;cursor:pointer;box-shadow:0 8px 18px rgba(16,42,86,.14)}
 .quote-discount-types button[data-quote-discount-type="B2B"]{background:#c58b16;border-color:#b5790d;color:#1f1604;box-shadow:0 8px 18px rgba(197,139,22,.18)}
 .quote-discount-types button.active{outline:3px solid rgba(56,189,248,.32);outline-offset:2px;filter:saturate(1.15);box-shadow:0 0 0 1px rgba(255,255,255,.75) inset,0 10px 24px rgba(16,42,86,.28)}
 .quote-discount-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:12px;align-items:end;margin-top:12px}
