@@ -78,22 +78,39 @@ function askNewQuoteSaveChoice(){
   dialog.showModal();
  });
 }
-async function confirmQuoteLeave(options={}){
- if(!quoteHasUnsavedChanges())return true;
- if(options.allowDiscard){
-  const choice=await askNewQuoteSaveChoice();
-  if(choice==='discard')return true;
-  if(choice!=='save')return false;
-  return Boolean(await saveToLibrary());
- }
- const shouldSave=confirm('Báo giá đang mở có thay đổi chưa lưu.\n\nBấm OK để lưu báo giá trước khi tiếp tục.\nBấm Hủy để ở lại chỉnh sửa.');
- if(!shouldSave)return false;
- return Boolean(await saveToLibrary());
+function syncQuoteUrl(id=''){
+ const url=new URL(location.href);
+ for(const key of ['quoteId','quote','dashboardAction'])url.searchParams.delete(key);
+ if(id)url.searchParams.set('quoteId',id);
+ history.replaceState(history.state,'',url);
+}
+async function discardQuoteChanges(){
+ const record=state._record;
+ if(record?.id){
+  if(lastSavedQuoteSignature){state={...JSON.parse(lastSavedQuoteSignature),_record:record};hydrate();saveDraft();}
+  else await reloadCurrentQuote();
+  syncQuoteUrl(record.id);
+ }else startBlankQuote();
+}
+let quoteLeavePending=null;
+function confirmQuoteLeave(){
+ if(quoteLeavePending)return Promise.resolve(false);
+ if(!quoteHasUnsavedChanges())return Promise.resolve(true);
+ quoteLeavePending=(async()=>{
+  try{
+   const choice=await askNewQuoteSaveChoice();
+   if(choice==='discard'){await discardQuoteChanges();return true;}
+   if(choice!=='save')return false;
+   return Boolean(await saveToLibrary());
+  }catch(error){toast(error.message||'Chưa thể rời báo giá.');return false;}
+ })().finally(()=>{quoteLeavePending=null;});
+ return quoteLeavePending;
 }
 BN.markQuoteSaved=markQuoteSaved;
 BN.refreshQuoteSaveState=refreshQuoteSaveState;
 BN.quoteHasUnsavedChanges=quoteHasUnsavedChanges;
 BN.confirmQuoteLeave=confirmQuoteLeave;
+BN.syncQuoteUrl=syncQuoteUrl;
 
 function defaultDiscountFor(product,choice={price:0}){if(state.discountScope==='table')return Number(state.defaultDiscount)||0;if(state.discountScope==='manual')return 0;return QuoteMath.customerDiscount(product?.brand,state.customerDiscounts,state.discountMode||state.rows[0]?.discountType||'percent',choice.price)}
 function blankRow(){return {id:crypto.randomUUID(),sku:'',name:'Nhấp để sửa mô tả',unit:'',qty:1,price:0,manualPrice:false,discount:state.discountScope==='table'?Number(state.defaultDiscount)||0:0,discountType:state.discountMode||state.rows[0]?.discountType||'percent',printFee:0,purchaseDiscount:null,costPrice:0,bundleContents:'',packagingDescription:'theo tiêu chuẩn nhà sản xuất',brand:'',pattern:'',perCarton:0,cartonWeight:0,image:''}}
@@ -357,9 +374,9 @@ function openQuoteDiscountChoice(type){setQuoteDiscountType(type);$('#quoteDisco
 function quoteDiscountFormValues(type){return {quoteNo:$('#quoteDiscountNo')?.value.trim()||makeNo(type),date:$('#quoteDiscountDate')?.value||today()}}
 function openFirstProductQuoteDiscount(wasEmpty){if(!wasEmpty||state._quoteMetaConfirmed)return;if($('#searchModal')?.classList.contains('open'))closeModal('search');openQuoteDiscountChoice(state.type)}
 const canKeepRowsOnTypeChange=(from,to)=>['HRC','B2B'].includes(from)&&['HRC','B2B'].includes(to);
-function switchQuoteTypeKeepingRows(type){if(type===state.type)return;collect();if(!canKeepRowsOnTypeChange(state.type,type))return openQuoteDiscountChoice(type);if(/^BG(?:HRC|B2B)-/.test(state.quoteNo))state.quoteNo=state.quoteNo.replace(/^BG(?:HRC|B2B)-/,`BG${type}-`);state.type=type;state.notes=defaultNotes(type);state.notesVersion=2;hydrate();saveDraft();toast(`Đã đổi sang mẫu ${type} và giữ nguyên sản phẩm, CK hiện tại`)}
-function applyQuoteTypeAndDiscount({type,scope,discount=0,quoteNo='',date=''}){const changed=type!==state.type;collect();if(changed){const keepRows=canKeepRowsOnTypeChange(state.type,type);if(!keepRows){delete state._record;state.rows=[];}state.type=type;state.notes=defaultNotes(type);state.notesVersion=2;}state.quoteNo=quoteNo||nextQuoteNoForType(type);state.date=date||today();state.discountScope=scope;state.discountMode='percent';state.defaultDiscount=scope==='table'?Math.min(100,Math.max(0,Number(discount)||0)):0;state._quoteMetaConfirmed=true;if(scope==='table')state.rows.forEach(row=>{row.discountType='percent';row.discount=state.defaultDiscount});hydrate();saveDraft();toast(scope==='table'?`Đã áp dụng CK ${state.defaultDiscount}% cho báo giá ${type}`:'Đã chọn nhập CK thủ công từng dòng')}
-$$('.quote-type').forEach(b=>b.onclick=async()=>{if(!canUseQuoteType(b.dataset.type))return;if(b.dataset.type!==state.type&&!(await confirmQuoteLeave()))return;if(b.dataset.type!==state.type&&state.rows.length&&canKeepRowsOnTypeChange(state.type,b.dataset.type))return switchQuoteTypeKeepingRows(b.dataset.type);if(b.dataset.type!==state.type&&state.rows.length&&!canKeepRowsOnTypeChange(state.type,b.dataset.type)&&!confirm('Đổi sang mẫu này sẽ tạo bảng mới. Tiếp tục?'))return;openQuoteDiscountChoice(b.dataset.type)});
+function switchQuoteTypeKeepingRows(type){if(type===state.type)return;collect();if(!canKeepRowsOnTypeChange(state.type,type))return openQuoteDiscountChoice(type);delete state._record;syncQuoteUrl();BN.setPdfAction?.(null);if(/^BG(?:HRC|B2B)-/.test(state.quoteNo))state.quoteNo=state.quoteNo.replace(/^BG(?:HRC|B2B)-/,`BG${type}-`);state.type=type;state.notes=defaultNotes(type);state.notesVersion=2;hydrate();saveDraft();toast(`Đã đổi sang mẫu ${type} và giữ nguyên sản phẩm, CK hiện tại`)}
+function applyQuoteTypeAndDiscount({type,scope,discount=0,quoteNo='',date=''}){const changed=type!==state.type;collect();if(changed){const keepRows=canKeepRowsOnTypeChange(state.type,type);delete state._record;syncQuoteUrl();BN.setPdfAction?.(null);if(!keepRows)state.rows=[];state.type=type;state.notes=defaultNotes(type);state.notesVersion=2;}state.quoteNo=quoteNo||nextQuoteNoForType(type);state.date=date||today();state.discountScope=scope;state.discountMode='percent';state.defaultDiscount=scope==='table'?Math.min(100,Math.max(0,Number(discount)||0)):0;state._quoteMetaConfirmed=true;if(scope==='table')state.rows.forEach(row=>{row.discountType='percent';row.discount=state.defaultDiscount});hydrate();saveDraft();toast(scope==='table'?`Đã áp dụng CK ${state.defaultDiscount}% cho báo giá ${type}`:'Đã chọn nhập CK thủ công từng dòng')}
+$$('.quote-type').forEach(b=>b.onclick=async()=>{if(!canUseQuoteType(b.dataset.type))return;if(b.dataset.type!==state.type&&!(await confirmQuoteLeave()))return;if(b.dataset.type!==state.type&&state.rows.length&&canKeepRowsOnTypeChange(state.type,b.dataset.type))return switchQuoteTypeKeepingRows(b.dataset.type);openQuoteDiscountChoice(b.dataset.type)});
 $('#openSearch').onclick=$('#openSearch2').onclick=()=>{openModal('search');$('#searchInput').value='';drawResults()};$('#searchInput').oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(drawResults,350)};
 $('#searchAllProducts').onchange=e=>{searchAllProducts=e.currentTarget.checked;drawResults()};
 $('#searchProductGroup').onchange=drawResults;
@@ -373,9 +390,12 @@ $('#clearSearchFilters').onclick=()=>{$('#searchInput').value='';$('#searchProdu
 $('#addBlank').onclick=()=>{const wasEmpty=!state.rows.length;state.rows.push(blankRow());render();saveDraft();openFirstProductQuoteDiscount(wasEmpty)};
 $$('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
 function startBlankQuote(extra={}){
- const type=canUseQuoteType(state.type)?state.type:firstAllowedQuoteType();
+ const requestedType=extra.type||state.type,type=canUseQuoteType(requestedType)?requestedType:firstAllowedQuoteType();
  state={type,quoteNo:makeNo(type),date:today(),customer:'',contact:'',phone:'',email:'',...currentUserOwner(),vat:8,notes:defaultNotes(type),notesVersion:2,rows:[],...extra};
  delete state._record;
+ lastSavedQuoteSignature='';
+ try{sessionStorage.removeItem(quoteSavedSignatureKey())}catch{}
+ syncQuoteUrl();
  hydrate();saveDraft();BN.setPdfAction?.(null);
 }
 $('#newQuote').onclick=async()=>{if(!(await confirmQuoteLeave({allowDiscard:true})))return;startBlankQuote();openQuoteDiscountChoice(state.type);toast('Đã tạo báo giá mới')};
@@ -435,7 +455,7 @@ $('#downloadHrcPdfHiddenCk').onclick=()=>{closeModal('hrcPdfChoice');createPdf(s
 $('#downloadHrcPdfShownCk').onclick=()=>{closeModal('hrcPdfChoice');createPdf(state.type==='B2B'?{hideB2bDiscountColumn:false}:{hideHrcDiscountColumn:false})};
 $('#applyQuoteDefaultDiscount').onclick=()=>{const type=pendingQuoteDiscountType||state.type,value=Math.min(100,Math.max(0,inputNumber($('#quoteDefaultDiscount').value))),meta=quoteDiscountFormValues(type);closeModal('quoteDiscount');applyQuoteTypeAndDiscount({type,scope:'table',discount:value,...meta})};
 $('#useManualDiscounts').onclick=()=>{const type=pendingQuoteDiscountType||state.type,meta=quoteDiscountFormValues(type);closeModal('quoteDiscount');applyQuoteTypeAndDiscount({type,scope:'manual',...meta})};
-$$('[data-quote-discount-type]').forEach(button=>button.addEventListener('click',()=>setQuoteDiscountType(button.dataset.quoteDiscountType)));
+$$('[data-quote-discount-type]').forEach(button=>button.addEventListener('click',async()=>{if(button.dataset.quoteDiscountType!==state.type&&!(await confirmQuoteLeave()))return;setQuoteDiscountType(button.dataset.quoteDiscountType)}));
 $('#quoteDiscountPickCustomer')?.addEventListener('click',()=>document.querySelector('.customer-pick-button')?.click());
 const quoteTopActionsToggle=$('#quoteTopActionsToggle'),quoteTopActions=quoteTopActionsToggle?.closest('.top-actions');if(quoteTopActionsToggle&&quoteTopActions)quoteTopActionsToggle.onclick=()=>{quoteTopActions.classList.toggle('is-expanded');const expanded=quoteTopActions.classList.contains('is-expanded'),label=quoteTopActionsToggle.querySelector('span');quoteTopActionsToggle.setAttribute('aria-expanded',String(expanded));if(label)label.textContent=expanded?'Ẩn thao tác báo giá ▴':'Thao tác báo giá ▾';else quoteTopActionsToggle.textContent=expanded?'Ẩn thao tác báo giá ▴':'Thao tác báo giá ▾';};
 const mobileQuoteActionsToggle=$('#mobileQuoteActionsToggle'),mobileQuoteActions=$('#mobileQuoteActions');if(mobileQuoteActionsToggle&&mobileQuoteActions)mobileQuoteActionsToggle.onclick=()=>{mobileQuoteActions.hidden=!mobileQuoteActions.hidden;mobileQuoteActionsToggle.setAttribute('aria-expanded',String(!mobileQuoteActions.hidden));mobileQuoteActionsToggle.textContent=mobileQuoteActions.hidden?'Tác vụ báo giá ▾':'Ẩn tác vụ báo giá ▴';};
@@ -470,9 +490,7 @@ function openMobileTemplateSheet(mode){
 async function createNewQuoteWithType(type){
  if(!canUseQuoteType(type))return;
  if(!(await confirmQuoteLeave({allowDiscard:true})))return;
- collect();
- state={type,quoteNo:makeNo(type),date:today(),customer:'',contact:'',phone:'',email:'',...currentUserOwner(),vat:8,notes:defaultNotes(type),notesVersion:2,rows:[]};
- hydrate();saveDraft();openQuoteDiscountChoice(type);toast(`Đã tạo báo giá mới mẫu ${type}`);
+ startBlankQuote({type});openQuoteDiscountChoice(type);toast(`Đã tạo báo giá mới mẫu ${type}`);
 }
 $('#mobileTemplateNav')?.addEventListener('click',async()=>{
  closeMobileSheets();
@@ -614,6 +632,16 @@ $('#sendWebhook').onclick=async()=>{
  catch(error){if(confirmedSapoPayload!==q)return;$('#sapoSendStatus').textContent=sapoCopyErrorMessage(error);b.textContent='Thử lại';b.disabled=false;}
 };
 document.addEventListener('keydown',e=>{if(e.key==='F2'){e.preventDefault();openModal('search');$('#searchInput').value='';drawResults()}if(e.key==='Escape')$$('.modal.open').forEach(m=>closeModal(m.id.replace('Modal','')))})
+async function reloadQuotePage(){
+ if(!(await confirmQuoteLeave()))return;
+ location.reload();
+}
+document.addEventListener('keydown',event=>{
+ const reload=event.key==='F5'||((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='r');
+ if(!reload||!quoteHasUnsavedChanges())return;
+ event.preventDefault();
+ if(!event.repeat)void reloadQuotePage();
+},{capture:true});
 window.addEventListener('beforeunload',event=>{if(!quoteHasUnsavedChanges())return;event.preventDefault();event.returnValue='';});
 
 let selectedQuoteRow=null;
