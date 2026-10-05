@@ -8,7 +8,7 @@
     leftActionsContracts: ['#previewPayload', '#viewSapoOrder', '#createContract', '#createContractCrm', '#downloadContractFile', '#printDeliveryNote'],
     leftActionsShipping: ['#openLalamove'],
     leftActionsWork: ['#openUserGuide'],
-    leftActionsAccount: ['#staffNotifications', '#staffPushToggle', '#supplierPaymentRequests', '#staffManage', '#staffBackup', '#staffFullBackup', '#staffPassword', '#catalogMoreActions > button'],
+    leftActionsAccount: ['#staffNotifications', '#staffPushToggle', '#supplierPaymentRequests', '#staffManage', '#staffBackup', '#staffFullBackup', '#staffPassword'],
     leftSaveState: ['#saveState'],
   };
 
