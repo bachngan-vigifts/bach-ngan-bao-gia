@@ -19,3 +19,12 @@ test('sapo admin falls back to the deployment cookie when no runtime session exi
  await sapoAdminRequest({SAPO_ADMIN_COOKIE:'session=fallback'},'/accounts.json',{},request);
  assert.equal(receivedCookie,'session=fallback');
 });
+
+test('connection probe only reads orders and rejects a login response',async()=>{
+ const {checkSapoConnection}=await import('../lib/sapo-admin.mjs');
+ const calls=[];
+ const result=await checkSapoConnection({SAPO_ADMIN_COOKIE:'session=test'},async(url,options)=>{calls.push({url,method:options.method||'GET'});return new Response('{"orders":[]}');});
+ assert.equal(result.ok,true);assert.equal(calls.length,1);assert.equal(calls[0].method,'GET');
+ await assert.rejects(checkSapoConnection({SAPO_ADMIN_COOKIE:'session=test'},async()=>new Response('<html>Sign in</html>')),e=>e.status===502);
+ await assert.rejects(checkSapoConnection({SAPO_ADMIN_COOKIE:'session=test'},async()=>new Response('{}')),e=>e.status===502);
+});
