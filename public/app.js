@@ -549,11 +549,23 @@ async function refreshSapoOrderStatus(quoteNumber=state.quoteNo,{showUpdating=fa
  }catch{if(request===sapoStatusRequest&&updatePageLink)setSapoOrderLink(null);return null;}
 }
 BN.refreshSapoOrderLink=refreshSapoOrderStatus;
-async function openSapoCopyPayload(payload,{recordId='',updatePageLink=true}={}){
-  confirmedSapoPayload=payload;sapoCopyContext={recordId:recordId||state._record?.id||'',updatePageLink};const q=confirmedSapoPayload,c=q.customer||{};
+function sapoCopyErrorMessage(error){
+ const messages={
+  SAPO_SESSION_EXPIRED:'Phiên Sapo direct hết hạn. Manager cần đăng nhập lại Sapo rồi cập nhật phiên Sapo trên web báo giá.',
+  SAPO_PERMISSION_DENIED:'Tài khoản Sapo hiện tại thiếu quyền tạo đơn/sản phẩm/khách hàng. Manager cần đổi sang tài khoản đủ quyền rồi cập nhật lại phiên.',
+  SAPO_DIRECT_HTTP_ERROR:'Sapo đang trả lỗi khi tạo đơn. Anh kiểm tra Sapo rồi thử lại để tránh tạo trùng.',
+  SAPO_DIRECT_UNREACHABLE:'Sapo direct chưa phản hồi. Anh kiểm tra mạng/Sapo rồi thử lại.',
+  SAPO_COOKIE_MISSING:'Chưa cấu hình phiên Sapo direct. Manager cần cập nhật phiên Sapo trước khi copy đơn.',
+ };
+ return messages[error?.code]||error?.message||'Chưa xác nhận được kết quả chuyển báo giá. Anh kiểm tra Sapo trước khi thử lại để tránh tạo trùng.';
+}
+async function openSapoCopyPayload(payload,{recordId='',updatePageLink=true,revision=state._record?.revision,approvalStatus=state._record?.approvalStatus}={}){
+ if(approvalStatus!=='approved'){toast('Báo giá cần được duyệt trước khi tạo đơn Sapo.');return;}
+ if(updatePageLink&&BN.quoteHasUnsavedChanges?.()){toast('Vui lòng lưu báo giá trước khi tạo đơn Sapo.');return;}
+  confirmedSapoPayload=payload;sapoCopyContext={recordId:recordId||state._record?.id||'',revision,updatePageLink};const q=confirmedSapoPayload,c=q.customer||{};
   const field=(label,value)=>`<div><span>${label}</span><strong>${esc(value||'Chưa nhập')}</strong></div>`;
   const formatUnit=typeof unitMoney==='function'?unitMoney:money;
- $('#sapoConfirmation').innerHTML=`<div class="sapo-confirm-fields">${field('Số báo giá',q.quote_number)}${field('Ngày báo giá',q.quote_date?.split('-').reverse().join('/'))}${field('Khách hàng',c.name)}${field('Mã số thuế',c.tax_code)}${field('Người liên hệ',c.contact)}${field('SĐT khách hàng',c.phone)}${field('Nhân viên phụ trách',q.responsible)}${field('SĐT phụ trách',q.responsible_phone)}</div><div class="sapo-confirm-table"><table><thead><tr><th>Sản phẩm / SKU</th><th>SL</th><th>Đơn giá</th><th>CK</th><th>Phí in/SP</th><th>VAT</th><th>Thành tiền</th></tr></thead><tbody>${q.items.map(r=>`<tr><td><b>${esc(r.name)}</b><small>${esc(r.sku)}</small></td><td>${esc(r.quantity)}</td><td>${formatUnit(r.unit_price)}</td><td>${r.discount_type==='amount'?formatUnit(r.discount_amount)+'/sp':esc(r.discount_percent)+'%'}</td><td>${formatUnit(r.print_fee)}</td><td>${esc(r.tax_percent)}%</td><td>${money(r.line_total)}</td></tr>`).join('')||'<tr><td colspan="7">Chưa có sản phẩm trong báo giá.</td></tr>'}</tbody></table></div><div class="sapo-confirm-totals">${field('Tiền hàng trước VAT',money(q.subtotal))}${field('Thuế VAT',money(q.vat_amount))}${field('Tổng thanh toán',money(q.total))}</div>${q.notes?`<div class="sapo-confirm-notes"><b>Ghi chú báo giá</b><p>${esc(q.notes)}</p></div>`:''}<div id="sapoOrderStatus"></div>`;
+ $('#sapoConfirmation').innerHTML=`<div class="sapo-confirm-fields">${field('Số báo giá',q.quote_number)}${field('Ngày báo giá',q.quote_date?.split('-').reverse().join('/'))}${field('Khách hàng',c.name)}${field('Mã số thuế',c.tax_code)}${field('Người liên hệ',c.contact)}${field('SĐT khách hàng',c.phone)}${field('Nhân viên phụ trách',q.responsible)}${field('SĐT phụ trách',q.responsible_phone)}</div><div class="sapo-confirm-table"><table><thead><tr><th>Sản phẩm / SKU</th><th>SL</th><th>Đơn giá</th><th>CK</th><th>Phí in/SP</th><th>VAT</th><th>Thành tiền</th><th>Ngày giao</th></tr></thead><tbody>${q.items.map((r,i)=>`<tr><td><b>${esc(r.name)}</b><small>${esc(r.sku)}</small></td><td>${esc(r.quantity)}</td><td>${formatUnit(r.unit_price)}</td><td>${r.discount_type==='amount'?formatUnit(r.discount_amount)+'/sp':esc(r.discount_percent)+'%'}</td><td>${formatUnit(r.print_fee)}</td><td>${esc(r.tax_percent)}%</td><td>${money(r.line_total)}</td><td><input type="date" data-sapo-delivery="${i}" aria-label="Ngày giao dòng ${i+1}" required value="${esc(r.delivery_date||q.delivery_date||'')}"></td></tr>`).join('')||'<tr><td colspan="7">Chưa có sản phẩm trong báo giá.</td></tr>'}</tbody></table></div><div class="sapo-confirm-totals">${field('Tiền hàng trước VAT',money(q.subtotal))}${field('Thuế VAT',money(q.vat_amount))}${field('Tổng thanh toán',money(q.total))}</div>${q.notes?`<div class="sapo-confirm-notes"><b>Ghi chú báo giá</b><p>${esc(q.notes)}</p></div>`:''}<div id="sapoOrderStatus"></div>`;
  const valid=Boolean(c.name&&q.items.length);
  $('#sendWebhook').textContent='Xác nhận copy vào Sapo';
  $('#sendWebhook').disabled=true;
@@ -587,16 +599,19 @@ $('#sendWebhook').onclick=async()=>{
  const q=confirmedSapoPayload,b=$('#sendWebhook');if(b.disabled||!q)return;
  b.disabled=true;b.textContent='Đang chuyển báo giá…';$('#sapoSendStatus').textContent='';
  try{
-  const context=sapoCopyContext,result=await BN.api('/sapo-copy','POST',q);
+  const context=sapoCopyContext,delivery_dates=[...document.querySelectorAll('[data-sapo-delivery]')].map(el=>el.value);
+  if(delivery_dates.length!==q.items.length||delivery_dates.some(date=>!date))throw Error('Vui lòng nhập ngày giao cho từng sản phẩm.');
+  const result=await BN.api('/sapo-copy','POST',{quote_id:context.recordId,revision:context.revision,delivery_dates});
   if(!['created','existing'].includes(result.status)||!result.sapoOrderId)throw Error(result.message||'Sapo chưa xác nhận đơn hàng. Kiểm tra Sapo trước khi thử lại.');
   if(confirmedSapoPayload!==q)return;
   $('#sapoSendStatus').textContent=result.message;
-  $('#sapoOrderStatus').innerHTML=sapoOrderStatusHtml(result);
+  $('#sapoOrderStatus').innerHTML=sapoOrderStatusHtml(result)+(result.followup?`<p><b>Công nợ dự kiến trên web: ${money(result.followup.balance)}</b> · Chưa ghi nhận thu tiền. <a href="/receivables.html">Xem công nợ</a></p>`:'');
+  if(result.followup&&state._record?.id===context.recordId){state.orderFollowup=result.followup;state.rows.forEach((row,i)=>{if(result.followup.lines[i]?.sku===row.sku)row.deliveryDate=result.followup.lines[i].deliveryDate;});saveDraft();BN.markQuoteSaved?.();}
   if(context?.updatePageLink&&state._record?.id===context.recordId)setSapoOrderLink(result);
   b.textContent=result.status==='existing'?'Đơn đã có trên Sapo':'Đã tạo đơn Sapo';
   confirmedSapoPayload=null;
  }
- catch(error){if(confirmedSapoPayload!==q)return;$('#sapoSendStatus').textContent=error.message||'Chưa xác nhận được kết quả chuyển báo giá. Anh kiểm tra Sapo trước khi thử lại để tránh tạo trùng.';b.textContent='Thử lại';b.disabled=false;}
+ catch(error){if(confirmedSapoPayload!==q)return;$('#sapoSendStatus').textContent=sapoCopyErrorMessage(error);b.textContent='Thử lại';b.disabled=false;}
 };
 document.addEventListener('keydown',e=>{if(e.key==='F2'){e.preventDefault();openModal('search');$('#searchInput').value='';drawResults()}if(e.key==='Escape')$$('.modal.open').forEach(m=>closeModal(m.id.replace('Modal','')))})
 window.addEventListener('beforeunload',event=>{if(!quoteHasUnsavedChanges())return;event.preventDefault();event.returnValue='';});

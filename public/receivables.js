@@ -1,0 +1,9 @@
+(()=>{
+ const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),money=v=>Number(v||0).toLocaleString('vi-VN')+' đ';let records=[];
+ function render(){const q=$('search').value.toLocaleLowerCase('vi'),filtered=records.filter(r=>[r.customer,r.quoteNo].join(' ').toLocaleLowerCase('vi').includes(q));
+ $('summary').innerHTML=[['Tổng dự kiến',filtered.reduce((s,r)=>s+r.total,0)],['Đã ghi nhận thu',filtered.reduce((s,r)=>s+r.paid,0)],['Còn phải thu dự kiến',filtered.reduce((s,r)=>s+r.balance,0)]].map(([label,value])=>`<div class="card">${label}<strong>${money(value)}</strong></div>`).join('');
+ $('records').innerHTML=filtered.map(r=>`<article><div class="row"><div><strong>${esc(r.customer)}</strong><br><a href="/quote?quoteId=${encodeURIComponent(r.quoteId)}">${esc(r.quoteNo)}</a> · Đơn Sapo ${esc(r.sapoOrderCode)}</div><div><strong>${money(r.balance)}</strong><br><small>${r.paid?'Đã thu '+money(r.paid):'Chưa ghi nhận thu tiền'}</small></div></div><ul>${r.lines.map(l=>`<li>${esc(l.name)} · ${esc(l.sku)} · SL ${esc(l.qty)}<br>Ngày giao: <b>${esc(l.deliveryDate.split('-').reverse().join('/'))}</b></li>`).join('')}</ul></article>`).join('')||'<p>Chưa có công nợ phù hợp. Công nợ được ghi sau khi tạo đơn Sapo thành công.</p>';
+ }
+ async function load(){ $('refresh').disabled=true;try{const r=await fetch('/api/staff/receivables',{credentials:'include',cache:'no-store'}),data=await r.json();if(!r.ok)throw Error(data.error||'Không tải được công nợ.');records=data.records||[];$('status').textContent=`${records.length} báo giá đã ghi nhận`;render();}catch(e){$('status').textContent=e.message;}finally{$('refresh').disabled=false;}}
+ $('search').addEventListener('input',render);$('refresh').onclick=load;load();
+})();

@@ -4,6 +4,7 @@ import { handleImageOptimization, DEFAULT_DEVICE_SIZES, DEFAULT_IMAGE_SIZES } fr
 import handler from "vinext/server/app-router-entry";
 import { staffApi, staffPageMember, staffPageRole } from '../lib/staff-api.mjs';
 import { vigiftsMirrorApi } from '../lib/vigifts-mirror-api.mjs';
+import { startSapoHealthMonitor } from '../lib/sapo-health-monitor.mjs';
 
 interface Env {
   ASSETS: Fetcher;
@@ -33,6 +34,7 @@ interface ExecutionContext {
 
 const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    startSapoHealthMonitor(env, ctx);
     const url = new URL(request.url);
     if (url.pathname === '/api/ping') {
       return new Response(JSON.stringify({ ok: true, service: 'bach-ngan-bao-gia', ts: new Date().toISOString() }), {

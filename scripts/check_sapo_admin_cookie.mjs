@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { readFileSync } from 'node:fs';
+import { checkSapoAdminHealth } from '../lib/sapo-admin.mjs';
 
 const cookieFile = process.env.SAPO_COOKIE_FILE || '/home/node/.openclaw/credentials/sapo-bachngan.cookies';
 const base = (process.env.SAPO_ADMIN_BASE || 'https://bachngankiengiang.mysapogo.com/admin').replace(/\/$/, '');
@@ -56,41 +57,20 @@ if (!cookieHeader.includes('_admin_session_id=')) {
   process.exit(2);
 }
 
-const response = await fetch(base + '/accounts.json', {
-  headers: {
-    cookie: cookieHeader,
-    accept: 'application/json,text/plain,*/*',
-    'content-type': 'application/json; charset=UTF-8',
-    'x-sapo-client': 'sapo-frontend-v3',
-    'x-sapo-serviceid': 'sapo-frontend-v3',
-    'x-requested-with': 'XMLHttpRequest',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 OpenClaw-Sapo-Direct',
-    origin,
-    referer: base,
-    'accept-language': 'vi',
-  },
+const health = await checkSapoAdminHealth({
+  SAPO_ADMIN_BASE: base,
+  SAPO_ADMIN_COOKIE: cookieHeader,
 });
 
-const text = await response.text();
-let body;
-try {
-  body = text ? JSON.parse(text) : {};
-} catch {
-  body = text;
-}
-
-const bodyText = typeof body === 'string' ? body : JSON.stringify(body);
-const loginResponse = typeof body === 'string' && /login|unauthorized|forbidden/i.test(bodyText.slice(0, 500));
-const ok = response.ok && !loginResponse;
-
 console.log(JSON.stringify({
-  ok,
-  status: ok ? 'alive' : 'sapo_session_invalid',
-  httpStatus: response.status,
-  accountCount: Array.isArray(body?.accounts) ? body.accounts.length : undefined,
+  ok: health.ok,
+  status: health.ok ? 'alive' : 'sapo_session_invalid',
+  code: health.code,
+  httpStatus: health.details?.httpStatus || health.status || 200,
+  accountCount: health.accountCount,
   adminSessionExpiresAt: expiresAt(cookies, '_admin_session_id'),
   cookieNames: cookies.map(cookie => cookie.name).sort(),
-  message: ok ? 'Sapo admin session is alive.' : `Sapo admin rejected session (${response.status}).`,
+  message: health.message,
 }));
 
-process.exit(ok ? 0 : 3);
+process.exit(health.ok ? 0 : 3);

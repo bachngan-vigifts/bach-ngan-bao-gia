@@ -133,7 +133,7 @@
  };
  const lineCard=line=>`<button type="button" class="product-line-card" data-product-line="${esc(line.id)}">
   <span class="product-line-photo">${lineImage(line)}</span>
-  <span class="product-line-copy"><b>${esc(line.name||'Sản phẩm')}</b><small>${esc([line.sku,line.brand,line.pattern].filter(Boolean).join(' · '))}</small><em class="${statusClass(line.status)}">${esc(line.status)}</em><span>${esc(line.quoteNo||'Báo giá')} · ${esc(line.customer||'Chưa nhập khách')}</span><span>${number(line.qty)} ${esc(line.unit||'')} · ${money(line.lineTotal)} · ${esc(line.creatorName||'')}</span></span>
+  <span class="product-line-copy"><b>${esc(line.name||'Sản phẩm')}</b><small>${esc([line.sku,line.brand,line.pattern].filter(Boolean).join(' · '))}</small><em class="${statusClass(line.status)}">${esc(line.status)}</em><span>Ngày giao: ${esc(line.deliveryDate||'Chưa xác định')} · ${esc(line.quoteNo||'Báo giá')} · ${esc(line.customer||'Chưa nhập khách')}</span><span>${number(line.qty)} ${esc(line.unit||'')} · ${money(line.lineTotal)} · ${esc(line.creatorName||'')}</span></span>
  </button>`;
  const renderStatusLines=status=>{
   mode='lines';lineState.status=status||lineState.status||'All';const rows=filteredLines(),shown=rows.slice(0,lineState.visible),more=rows.length>shown.length?`<button type="button" class="product-dashboard-more" id="productLineMore">Hiện thêm ${Math.min(pageSize,rows.length-shown.length).toLocaleString('vi-VN')} dòng</button>`:'';

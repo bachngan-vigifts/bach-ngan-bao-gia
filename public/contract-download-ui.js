@@ -448,7 +448,7 @@
     if (!confirm("Đã sinh HĐKT. Có copy báo giá này vào Sapo không?")) return;
     const q = applyDetailsToQuote(quotePayloadFromData(selectedQuoteData), details);
     try {
-      await BN.openSapoCopyPayload(q, { recordId: selectedRecord?.id || "", updatePageLink: isCurrentSelected() });
+      await BN.openSapoCopyPayload(q, { recordId: selectedRecord?.id || "", updatePageLink: isCurrentSelected(),revision:selectedRecord?.revision,approvalStatus:selectedRecord?.approvalStatus });
     } catch (error) {
       toast(error.message || "Chưa mở được popup copy Sapo.");
     }
