@@ -849,30 +849,42 @@
     background: rgba(255,255,255,.08) !important;
     color: #f8fafc !important;
   }
+  body.v0-editor .quote-discount-choice-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    margin: 14px 0 12px;
+  }
   body.v0-editor .quote-discount-types {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
-    margin: 14px 0;
+    margin: 0;
   }
   body.v0-editor .quote-discount-types button {
     min-height: 46px;
     border: 1px solid rgba(255,255,255,.14);
     border-radius: 14px;
-    background: rgba(255,255,255,.065);
-    color: rgba(248,250,252,.70);
+    background: #102a56;
+    color: #fff;
     font: 780 14px/1.1 inherit;
+    padding: 0 8px;
+  }
+  body.v0-editor .quote-discount-types button[data-quote-discount-type="B2B"] {
+    background: #d6a12b;
+    border-color: rgba(255,220,130,.70);
+    color: #1f1604;
   }
   body.v0-editor .quote-discount-types button.active {
-    border-color: transparent;
-    background: linear-gradient(135deg, #7df2b0, #38bdf8);
-    color: #101827;
+    border-color: #7df2b0;
+    box-shadow: 0 0 0 3px rgba(125,242,176,.24), 0 0 0 1px rgba(255,255,255,.45) inset;
+    transform: translateY(-1px);
   }
   body.v0-editor .quote-discount-customer {
     width: 100%;
     min-height: 48px;
     justify-content: space-between;
-    margin: 0 0 12px;
+    margin: 0;
     border-color: rgba(125,242,176,.28) !important;
     background: rgba(125,242,176,.12) !important;
     color: #7df2b0 !important;
